@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vite": "latest",
+    "html2pdf.js": "^0.14.0",
     "react": "latest",
-    "react-dom": "latest"
-  },
-  "devDependencies": {}
+    "react-dom": "latest",
+    "vite": "latest"
+  }
 }
