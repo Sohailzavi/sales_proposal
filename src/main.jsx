@@ -21,7 +21,7 @@ function Login({ onLogin }) {
     event.preventDefault();
 
     if (email.trim().toLowerCase() !== LOGIN_EMAIL || password !== LOGIN_PASSWORD) {
-      setError('Incorrect email or password. Use demo credentials below.');
+      setError('Incorrect email or password.');
       return;
     }
 
@@ -29,29 +29,10 @@ function Login({ onLogin }) {
     onLogin();
   };
 
-  const handleFillDemo = () => {
-    setEmail(LOGIN_EMAIL);
-    setPassword(LOGIN_PASSWORD);
-    setError('');
-  };
-
   return (
     <main className="login-page">
       <section className="login-card" aria-labelledby="login-title">
-        <div className="login-brand">iBunify</div>
-        <h1 id="login-title">Sales Proposal Builder</h1>
-        <p>Sign in to create, edit, and manage sales proposals.</p>
-
-        <div className="demo-credentials-box">
-          <div className="demo-credentials-header">
-            <span>Demo Account Credentials</span>
-            <button type="button" className="demo-fill-button" onClick={handleFillDemo}>
-              Auto-fill
-            </button>
-          </div>
-          <code>Email: <strong>{LOGIN_EMAIL}</strong></code>
-          <code>Password: <strong>{LOGIN_PASSWORD}</strong></code>
-        </div>
+        <div className="login-brand">Sales Proposal</div>
 
         <form onSubmit={handleSubmit}>
           <label>
