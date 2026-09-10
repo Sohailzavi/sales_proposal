@@ -309,19 +309,48 @@ textarea { resize: vertical; line-height: 1.55; }
 .empty-state { margin-top: 24px; padding: 24px; text-align: center; color: #777f96; background: #f7f8fc; border-radius: 12px; }
 
 .proposal-paper {
-  min-height: 1120px; padding: 54px 62px; background: white; border: 1px solid #e3e6ef;
+  background: white; border: 1px solid #e3e6ef;
   box-shadow: 0 16px 50px rgba(33, 40, 74, .1); border-radius: 4px;
+  overflow-wrap: break-word; word-break: break-word; word-wrap: break-word;
 }
-.cover-block { border-bottom: 4px solid #5b4bdb; padding-bottom: 28px; margin-bottom: 28px; }
+.sample-letterhead-paper {
+  position: relative;
+  width: 100%;
+  max-width: 794px;
+  aspect-ratio: 210 / 297;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+.letterhead-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  z-index: 0;
+}
+.letterhead-content-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 135px 48px 145px 48px;
+  box-sizing: border-box;
+}
+.cover-block { border-bottom: 4px solid #5b4bdb; padding-bottom: 28px; margin-bottom: 28px; overflow-wrap: break-word; word-break: break-word; }
 .brand-mark { color: #5b4bdb; text-transform: uppercase; font-weight: 900; letter-spacing: .12em; }
-.cover-block h1 { font-size: 38px; line-height: 1.15; margin: 14px 0 24px; color: #202544; }
+.cover-block h1 { font-size: 38px; line-height: 1.15; margin: 14px 0 24px; color: #202544; overflow-wrap: break-word; word-break: break-word; }
 .proposal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 30px; }
-.proposal-meta div { display: grid; gap: 3px; }
+.proposal-meta div { display: grid; gap: 3px; overflow-wrap: break-word; word-break: break-word; }
 .proposal-meta span { color: #858ca1; font-size: 12px; text-transform: uppercase; font-weight: 800; }
-.proposal-meta strong { font-size: 14px; }
-article { margin: 0 0 30px; break-inside: avoid; }
-article h2 { color: #2e2a76; font-size: 21px; border-bottom: 1px solid #e1e3eb; padding-bottom: 8px; }
-.proposal-content { white-space: pre-wrap; line-height: 1.7; color: #3c445c; }
+.proposal-meta strong { font-size: 14px; overflow-wrap: break-word; word-break: break-word; }
+article { margin: 0 0 30px; break-inside: avoid; overflow-wrap: break-word; word-break: break-word; }
+article h2 { color: #2e2a76; font-size: 21px; border-bottom: 1px solid #e1e3eb; padding-bottom: 8px; overflow-wrap: break-word; word-break: break-word; }
+.proposal-content { white-space: pre-wrap; line-height: 1.7; color: #3c445c; overflow-wrap: break-word; word-break: break-word; word-wrap: break-word; }
 .proposal-paper footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #e2e5ed; color: #8a90a5; font-size: 12px; }
 
 @media (max-width: 1250px) {
@@ -346,9 +375,23 @@ article h2 { color: #2e2a76; font-size: 21px; border-bottom: 1px solid #e1e3eb; 
 }
 
 @media print {
-  .topbar, .sidebar, .editor, .proposal-selector-bar { display: none !important; }
-  .workspace, .workspace.preview-only { display: block; padding: 0; max-width: none; }
-  .proposal-paper { box-shadow: none; border: 0; padding: 0; }
+  @page { size: A4 portrait; margin: 0; }
+  body { background: #ffffff !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .topbar, .sidebar, .editor, .proposal-selector-bar, .preview-page-card-header, .document-sidebar, .locked-header-footer-box { display: none !important; }
+  .workspace, .workspace.preview-only, .workspace.official-library { display: block !important; padding: 0 !important; max-width: none !important; margin: 0 !important; }
+  .proposal-pages-container { gap: 0 !important; display: block !important; }
+  .proposal-page-card-wrapper { max-width: none !important; width: 100% !important; margin: 0 !important; page-break-after: always !important; }
+  .proposal-page-card-wrapper:last-child { page-break-after: auto !important; }
+  .sample-letterhead-paper {
+    width: 210mm !important;
+    height: 297mm !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
 
 /* V2 Styles Extension */
@@ -981,6 +1024,156 @@ button.icon-sm { padding: 4px 8px; font-size: 14px; border-radius: 6px; }
     animation-duration: 0.01ms !important;
   }
 }
+
+
+/* Official Sample Document Header & Footer */
+.official-sample-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.iglobus-logo-block {
+  display: flex;
+  align-items: center;
+}
+.ibunify-header-brand {
+  text-align: right;
+}
+.ibunify-header-logo {
+  font-size: 26px;
+  font-weight: 900;
+  color: #2563eb;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.ib-blue-dot {
+  color: #0252ff;
+}
+.ibunify-header-sub {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.official-sample-footer {
+  margin-top: 50px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 11px;
+  color: #64748b;
+}
+.footer-title-line {
+  font-size: 13px;
+  font-weight: 600;
+  color: #525252;
+  margin-bottom: 6px;
+}
+.footer-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #737373;
+  margin-bottom: 10px;
+}
+.footer-meta-line .sep {
+  color: #d4d4d4;
+}
+.footer-partner-logos {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.bni-logo {
+  font-size: 13px;
+  font-weight: 900;
+  color: #cf142b;
+  letter-spacing: -0.02em;
+}
+.iacc-logo {
+  font-size: 10px;
+  font-weight: 800;
+  color: #1e3a8a;
+  line-height: 1.1;
+}
+.iacc-logo small {
+  font-size: 7px;
+  font-weight: 600;
+  color: #64748b;
+  display: block;
+}
+.footer-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 4px;
+}
+.footer-web-links {
+  font-size: 12px;
+  font-weight: 600;
+  color: #525252;
+}
+.footer-blue-strip {
+  width: 45%;
+  height: 14px;
+  background: #64a2f3;
+  border-radius: 2px;
+}
+
+.locked-header-footer-box {
+  background: #f0f7ff;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.locked-header-footer-box .lock-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #0369a1;
+  margin-bottom: 6px;
+}
+.proposal-pages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  width: 100%;
+}
+.proposal-page-card-wrapper {
+  width: 100%;
+  max-width: 794px;
+  position: relative;
+}
+.preview-page-card-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+.page-card-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  background: #ffffff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+
+
 
 
 

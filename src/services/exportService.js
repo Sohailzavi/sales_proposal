@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js';
+import { SAMPLE_LETTERHEAD_BASE64 } from '../data/letterheadBase64.js';
 
 export function escapeHtml(value = '') {
   return String(value)
@@ -42,6 +43,96 @@ export function calculateInvoiceTotals(items = [], cgstPct = 9, sgstPct = 9) {
   const totalDue = netSubtotal + cgstAmount + sgstAmount;
 
   return { rawSubtotal, totalDiscount, netSubtotal, cgstAmount, sgstAmount, totalDue };
+}
+
+export function paginateProposal(proposal) {
+  const pages = [];
+  const PAGE1_MAX_LINES = proposal.useStructuredCommercials ? 12 : 18;
+  const PAGE_N_MAX_LINES = 32;
+
+  pages.push({
+    pageNumber: 1,
+    hasCover: true,
+    hasCommercials: Boolean(proposal.useStructuredCommercials) && (proposal.commercialItems || []).length > 0,
+    sections: []
+  });
+
+  const sections = proposal.sections || [];
+  if (sections.length === 0) {
+    return pages;
+  }
+
+  let currentPageIdx = 0;
+  let currentLinesOnPage = 0;
+
+  sections.forEach((sec) => {
+    const title = sec.title || 'Untitled Section';
+    const content = sec.content || '';
+    const rawLines = content.split('\n');
+
+    let totalSecLines = 2; // Title line budget
+    rawLines.forEach((l) => {
+      totalSecLines += Math.max(1, Math.ceil((l.length || 1) / 65));
+    });
+
+    const pageCap = pages[currentPageIdx].hasCover ? PAGE1_MAX_LINES : PAGE_N_MAX_LINES;
+
+    // If section can fit completely on a new page, push to new page instead of splitting
+    if (currentLinesOnPage > 0 && (currentLinesOnPage + totalSecLines > pageCap) && (totalSecLines <= PAGE_N_MAX_LINES)) {
+      pages.push({
+        pageNumber: pages.length + 1,
+        hasCover: false,
+        sections: []
+      });
+      currentPageIdx = pages.length - 1;
+      currentLinesOnPage = 0;
+    }
+
+    let currentChunkTitle = title;
+    let currentChunkLines = [];
+    let currentChunkLineCount = 2;
+
+    rawLines.forEach((line) => {
+      const lineCost = Math.max(1, Math.ceil((line.length || 1) / 65));
+      const cap = pages[currentPageIdx].hasCover ? PAGE1_MAX_LINES : PAGE_N_MAX_LINES;
+
+      if (currentLinesOnPage + currentChunkLineCount + lineCost > cap) {
+        if (currentChunkLines.length > 0) {
+          pages[currentPageIdx].sections.push({
+            id: `${sec.id}-part-${currentPageIdx}-${pages[currentPageIdx].sections.length}`,
+            title: currentChunkTitle,
+            content: currentChunkLines.join('\n')
+          });
+        }
+
+        pages.push({
+          pageNumber: pages.length + 1,
+          hasCover: false,
+          sections: []
+        });
+        currentPageIdx = pages.length - 1;
+        currentLinesOnPage = 0;
+
+        currentChunkTitle = `${title} (Continued)`;
+        currentChunkLines = [line];
+        currentChunkLineCount = 2 + lineCost;
+      } else {
+        currentChunkLines.push(line);
+        currentChunkLineCount += lineCost;
+      }
+    });
+
+    if (currentChunkLines.length > 0) {
+      pages[currentPageIdx].sections.push({
+        id: `${sec.id}-part-end-${pages[currentPageIdx].sections.length}`,
+        title: currentChunkTitle,
+        content: currentChunkLines.join('\n')
+      });
+      currentLinesOnPage += currentChunkLineCount;
+    }
+  });
+
+  return pages;
 }
 
 export function invoiceToHtml(doc, forWord = false) {
@@ -370,48 +461,98 @@ export function proposalToHtml(proposal, forWord = false) {
     `;
   }
 
-  const sectionHtml = (proposal.sections || [])
-    .map(
-      (section) => `
+  const pages = paginateProposal(proposal);
+
+  const pagesHtml = pages.map((page) => {
+    let content = '';
+
+    if (page.hasCover) {
+      content += `
+        <div class="cover">
+          <h1>${escapeHtml(proposal.proposalTitle)}</h1>
+          <div class="meta">
+            <div><strong>Proposal No.</strong> ${escapeHtml(proposal.proposalNumber)}</div>
+            <div><strong>Date</strong> ${escapeHtml(proposal.date)}</div>
+            <div><strong>Prepared for</strong> ${escapeHtml(proposal.preparedFor)}</div>
+            <div><strong>Prepared by</strong> ${escapeHtml(proposal.preparedBy)}</div>
+            <div><strong>Valid until</strong> ${escapeHtml(proposal.validUntil || '30 days from issue')}</div>
+            <div><strong>Currency</strong> ${escapeHtml(proposal.currency)}</div>
+          </div>
+        </div>
+        ${page.hasCommercials ? commercialSectionHtml : ''}
+      `;
+    }
+
+    (page.sections || []).forEach((sec) => {
+      content += `
         <section>
-          <h2>${escapeHtml(section.title)}</h2>
-          <div class="section-content">${escapeHtml(section.content || '').replaceAll('\n', '<br/>')}</div>
-        </section>`
-    )
-    .join('');
+          <h2>${escapeHtml(sec.title)}</h2>
+          <div class="section-content">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
+        </section>
+      `;
+    });
+
+    return `
+      <div class="letterhead-container sample-letterhead-paper">
+        <img src="${SAMPLE_LETTERHEAD_BASE64}" class="letterhead-bg-img" alt="" />
+        <div class="letterhead-content-wrap">
+          ${content}
+        </div>
+      </div>
+    `;
+  }).join('');
 
   const styles = `
-    body{font-family:Arial,Helvetica,sans-serif;color:#172033;line-height:1.6;margin:0;padding:40px;background:#fff}
-    .cover{border-bottom:4px solid #5b4bdb;padding-bottom:28px;margin-bottom:28px}
-    .brand{font-size:18px;font-weight:700;color:#5b4bdb;letter-spacing:.08em;text-transform:uppercase}
-    h1{font-size:34px;line-height:1.2;margin:12px 0}
-    h2{font-size:20px;color:#2d2a6e;border-bottom:1px solid #ddd;padding-bottom:8px;margin-top:30px}
-    .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 30px;margin-top:20px;font-size:14px}
-    .meta strong{display:inline-block;min-width:120px}
-    section{page-break-inside:avoid;margin-bottom:24px}
-    .section-content{white-space:normal}
-    .footer{margin-top:50px;padding-top:14px;border-top:1px solid #ddd;font-size:12px;color:#687086}
+    @page { size: A4 portrait; margin: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #172033;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    .letterhead-container {
+      box-sizing: border-box !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      page-break-after: always !important;
+      position: relative !important;
+      overflow: hidden !important;
+      background-color: #ffffff !important;
+    }
+    .letterhead-container:last-child {
+      page-break-after: auto !important;
+    }
+    .letterhead-bg-img {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: fill !important;
+      z-index: 0 !important;
+    }
+    .letterhead-content-wrap {
+      position: relative !important;
+      z-index: 1 !important;
+      padding: 135px 48px 145px 48px !important;
+      box-sizing: border-box !important;
+    }
+    .cover { border-bottom: 1px solid #e2e8f0; padding-bottom: 24px; margin-bottom: 28px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 10px 0; color: #172033; }
+    h2 { font-size: 20px; color: #2563eb; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-top: 24px; }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; margin-top: 20px; font-size: 13px; background: rgba(248, 250, 252, 0.85); padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .meta strong { display: inline-block; min-width: 120px; color: #475569; }
+    section { page-break-inside: avoid; margin-bottom: 24px; }
+    .section-content { white-space: normal; color: #172033; }
   `;
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(
     proposal.proposalTitle
   )}</title><style>${styles}</style></head><body>
-  <div class="cover">
-    <div class="brand">${escapeHtml(proposal.company)}</div>
-    <h1>${escapeHtml(proposal.proposalTitle)}</h1>
-    <div class="meta">
-      <div><strong>Proposal No.</strong> ${escapeHtml(proposal.proposalNumber)}</div>
-      <div><strong>Date</strong> ${escapeHtml(proposal.date)}</div>
-      <div><strong>Prepared for</strong> ${escapeHtml(proposal.preparedFor)}</div>
-      <div><strong>Prepared by</strong> ${escapeHtml(proposal.preparedBy)}</div>
-      <div><strong>Valid until</strong> ${escapeHtml(proposal.validUntil || '30 days from issue')}</div>
-      <div><strong>Currency</strong> ${escapeHtml(proposal.currency)}</div>
-    </div>
-  </div>
-  ${commercialSectionHtml}
-  ${sectionHtml}
-  <div class="footer">Confidential sales proposal prepared by ${escapeHtml(proposal.company)}.</div>
-  ${forWord ? '<p style="font-size:10px;color:#999">Generated from the iBunify Sales Proposal Editor.</p>' : ''}
+  ${pagesHtml}
+  ${forWord ? '<p style="font-size:10px;color:#999;padding-left:48px">Generated from the iBunify Sales Proposal Editor.</p>' : ''}
   </body></html>`;
 }
 
@@ -441,8 +582,49 @@ export async function downloadOfficialPdf() {
 export async function exportPdf(proposal) {
   const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'document'}.pdf`;
 
+<<<<<<< Updated upstream
   const opt = {
     margin: [6, 6, 6, 6],
+=======
+  const originalOpen = window.open;
+  window.open = function () {
+    return null;
+  };
+
+  const isInvoice = proposal.documentType === 'invoice';
+
+  // 1. Try cloning live preview container if present in DOM
+  const livePreview = document.querySelector('.proposal-pages-container') || document.querySelector('.invoice-paper');
+  
+  const container = document.createElement('div');
+  container.id = 'pdf-export-container';
+  container.style.position = 'absolute';
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.width = '794px';
+  container.style.zIndex = '999999';
+  container.style.background = '#ffffff';
+  container.style.opacity = '1';
+
+  if (livePreview) {
+    const clone = livePreview.cloneNode(true);
+    // Ensure cloned pages are full width and letterhead containers retain layout
+    clone.style.width = '100%';
+    container.appendChild(clone);
+  } else if (isInvoice) {
+    container.innerHTML = invoiceToHtml(proposal);
+  } else {
+    container.innerHTML = proposalToHtml(proposal);
+  }
+
+  document.body.appendChild(container);
+
+  // CRITICAL: Delay 450ms for browser engine layout paint & image decode cycle
+  await new Promise((resolve) => setTimeout(resolve, 450));
+
+  const opt = {
+    margin: 0,
+>>>>>>> Stashed changes
     filename: fileName,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -450,7 +632,13 @@ export async function exportPdf(proposal) {
       useCORS: true,
       allowTaint: true,
       logging: false,
+<<<<<<< Updated upstream
       scrollY: 0
+=======
+      scrollY: 0,
+      scrollX: 0,
+      windowWidth: 800
+>>>>>>> Stashed changes
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
@@ -486,6 +674,7 @@ export async function exportPdf(proposal) {
   document.body.appendChild(container);
 
   try {
+<<<<<<< Updated upstream
     if (pdfEngine) {
       await pdfEngine().set(opt).from(container).save();
     } else {
@@ -494,6 +683,13 @@ export async function exportPdf(proposal) {
   } catch (err) {
     console.error('PDF export error:', err);
     downloadBlob(rawHtml, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
+=======
+    const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf.default || window.html2pdf;
+    await pdfEngine().set(opt).from(container).save();
+  } catch (err) {
+    console.error('Direct PDF export error, fallback to print window:', err);
+    window.print();
+>>>>>>> Stashed changes
   } finally {
     container.remove();
   }

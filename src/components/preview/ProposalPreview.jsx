@@ -1,5 +1,6 @@
 import React from 'react';
-import { calculateCommercialTotals, calculateInvoiceTotals } from '../../services/exportService.js';
+import { calculateCommercialTotals, calculateInvoiceTotals, paginateProposal } from '../../services/exportService.js';
+import { SAMPLE_LETTERHEAD_BASE64 } from '../../data/letterheadBase64.js';
 
 export function ProposalPreview({ proposal }) {
   const currencySymbol = proposal.currency === 'USD' ? '$' : '₹';
@@ -251,78 +252,94 @@ export function ProposalPreview({ proposal }) {
     );
   }
 
-  // Standard Proposal Paper Preview
+  // Standard Proposal Paper Preview with Multi-Page Support
   const commercialItems = proposal.commercialItems || [];
   const useStructuredCommercials = Boolean(proposal.useStructuredCommercials) && commercialItems.length > 0;
   const { subtotal, taxAmount, grandTotal } = calculateCommercialTotals(commercialItems, proposal.taxRate);
+  const pages = paginateProposal(proposal);
 
   return (
-    <section className="proposal-paper">
-      <div className="cover-block">
-        <div className="brand-mark">{proposal.company}</div>
-        <h1>{proposal.proposalTitle}</h1>
-        <div className="proposal-meta">
-          <div><span>Proposal No.</span><strong>{proposal.proposalNumber}</strong></div>
-          <div><span>Date</span><strong>{proposal.date}</strong></div>
-          <div><span>Prepared for</span><strong>{proposal.preparedFor}</strong></div>
-          <div><span>Prepared by</span><strong>{proposal.preparedBy}</strong></div>
-          <div><span>Valid until</span><strong>{proposal.validUntil || '30 days from issue'}</strong></div>
-          <div><span>Currency</span><strong>{proposal.currency}</strong></div>
-        </div>
-      </div>
+    <div className="proposal-pages-container">
+      {pages.map((page) => (
+        <div key={page.pageNumber} className="proposal-page-card-wrapper">
+          <section className="proposal-paper sample-letterhead-paper">
+            <img
+              src={SAMPLE_LETTERHEAD_BASE64}
+              className="letterhead-bg-img"
+              alt="Letterhead Background"
+            />
 
-      {useStructuredCommercials && (
-        <article className="commercial-preview-block">
-          <h2>Commercial Details & Financial Summary</h2>
-          <table className="commercial-paper-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Item / Service Description</th>
-                <th style={{ textAlign: 'center' }}>Qty</th>
-                <th style={{ textAlign: 'right' }}>Unit Price</th>
-                <th style={{ textAlign: 'right' }}>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {commercialItems.map((item, idx) => (
-                <tr key={item.id}>
-                  <td>{idx + 1}</td>
-                  <td><strong>{item.name}</strong></td>
-                  <td style={{ textAlign: 'center' }}>{item.qty}</td>
-                  <td style={{ textAlign: 'right' }}>{currencySymbol}{Number(item.unitPrice).toLocaleString()}</td>
-                  <td style={{ textAlign: 'right' }}><strong>{currencySymbol}${(item.qty * item.unitPrice).toLocaleString()}</strong></td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="4" style={{ textAlign: 'right' }}><strong>Subtotal</strong></td>
-                <td style={{ textAlign: 'right' }}><strong>{currencySymbol}{subtotal.toLocaleString()}</strong></td>
-              </tr>
-              {proposal.taxRate > 0 && (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: 'right', color: '#64748b' }}>Tax ({proposal.taxRate}%)</td>
-                  <td style={{ textAlign: 'right', color: '#64748b' }}>{currencySymbol}{taxAmount.toLocaleString()}</td>
-                </tr>
+            <div className="letterhead-content-wrap">
+              {page.hasCover && (
+                <>
+                  <div className="cover-block">
+                    <h1>{proposal.proposalTitle}</h1>
+                    <div className="proposal-meta">
+                      <div><span>Proposal No.</span><strong>{proposal.proposalNumber}</strong></div>
+                      <div><span>Date</span><strong>{proposal.date}</strong></div>
+                      <div><span>Prepared for</span><strong>{proposal.preparedFor}</strong></div>
+                      <div><span>Prepared by</span><strong>{proposal.preparedBy}</strong></div>
+                      <div><span>Valid until</span><strong>{proposal.validUntil || '30 days from issue'}</strong></div>
+                      <div><span>Currency</span><strong>{proposal.currency}</strong></div>
+                    </div>
+                  </div>
+
+                  {useStructuredCommercials && (
+                    <article className="commercial-preview-block">
+                      <h2>Commercial Details & Financial Summary</h2>
+                      <table className="commercial-paper-table">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Item / Service Description</th>
+                            <th style={{ textAlign: 'center' }}>Qty</th>
+                            <th style={{ textAlign: 'right' }}>Unit Price</th>
+                            <th style={{ textAlign: 'right' }}>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {commercialItems.map((item, idx) => (
+                            <tr key={item.id}>
+                              <td>{idx + 1}</td>
+                              <td><strong>{item.name}</strong></td>
+                              <td style={{ textAlign: 'center' }}>{item.qty}</td>
+                              <td style={{ textAlign: 'right' }}>{currencySymbol}{Number(item.unitPrice).toLocaleString()}</td>
+                              <td style={{ textAlign: 'right' }}><strong>{currencySymbol}${(item.qty * item.unitPrice).toLocaleString()}</strong></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colSpan="4" style={{ textAlign: 'right' }}><strong>Subtotal</strong></td>
+                            <td style={{ textAlign: 'right' }}><strong>{currencySymbol}{subtotal.toLocaleString()}</strong></td>
+                          </tr>
+                          {proposal.taxRate > 0 && (
+                            <tr>
+                              <td colSpan="4" style={{ textAlign: 'right', color: '#64748b' }}>Tax ({proposal.taxRate}%)</td>
+                              <td style={{ textAlign: 'right', color: '#64748b' }}>{currencySymbol}{taxAmount.toLocaleString()}</td>
+                            </tr>
+                          )}
+                          <tr className="grand-total-row">
+                            <td colSpan="4" style={{ textAlign: 'right' }}><strong>Grand Total</strong></td>
+                            <td style={{ textAlign: 'right' }}><strong>{currencySymbol}{grandTotal.toLocaleString()}</strong></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </article>
+                  )}
+                </>
               )}
-              <tr className="grand-total-row">
-                <td colSpan="4" style={{ textAlign: 'right' }}><strong>Grand Total</strong></td>
-                <td style={{ textAlign: 'right' }}><strong>{currencySymbol}{grandTotal.toLocaleString()}</strong></td>
-              </tr>
-            </tfoot>
-          </table>
-        </article>
-      )}
 
-      {(proposal.sections || []).map((section) => (
-        <article key={section.id}>
-          <h2>{section.title}</h2>
-          <div className="proposal-content">{section.content}</div>
-        </article>
+              {(page.sections || []).map((section) => (
+                <article key={section.id} className="preview-section-block">
+                  <h2>{section.title}</h2>
+                  <div className="proposal-content">{section.content}</div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
       ))}
-
-      <footer>Confidential sales proposal prepared by {proposal.company}.</footer>
-    </section>
+    </div>
   );
 }
