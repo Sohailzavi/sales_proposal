@@ -429,18 +429,8 @@ export function SectionEditor({
     <section className="editor panel">
       <h2>Proposal details</h2>
 
-      <div className="locked-header-footer-box">
-        <div className="lock-icon-title">
-          <span>ℹ️</span> <strong>Sample Document Branding</strong>
-        </div>
-        <p>
-          Header (<strong>{proposal.company || 'iBunify'} / CRM by iGLOBUS</strong>) and Footer formatting match the official sample document standard.
-        </p>
-      </div>
-
       <div className="form-grid">
         {[
-          ['company', 'Company'],
           ['proposalTitle', 'Proposal title'],
           ['proposalNumber', 'Proposal number'],
           ['preparedFor', 'Prepared for'],
