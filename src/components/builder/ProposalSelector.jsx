@@ -4,7 +4,7 @@ export function ProposalSelector({
   proposals,
   activeProposalId,
   onSelectProposal,
-  onDuplicateProposal,
+  onBack,
   onDeleteProposal
 }) {
   const activeProposal = proposals.find((p) => p.id === activeProposalId) || proposals[0];
@@ -32,8 +32,14 @@ export function ProposalSelector({
       </div>
 
       <div className="selector-actions">
-        <button type="button" className="ghost sm" onClick={() => onDuplicateProposal(activeProposal.id)}>
-          Duplicate
+        <button
+          type="button"
+          className="secondary sm selector-back-btn"
+          onClick={onBack}
+          title="Go back to workspace"
+          aria-label="Go back to workspace"
+        >
+          ← Back
         </button>
         {filteredProposals.length > 1 && (
           <button type="button" className="danger sm" onClick={() => onDeleteProposal(activeProposal.id)}>

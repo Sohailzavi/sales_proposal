@@ -294,11 +294,7 @@ function App() {
   }, []);
 
   const handleGoBack = () => {
-    if (window.history.state && window.history.state.officialMode === false) {
-      window.history.back();
-    } else {
-      pushAppState(true, false, activeProposalId);
-    }
+    pushAppState(true, false, activeProposalId);
   };
 
   const handleCreateProposal = (newProposal) => {
@@ -471,8 +467,7 @@ function App() {
           proposals={proposals}
           activeProposalId={activeProposalId}
           onSelectProposal={setActiveProposalId}
-          onCreateProposal={handleCreateProposal}
-          onDuplicateProposal={handleDuplicateProposal}
+          onBack={handleGoBack}
           onDeleteProposal={handleDeleteProposal}
         />
       )}
