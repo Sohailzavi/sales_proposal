@@ -47,8 +47,8 @@ export function calculateInvoiceTotals(items = [], cgstPct = 9, sgstPct = 9) {
 
 export function paginateProposal(proposal) {
   const pages = [];
-  const PAGE1_MAX_LINES = proposal.useStructuredCommercials ? 12 : 18;
-  const PAGE_N_MAX_LINES = 32;
+  const PAGE1_MAX_LINES = proposal.useStructuredCommercials ? 10 : 16;
+  const PAGE_N_MAX_LINES = 24;
 
   pages.push({
     pageNumber: 1,
