@@ -1150,7 +1150,54 @@ button.icon-sm { padding: 4px 8px; font-size: 14px; border-radius: 6px; }
   gap: 32px;
   align-items: center;
   width: 100%;
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 108px);
+  overflow-y: auto;
+  padding-right: 6px;
+  padding-bottom: 24px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
 }
+
+.proposal-pages-container::-webkit-scrollbar,
+.workspace.invoice-workspace .invoice-paper::-webkit-scrollbar {
+  width: 8px;
+}
+.proposal-pages-container::-webkit-scrollbar-track,
+.workspace.invoice-workspace .invoice-paper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.proposal-pages-container::-webkit-scrollbar-thumb,
+.workspace.invoice-workspace .invoice-paper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.proposal-pages-container::-webkit-scrollbar-thumb:hover,
+.workspace.invoice-workspace .invoice-paper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.workspace.invoice-workspace .invoice-paper {
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 108px);
+  overflow-y: auto;
+  padding-bottom: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.workspace.preview-only .proposal-pages-container,
+.workspace.preview-only .invoice-paper {
+  position: static;
+  max-height: none;
+  overflow-y: visible;
+  padding-bottom: 0;
+}
+
 .proposal-page-card-wrapper {
   width: 100%;
   max-width: 794px;
