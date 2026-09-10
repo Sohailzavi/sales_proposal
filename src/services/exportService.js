@@ -47,13 +47,22 @@ export function calculateInvoiceTotals(items = [], cgstPct = 9, sgstPct = 9) {
 
 export function paginateProposal(proposal) {
   const pages = [];
-  const PAGE1_MAX_LINES = proposal.useStructuredCommercials ? 10 : 16;
-  const PAGE_N_MAX_LINES = 24;
+  const PAGE1_TOTAL_LINE_CAPACITY = 16;
+  const PAGE_N_LINE_CAPACITY = 22;
+
+  const commercialItems = proposal.commercialItems || [];
+  const hasCommercials = Boolean(proposal.useStructuredCommercials) && commercialItems.length > 0;
+
+  // Cover block (title + 6 metadata fields) = ~6 lines equivalent
+  const coverLinesCost = 6;
+  // Commercials table (header + items + subtotal/tax/grand total) = ~5 + items count
+  const commercialsLinesCost = hasCommercials ? (5 + commercialItems.length) : 0;
+  const page1UsedLines = coverLinesCost + commercialsLinesCost;
 
   pages.push({
     pageNumber: 1,
     hasCover: true,
-    hasCommercials: Boolean(proposal.useStructuredCommercials) && (proposal.commercialItems || []).length > 0,
+    hasCommercials,
     sections: []
   });
 
@@ -63,7 +72,7 @@ export function paginateProposal(proposal) {
   }
 
   let currentPageIdx = 0;
-  let currentLinesOnPage = 0;
+  let currentLinesOnPage = page1UsedLines;
 
   sections.forEach((sec) => {
     const title = sec.title || 'Untitled Section';
@@ -75,10 +84,10 @@ export function paginateProposal(proposal) {
       totalSecLines += Math.max(1, Math.ceil((l.length || 1) / 65));
     });
 
-    const pageCap = pages[currentPageIdx].hasCover ? PAGE1_MAX_LINES : PAGE_N_MAX_LINES;
+    const pageCap = pages[currentPageIdx].hasCover ? PAGE1_TOTAL_LINE_CAPACITY : PAGE_N_LINE_CAPACITY;
 
-    // If section can fit completely on a new page, push to new page instead of splitting
-    if (currentLinesOnPage > 0 && (currentLinesOnPage + totalSecLines > pageCap) && (totalSecLines <= PAGE_N_MAX_LINES)) {
+    // If section doesn't fit on current page, push to a new page
+    if (currentLinesOnPage > 0 && (currentLinesOnPage + totalSecLines > pageCap) && (totalSecLines <= PAGE_N_LINE_CAPACITY)) {
       pages.push({
         pageNumber: pages.length + 1,
         hasCover: false,
@@ -94,7 +103,7 @@ export function paginateProposal(proposal) {
 
     rawLines.forEach((line) => {
       const lineCost = Math.max(1, Math.ceil((line.length || 1) / 65));
-      const cap = pages[currentPageIdx].hasCover ? PAGE1_MAX_LINES : PAGE_N_MAX_LINES;
+      const cap = pages[currentPageIdx].hasCover ? PAGE1_TOTAL_LINE_CAPACITY : PAGE_N_LINE_CAPACITY;
 
       if (currentLinesOnPage + currentChunkLineCount + lineCost > cap) {
         if (currentChunkLines.length > 0) {
@@ -581,7 +590,6 @@ export async function downloadOfficialPdf() {
 
 export async function exportPdf(proposal) {
   const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'document'}.pdf`;
-
   const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
 
   const opt = {
@@ -594,24 +602,64 @@ export async function exportPdf(proposal) {
       allowTaint: true,
       logging: false,
       scrollY: 0,
-      scrollX: 0,
-      windowWidth: 800
+      scrollX: 0
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  // 1. If the live preview element is in DOM, capture directly for 100% pixel-perfect output
-  const renderedEl = document.querySelector('.invoice-paper') || document.querySelector('.proposal-paper') || document.querySelector('.proposal-pages-container');
-  if (renderedEl && pdfEngine) {
+  // 1. Capture live preview container directly from DOM for 100% pixel-perfect output
+  const containerToCapture =
+    document.querySelector('.proposal-pages-container') ||
+    document.querySelector('.invoice-paper') ||
+    document.querySelector('.proposal-paper');
+
+  if (containerToCapture && pdfEngine) {
+    const origMaxHeight = containerToCapture.style.maxHeight;
+    const origOverflow = containerToCapture.style.overflow;
+    const origGap = containerToCapture.style.gap;
+    const origPaddingBottom = containerToCapture.style.paddingBottom;
+
+    const cardHeaders = containerToCapture.querySelectorAll('.preview-page-card-header');
+    const headerDisplayStates = [];
+    cardHeaders.forEach((hdr) => {
+      headerDisplayStates.push(hdr.style.display);
+      hdr.style.display = 'none';
+    });
+
+    const pageCards = containerToCapture.querySelectorAll('.sample-letterhead-paper, .standard-invoice-paper, .compact-invoice-paper');
+    const origCardHeights = [];
+    pageCards.forEach((card) => {
+      origCardHeights.push(card.style.height);
+      card.style.height = '1120px';
+    });
+
     try {
-      await pdfEngine().set(opt).from(renderedEl).save();
+      containerToCapture.style.maxHeight = 'none';
+      containerToCapture.style.overflow = 'visible';
+      containerToCapture.style.gap = '0px';
+      containerToCapture.style.paddingBottom = '0px';
+
+      await pdfEngine().set(opt).from(containerToCapture).save();
       return;
     } catch (err) {
       console.warn('Direct preview element PDF capture failed, trying offscreen container:', err);
+    } finally {
+      containerToCapture.style.maxHeight = origMaxHeight;
+      containerToCapture.style.overflow = origOverflow;
+      containerToCapture.style.gap = origGap;
+      containerToCapture.style.paddingBottom = origPaddingBottom;
+
+      cardHeaders.forEach((hdr, idx) => {
+        hdr.style.display = headerDisplayStates[idx];
+      });
+
+      pageCards.forEach((card, idx) => {
+        card.style.height = origCardHeights[idx];
+      });
     }
   }
 
-  // 2. Offscreen container fallback
+  // 2. Fallback to offscreen container rendering if DOM element not present
   const isInvoice = proposal.documentType === 'invoice';
   const rawHtml = isInvoice ? invoiceToHtml(proposal) : proposalToHtml(proposal);
   const parsedDoc = new DOMParser().parseFromString(rawHtml, 'text/html');
@@ -620,13 +668,14 @@ export async function exportPdf(proposal) {
 
   const container = document.createElement('div');
   container.id = 'pdf-export-container';
-  container.style.position = 'absolute';
-  container.style.left = '-9999px';
+  container.style.position = 'fixed';
   container.style.top = '0';
-  container.style.width = '780px';
+  container.style.left = '0';
+  container.style.zIndex = '-9999';
+  container.style.width = '794px';
   container.style.background = '#ffffff';
   container.style.color = '#101828';
-  container.innerHTML = `<style>${styleContent}</style><div style="padding:20px;background:#fff;color:#101828;">${bodyContent}</div>`;
+  container.innerHTML = `<style>${styleContent}</style><div>${bodyContent}</div>`;
   document.body.appendChild(container);
 
   try {

@@ -441,7 +441,7 @@ function App() {
             </div>
             <div className="brand-divider" aria-hidden="true"></div>
             <div>
-              <h1 className="brand-title">IN&A Composer</h1>
+              <h1 className="brand-title">IN&P Composer</h1>
             </div>
           </div>
         </div>
