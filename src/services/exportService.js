@@ -582,49 +582,10 @@ export async function downloadOfficialPdf() {
 export async function exportPdf(proposal) {
   const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'document'}.pdf`;
 
-<<<<<<< Updated upstream
-  const opt = {
-    margin: [6, 6, 6, 6],
-=======
-  const originalOpen = window.open;
-  window.open = function () {
-    return null;
-  };
-
-  const isInvoice = proposal.documentType === 'invoice';
-
-  // 1. Try cloning live preview container if present in DOM
-  const livePreview = document.querySelector('.proposal-pages-container') || document.querySelector('.invoice-paper');
-  
-  const container = document.createElement('div');
-  container.id = 'pdf-export-container';
-  container.style.position = 'absolute';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '794px';
-  container.style.zIndex = '999999';
-  container.style.background = '#ffffff';
-  container.style.opacity = '1';
-
-  if (livePreview) {
-    const clone = livePreview.cloneNode(true);
-    // Ensure cloned pages are full width and letterhead containers retain layout
-    clone.style.width = '100%';
-    container.appendChild(clone);
-  } else if (isInvoice) {
-    container.innerHTML = invoiceToHtml(proposal);
-  } else {
-    container.innerHTML = proposalToHtml(proposal);
-  }
-
-  document.body.appendChild(container);
-
-  // CRITICAL: Delay 450ms for browser engine layout paint & image decode cycle
-  await new Promise((resolve) => setTimeout(resolve, 450));
+  const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
 
   const opt = {
     margin: 0,
->>>>>>> Stashed changes
     filename: fileName,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -632,21 +593,15 @@ export async function exportPdf(proposal) {
       useCORS: true,
       allowTaint: true,
       logging: false,
-<<<<<<< Updated upstream
-      scrollY: 0
-=======
       scrollY: 0,
       scrollX: 0,
       windowWidth: 800
->>>>>>> Stashed changes
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
-
   // 1. If the live preview element is in DOM, capture directly for 100% pixel-perfect output
-  const renderedEl = document.querySelector('.invoice-paper') || document.querySelector('.proposal-paper');
+  const renderedEl = document.querySelector('.invoice-paper') || document.querySelector('.proposal-paper') || document.querySelector('.proposal-pages-container');
   if (renderedEl && pdfEngine) {
     try {
       await pdfEngine().set(opt).from(renderedEl).save();
@@ -657,7 +612,8 @@ export async function exportPdf(proposal) {
   }
 
   // 2. Offscreen container fallback
-  const rawHtml = proposalToHtml(proposal);
+  const isInvoice = proposal.documentType === 'invoice';
+  const rawHtml = isInvoice ? invoiceToHtml(proposal) : proposalToHtml(proposal);
   const parsedDoc = new DOMParser().parseFromString(rawHtml, 'text/html');
   const styleContent = parsedDoc.querySelector('style')?.textContent || '';
   const bodyContent = parsedDoc.body ? parsedDoc.body.innerHTML : rawHtml;
@@ -674,7 +630,6 @@ export async function exportPdf(proposal) {
   document.body.appendChild(container);
 
   try {
-<<<<<<< Updated upstream
     if (pdfEngine) {
       await pdfEngine().set(opt).from(container).save();
     } else {
@@ -683,13 +638,6 @@ export async function exportPdf(proposal) {
   } catch (err) {
     console.error('PDF export error:', err);
     downloadBlob(rawHtml, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
-=======
-    const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf.default || window.html2pdf;
-    await pdfEngine().set(opt).from(container).save();
-  } catch (err) {
-    console.error('Direct PDF export error, fallback to print window:', err);
-    window.print();
->>>>>>> Stashed changes
   } finally {
     container.remove();
   }
