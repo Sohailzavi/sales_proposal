@@ -48,14 +48,11 @@ export function SectionEditor({
 
         <div className="form-grid">
           <label>
-            <span>Invoice Layout Style</span>
-            <select
-              value={proposal.invoiceStyle || 'compact'}
-              onChange={(e) => onUpdateField('invoiceStyle', e.target.value)}
-            >
-              <option value="compact">Compact Template (Teal #0f766e Accent)</option>
-              <option value="standard">Standard Template (Royal Blue #2454a8 Accent)</option>
-            </select>
+            <span>Invoice Number</span>
+            <input
+              value={proposal.proposalNumber || 'INV-2026-0148'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
           </label>
 
           <label>
@@ -65,18 +62,9 @@ export function SectionEditor({
               onChange={(e) => onUpdateField('invoiceStatus', e.target.value)}
             >
               <option value="PENDING">PENDING</option>
-              <option value="Pending">Pending (Soft Orange)</option>
               <option value="PAID">PAID</option>
               <option value="OVERDUE">OVERDUE</option>
             </select>
-          </label>
-
-          <label>
-            <span>Invoice Number</span>
-            <input
-              value={proposal.proposalNumber || 'INV-2026-0142'}
-              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
-            />
           </label>
 
           <label>
@@ -99,10 +87,12 @@ export function SectionEditor({
 
           <label>
             <span>Currency</span>
-            <input
+            <select
               value={proposal.currency || 'INR'}
               onChange={(e) => onUpdateField('currency', e.target.value)}
-            />
+            >
+              <option value="INR">INR (₹ - Indian Rupee)</option>
+            </select>
           </label>
         </div>
 
@@ -115,7 +105,26 @@ export function SectionEditor({
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
-          {proposal.invoiceStyle === 'standard' && (
+          {proposal.invoiceStyle === 'standard' ? (
+            <>
+              <label>
+                <span>Company Logo URL</span>
+                <input
+                  value={proposal.companyLogoUrl || ''}
+                  placeholder="https://..."
+                  onChange={(e) => onUpdateField('companyLogoUrl', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>Company Phone</span>
+                <input
+                  value={proposal.companyPhone || ''}
+                  placeholder="e.g. 084648 48389"
+                  onChange={(e) => onUpdateField('companyPhone', e.target.value)}
+                />
+              </label>
+            </>
+          ) : (
             <label>
               <span>Brand Logo Mark / Badge Text</span>
               <input
@@ -125,11 +134,14 @@ export function SectionEditor({
             </label>
           )}
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
-            <span>Company Address & GSTIN Info</span>
+            <span>Company Address</span>
             <textarea
               rows="2"
-              value={proposal.companyMeta || ''}
-              onChange={(e) => onUpdateField('companyMeta', e.target.value)}
+              value={proposal.companyAddress || proposal.companyMeta || ''}
+              onChange={(e) => {
+                onUpdateField('companyAddress', e.target.value);
+                onUpdateField('companyMeta', e.target.value);
+              }}
             />
           </label>
         </div>
@@ -143,13 +155,26 @@ export function SectionEditor({
               onChange={(e) => onUpdateField('preparedFor', e.target.value)}
             />
           </label>
-          <label>
-            <span>Place of Supply</span>
-            <input
-              value={proposal.placeOfSupply || ''}
-              onChange={(e) => onUpdateField('placeOfSupply', e.target.value)}
-            />
-          </label>
+          {proposal.invoiceStyle === 'standard' && (
+            <>
+              <label>
+                <span>Attention / Department</span>
+                <input
+                  value={proposal.clientAttention || ''}
+                  placeholder="Attn: Priya Raman, Finance"
+                  onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>Client Email</span>
+                <input
+                  value={proposal.clientEmail || ''}
+                  placeholder="accounts@example.com"
+                  onChange={(e) => onUpdateField('clientEmail', e.target.value)}
+                />
+              </label>
+            </>
+          )}
           <label>
             <span>Payment Terms</span>
             <input
@@ -157,8 +182,17 @@ export function SectionEditor({
               onChange={(e) => onUpdateField('paymentTerms', e.target.value)}
             />
           </label>
+          {proposal.invoiceStyle !== 'standard' && (
+            <label>
+              <span>Place of Supply</span>
+              <input
+                value={proposal.placeOfSupply || ''}
+                onChange={(e) => onUpdateField('placeOfSupply', e.target.value)}
+              />
+            </label>
+          )}
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
-            <span>Client Address & GSTIN</span>
+            <span>Client Address</span>
             <textarea
               rows="2"
               value={proposal.clientAddress || ''}
@@ -177,10 +211,14 @@ export function SectionEditor({
             <thead>
               <tr>
                 <th>Description</th>
-                <th style={{ width: '100px' }}>HSN/SAC</th>
+                {proposal.invoiceStyle === 'standard' ? (
+                  <th style={{ width: '150px' }}>Detail / Subtitle</th>
+                ) : (
+                  <th style={{ width: '100px' }}>HSN/SAC</th>
+                )}
                 <th style={{ width: '70px' }}>Qty</th>
                 <th style={{ width: '100px' }}>Rate</th>
-                <th style={{ width: '80px' }}>Disc %</th>
+                {proposal.invoiceStyle !== 'standard' && <th style={{ width: '80px' }}>Disc %</th>}
                 <th style={{ width: '40px' }}></th>
               </tr>
             </thead>
@@ -195,11 +233,20 @@ export function SectionEditor({
                     />
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      value={item.hsnSac || ''}
-                      onChange={(e) => handleUpdateInvoiceItem(item.id, { hsnSac: e.target.value })}
-                    />
+                    {proposal.invoiceStyle === 'standard' ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. August 2026 UI design"
+                        value={item.detail || ''}
+                        onChange={(e) => handleUpdateInvoiceItem(item.id, { detail: e.target.value })}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={item.hsnSac || ''}
+                        onChange={(e) => handleUpdateInvoiceItem(item.id, { hsnSac: e.target.value })}
+                      />
+                    )}
                   </td>
                   <td>
                     <input
@@ -215,13 +262,15 @@ export function SectionEditor({
                       onChange={(e) => handleUpdateInvoiceItem(item.id, { rate: Number(e.target.value) })}
                     />
                   </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={item.discountPct || 0}
-                      onChange={(e) => handleUpdateInvoiceItem(item.id, { discountPct: Number(e.target.value) })}
-                    />
-                  </td>
+                  {proposal.invoiceStyle !== 'standard' && (
+                    <td>
+                      <input
+                        type="number"
+                        value={item.discountPct || 0}
+                        onChange={(e) => handleUpdateInvoiceItem(item.id, { discountPct: Number(e.target.value) })}
+                      />
+                    </td>
+                  )}
                   <td>
                     <button
                       type="button"
@@ -236,33 +285,72 @@ export function SectionEditor({
             </tbody>
           </table>
 
-          <div className="commercial-summary-bar">
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <label className="tax-label">
-                <span>CGST %</span>
-                <input
-                  type="number"
-                  value={proposal.cgstPct || 9}
-                  onChange={(e) => onUpdateField('cgstPct', Number(e.target.value))}
-                />
-              </label>
-              <label className="tax-label">
-                <span>SGST %</span>
-                <input
-                  type="number"
-                  value={proposal.sgstPct || 9}
-                  onChange={(e) => onUpdateField('sgstPct', Number(e.target.value))}
-                />
-              </label>
+          {proposal.invoiceStyle === 'standard' ? (
+            <div className="commercial-summary-bar">
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <label className="tax-label">
+                  <span>CGST %</span>
+                  <input
+                    type="number"
+                    value={typeof proposal.cgstPct === 'number' ? proposal.cgstPct : 9}
+                    onChange={(e) => onUpdateField('cgstPct', Number(e.target.value))}
+                  />
+                </label>
+                <label className="tax-label">
+                  <span>SGST %</span>
+                  <input
+                    type="number"
+                    value={typeof proposal.sgstPct === 'number' ? proposal.sgstPct : 9}
+                    onChange={(e) => onUpdateField('sgstPct', Number(e.target.value))}
+                  />
+                </label>
+              </div>
+              {(() => {
+                const sub = items.reduce((sum, it) => sum + (Number(it.qty) || 0) * (Number(it.rate) || 0), 0);
+                const cgPct = typeof proposal.cgstPct === 'number' ? proposal.cgstPct : 9;
+                const sgPct = typeof proposal.sgstPct === 'number' ? proposal.sgstPct : 9;
+                const cg = (sub * cgPct) / 100;
+                const sg = (sub * sgPct) / 100;
+                const tot = sub + cg + sg;
+                return (
+                  <div className="totals-display">
+                    <div>Subtotal: <strong>{currencySymbol}{sub.toLocaleString()}</strong></div>
+                    <div>CGST ({cgPct}%): <strong>{currencySymbol}{cg.toLocaleString()}</strong></div>
+                    <div>SGST ({sgPct}%): <strong>{currencySymbol}{sg.toLocaleString()}</strong></div>
+                    <div className="grand-total-text">Total Due: <strong>{currencySymbol}{tot.toLocaleString()}</strong></div>
+                  </div>
+                );
+              })()}
             </div>
-            <div className="totals-display">
-              <div>Subtotal: <strong>{currencySymbol}{(netSubtotal + totalDiscount).toLocaleString()}</strong></div>
-              <div>Discount: <strong>−{currencySymbol}{totalDiscount.toLocaleString()}</strong></div>
-              <div>CGST ({proposal.cgstPct || 9}%): <strong>{currencySymbol}{cgstAmount.toLocaleString()}</strong></div>
-              <div>SGST ({proposal.sgstPct || 9}%): <strong>{currencySymbol}{sgstAmount.toLocaleString()}</strong></div>
-              <div className="grand-total-text">Total Due: <strong>{currencySymbol}{totalDue.toLocaleString()}</strong></div>
+          ) : (
+            <div className="commercial-summary-bar">
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <label className="tax-label">
+                  <span>CGST %</span>
+                  <input
+                    type="number"
+                    value={proposal.cgstPct || 9}
+                    onChange={(e) => onUpdateField('cgstPct', Number(e.target.value))}
+                  />
+                </label>
+                <label className="tax-label">
+                  <span>SGST %</span>
+                  <input
+                    type="number"
+                    value={proposal.sgstPct || 9}
+                    onChange={(e) => onUpdateField('sgstPct', Number(e.target.value))}
+                  />
+                </label>
+              </div>
+              <div className="totals-display">
+                <div>Subtotal: <strong>{currencySymbol}{(netSubtotal + totalDiscount).toLocaleString()}</strong></div>
+                <div>Discount: <strong>−{currencySymbol}{totalDiscount.toLocaleString()}</strong></div>
+                <div>CGST ({proposal.cgstPct || 9}%): <strong>{currencySymbol}{cgstAmount.toLocaleString()}</strong></div>
+                <div>SGST ({proposal.sgstPct || 9}%): <strong>{currencySymbol}{sgstAmount.toLocaleString()}</strong></div>
+                <div className="grand-total-text">Total Due: <strong>{currencySymbol}{totalDue.toLocaleString()}</strong></div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <h3 style={{ marginTop: '24px', fontSize: '16px', color: '#1e1b4b' }}>Payment & Bank Details</h3>

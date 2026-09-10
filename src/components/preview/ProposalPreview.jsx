@@ -11,118 +11,143 @@ export function ProposalPreview({ proposal }) {
     const { netSubtotal, totalDiscount, cgstAmount, sgstAmount, totalDue } = calculateInvoiceTotals(items, proposal.cgstPct, proposal.sgstPct);
 
     if (style === 'standard') {
+      const subtotal = items.reduce(
+        (total, item) => total + (Number(item.qty) || 0) * (Number(item.rate) || 0),
+        0
+      );
+      const curr = proposal.currency === 'USD' ? 'INR' : (proposal.currency || 'INR');
+      const formatMoney = (amount) => {
+        try {
+          return new Intl.NumberFormat(curr === 'INR' ? 'en-IN' : 'en-US', {
+            style: 'currency',
+            currency: curr,
+            maximumFractionDigits: 2
+          }).format(amount);
+        } catch {
+          return `₹${Number(amount).toLocaleString()}`;
+        }
+      };
+
+      const cgstPct = typeof proposal.cgstPct === 'number' ? proposal.cgstPct : 9;
+      const sgstPct = typeof proposal.sgstPct === 'number' ? proposal.sgstPct : 9;
+      const cgst = (subtotal * cgstPct) / 100;
+      const sgst = (subtotal * sgstPct) / 100;
+      const total = subtotal + cgst + sgst;
+
+      const companyAddressLines = (proposal.companyAddress || proposal.companyMeta || 'Techno Enclave Madhapur, Hyderabad, Telangana 500081').split('\n');
+      const clientAddressLines = (proposal.clientAddress || '22 Harbour Line Road\nBandra East, Mumbai 400051\nIndia').split('\n');
+
       return (
         <section className="invoice-paper standard-invoice-paper">
-          <div className="inv-top">
+          <header className="std-inv-header">
             <div>
-              <div className="inv-brand-mark">{proposal.companyBadge || 'NS'}</div>
-              <div className="inv-company-name">{proposal.company}</div>
-              <div className="inv-company-meta">
-                {(proposal.companyMeta || '').split('\n').map((line, i) => (
-                  <React.Fragment key={i}>{line}<br/></React.Fragment>
+              <h1 className="std-inv-title">{proposal.proposalTitle || 'Invoice'}</h1>
+              <dl className="std-inv-meta-grid">
+                <dt>Invoice no.</dt>
+                <dd>{proposal.proposalNumber || 'INV-2026-0148'}</dd>
+                <dt>Issued</dt>
+                <dd>{proposal.date || 'Sep 10, 2026'}</dd>
+                <dt>Due</dt>
+                <dd>{proposal.validUntil || 'Oct 10, 2026'}</dd>
+                <dt>Terms</dt>
+                <dd>{proposal.paymentTerms || 'Net 30'}</dd>
+              </dl>
+            </div>
+
+            <div className="std-inv-company-block">
+              {proposal.companyLogoUrl ? (
+                <img
+                  src={proposal.companyLogoUrl}
+                  alt={`${proposal.company} logo`}
+                  className="std-inv-logo"
+                />
+              ) : (
+                <div className="std-inv-brand-mark">
+                  {proposal.companyBadge || 'iG'}
+                </div>
+              )}
+              <p className="std-inv-company-name">{proposal.company || 'I-Globus Corporate Consulting'}</p>
+              <address className="std-inv-address">
+                {companyAddressLines.map((line, i) => (
+                  <p key={i}>{line}</p>
                 ))}
-              </div>
+                {proposal.companyPhone && <p>Phone: {proposal.companyPhone}</p>}
+              </address>
             </div>
-            <div>
-              <div className="inv-doc-title">{proposal.proposalTitle || 'INVOICE'}</div>
-              <div className="inv-doc-meta">
-                <div><b>No.</b> {proposal.proposalNumber}</div>
-                <div><b>Issued</b> {proposal.date}</div>
-                <div><b>Due</b> {proposal.validUntil}</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span className="inv-status">{proposal.invoiceStatus || 'Pending'}</span>
-              </div>
-            </div>
-          </div>
+          </header>
 
-          <div className="inv-parties">
-            <div>
-              <div className="inv-party-label">Billed to</div>
-              <div className="inv-party-name">{proposal.preparedFor}</div>
-              <div className="inv-party-detail">
-                {(proposal.clientAddress || '').split('\n').map((line, i) => (
-                  <React.Fragment key={i}>{line}<br/></React.Fragment>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div className="inv-party-label">Place of supply</div>
-              <div className="inv-party-detail">{proposal.placeOfSupply || 'Telangana'}</div>
-              <div className="inv-party-label" style={{ marginTop: '14px' }}>Payment terms</div>
-              <div className="inv-party-detail">{proposal.paymentTerms || 'Net 15 days'}</div>
-            </div>
-          </div>
+          <section className="std-inv-billto-section" aria-labelledby="std-bill-to">
+            <h2 id="std-bill-to" className="std-inv-section-label">
+              Bill to
+            </h2>
+            <p className="std-inv-client-name">{proposal.preparedFor || 'Northwind Retail Pvt. Ltd.'}</p>
+            <address className="std-inv-client-address">
+              {proposal.clientAttention && <p>{proposal.clientAttention}</p>}
+              {clientAddressLines.map((line, i) => (
+                <p key={i}>{line}</p>
+              ))}
+              {proposal.clientEmail && <p>{proposal.clientEmail}</p>}
+            </address>
+          </section>
 
-          <table className="inv-items-table">
-            <thead>
-              <tr>
-                <th style={{ width: '34%' }}>Description</th>
-                <th style={{ textAlign: 'right' }}>Qty</th>
-                <th style={{ textAlign: 'right' }}>Rate</th>
-                <th style={{ textAlign: 'right' }}>Discount</th>
-                <th style={{ textAlign: 'right' }}>Tax</th>
-                <th style={{ textAlign: 'right' }}>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => {
-                const qty = Number(item.qty) || 0;
-                const rate = Number(item.rate) || 0;
-                const lineGross = qty * rate;
-                let lineDisc = 0;
-                if (item.discountAmount) lineDisc = Number(item.discountAmount) || 0;
-                else if (item.discountPct) lineDisc = (lineGross * (Number(item.discountPct) || 0)) / 100;
-                const lineNet = lineGross - lineDisc;
-                const taxRate = item.taxPct || ((Number(proposal.cgstPct) || 0) + (Number(proposal.sgstPct) || 0));
-                const lineTotal = lineNet + (lineNet * taxRate) / 100;
+          <section className="std-inv-items-section">
+            <table className="std-inv-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '56px', textAlign: 'left' }}>S. No.</th>
+                  <th style={{ textAlign: 'left' }}>Description</th>
+                  <th style={{ textAlign: 'right' }}>Qty</th>
+                  <th style={{ textAlign: 'right' }}>Rate</th>
+                  <th style={{ textAlign: 'right' }}>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => {
+                  const qty = Number(item.qty) || 0;
+                  const rate = Number(item.rate) || 0;
+                  const amount = qty * rate;
+                  return (
+                    <tr key={item.id || index}>
+                      <td className="std-inv-sno">{index + 1}</td>
+                      <td>
+                        <p className="std-inv-item-desc">{item.description}</p>
+                        {item.detail && <p className="std-inv-item-detail">{item.detail}</p>}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>{qty}</td>
+                      <td style={{ textAlign: 'right' }}>{formatMoney(rate)}</td>
+                      <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatMoney(amount)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
 
-                return (
-                  <tr key={item.id}>
-                    <td>
-                      {item.description}
-                      {item.hsnSac && <div className="inv-desc-sub">{item.hsnSac}</div>}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>{qty} {item.unit || ''}</td>
-                    <td style={{ textAlign: 'right' }}>{currencySymbol}{rate.toLocaleString()}</td>
-                    <td style={{ textAlign: 'right' }}>
-                      {item.discountPct ? `${item.discountPct}%` : item.discountAmount ? `${currencySymbol}${item.discountAmount}` : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>{taxRate}%</td>
-                    <td style={{ textAlign: 'right' }}>{currencySymbol}{lineTotal.toLocaleString()}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          <div className="inv-totals-wrap">
-            <div className="inv-totals">
-              <div className="inv-row"><span>Subtotal</span><span>{currencySymbol}{(netSubtotal + totalDiscount).toLocaleString()}</span></div>
-              <div className="inv-row"><span>Discount</span><span>−{currencySymbol}{totalDiscount.toLocaleString()}</span></div>
-              <div className="inv-row inv-tax-split"><span>CGST @ {proposal.cgstPct || 9}%</span><span>{currencySymbol}{cgstAmount.toLocaleString()}</span></div>
-              <div className="inv-row inv-tax-split"><span>SGST @ {proposal.sgstPct || 9}%</span><span>{currencySymbol}{sgstAmount.toLocaleString()}</span></div>
-              <div className="inv-row inv-grand"><span>Total Due</span><span>{currencySymbol}{totalDue.toLocaleString()}</span></div>
+            <div className="std-inv-totals-wrap">
+              <dl className="std-inv-totals-list">
+                <div className="std-inv-totals-row">
+                  <dt>Subtotal</dt>
+                  <dd>{formatMoney(subtotal)}</dd>
+                </div>
+                <div className="std-inv-totals-row">
+                  <dt>CGST ({cgstPct}%)</dt>
+                  <dd>{formatMoney(cgst)}</dd>
+                </div>
+                <div className="std-inv-totals-row">
+                  <dt>SGST ({sgstPct}%)</dt>
+                  <dd>{formatMoney(sgst)}</dd>
+                </div>
+                <div className="std-inv-totals-row std-inv-total-due">
+                  <dt>Total due</dt>
+                  <dd>{formatMoney(total)}</dd>
+                </div>
+              </dl>
             </div>
-          </div>
+          </section>
 
-          <div className="inv-lower">
-            <div>
-              <div className="inv-block-title">Notes</div>
-              <div className="inv-notes">{proposal.notes}</div>
-            </div>
-            <div>
-              <div className="inv-block-title">Payment details</div>
-              <div className="inv-bank-grid">
-                <div><span className="inv-k">Bank</span>{proposal.bankName}</div>
-                <div><span className="inv-k">Account No.</span>{proposal.accountNo}</div>
-                <div><span className="inv-k">IFSC</span>{proposal.ifscCode}</div>
-                <div><span className="inv-k">UPI</span>{proposal.upiId}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="inv-footer">{proposal.company} &nbsp;·&nbsp; Computer-generated invoice</div>
+          <footer className="std-inv-footer">
+            <h2 className="std-inv-section-label">Payment details</h2>
+            <p className="std-inv-notes">{proposal.notes || 'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}</p>
+          </footer>
         </section>
       );
     }

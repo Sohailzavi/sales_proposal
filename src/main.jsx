@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 import { AUTH_STORAGE_KEY, LOGIN_EMAIL, LOGIN_PASSWORD, sampleProposal } from './data/defaults.js';
+import { proposalTemplates } from './data/templates.js';
 import { loadProposalsFromStorage, saveProposalsToStorage } from './services/proposalStorage.js';
 import { OfficialProposalLibrary } from './components/official/OfficialProposalLibrary.jsx';
 import { ProposalSelector } from './components/builder/ProposalSelector.jsx';
@@ -16,31 +17,71 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (email.trim().toLowerCase() !== LOGIN_EMAIL || password !== LOGIN_PASSWORD) {
-      setError('Incorrect email or password.');
-      return;
-    }
-
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     setError('');
-    onLogin();
+
+    setTimeout(() => {
+      if (email.trim().toLowerCase() !== LOGIN_EMAIL || password !== LOGIN_PASSWORD) {
+        setError('Incorrect email or password.');
+        setIsSubmitting(false);
+        return;
+      }
+      onLogin();
+    }, 150);
   };
 
   return (
     <main className="login-page">
-      <section className="login-card" aria-labelledby="login-title">
-        <div className="login-brand">Sales Proposal</div>
+      <div className="video-background-wrap" aria-hidden="true">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="login-video-bg"
+        >
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_051048_5ef213b5-26db-4da8-b604-7ef823760b6b.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div className="video-overlay" />
+        <div className="earth-brand-backdrop" aria-hidden="true">
+          <div className="earth-brand-lockup">
+            <svg className="earth-logo-svg" viewBox="0 0 94 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="30" width="19" height="26" rx="1.5" fill="#38b6ff"/>
+              <circle cx="14.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M8.5 56 C8.5 50.5 11 47.8 14.5 47.8 C18 47.8 20.5 50.5 20.5 56 Z" fill="#ffffff"/>
 
+              <rect x="30" y="15" width="19" height="41" rx="1.5" fill="#38b6ff"/>
+              <circle cx="39.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M33.5 56 C33.5 50.5 36 47.8 39.5 47.8 C43 47.8 45.5 50.5 45.5 56 Z" fill="#ffffff"/>
+
+              <rect x="55" y="0" width="19" height="56" rx="1.5" fill="#38b6ff"/>
+              <circle cx="64.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M58.5 56 C58.5 50.5 61 47.8 64.5 47.8 C68 47.8 70.5 50.5 70.5 56 Z" fill="#ffffff"/>
+            </svg>
+            <span className="earth-brand-text">iGLOBUS</span>
+          </div>
+        </div>
+      </div>
+
+      <section className="login-card" aria-labelledby="login-title">
         <form onSubmit={handleSubmit}>
           <label>
             <span>Email address</span>
             <input
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                if (error) setError('');
+              }}
               placeholder="e.g. sales@gmail.com"
               autoComplete="username"
               autoFocus
@@ -61,14 +102,19 @@ function Login({ onLogin }) {
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                if (error) setError('');
+              }}
               placeholder="Enter password"
               autoComplete="current-password"
               required
             />
           </label>
           {error && <div className="login-error" role="alert">{error}</div>}
-          <button type="submit" className="login-button">Sign in</button>
+          <button type="submit" className="login-button" disabled={isSubmitting}>
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
+          </button>
         </form>
       </section>
     </main>
@@ -87,6 +133,8 @@ function App() {
     () => proposals.find((p) => p.id === activeProposalId) || proposals[0],
     [proposals, activeProposalId]
   );
+
+  const isInvoice = activeProposal?.documentType === 'invoice';
 
   const [selectedId, setSelectedId] = useState(activeProposal?.sections?.[0]?.id ?? null);
   const [previewMode, setPreviewMode] = useState(false);
@@ -108,8 +156,19 @@ function App() {
   }, [proposals]);
 
   useEffect(() => {
-    if (activeProposal && !activeProposal.sections.some((s) => s.id === selectedId)) {
-      setSelectedId(activeProposal.sections[0]?.id ?? null);
+    if (
+      activeProposal &&
+      Array.isArray(activeProposal.sections) &&
+      activeProposal.sections.length > 0 &&
+      !activeProposal.sections.some((s) => s.id === selectedId)
+    ) {
+      setSelectedId(activeProposal.sections[0].id);
+    } else if (
+      activeProposal &&
+      (!activeProposal.sections || activeProposal.sections.length === 0) &&
+      selectedId !== null
+    ) {
+      setSelectedId(null);
     }
   }, [activeProposalId, activeProposal, selectedId]);
 
@@ -188,46 +247,119 @@ function App() {
     setSelectedId(fresh.sections[0].id);
   };
 
+  // History-aware state navigation helper
+  const pushAppState = (newOfficialMode, newPreviewMode, newActiveProposalId = activeProposalId) => {
+    setOfficialMode(newOfficialMode);
+    setPreviewMode(newPreviewMode);
+    setActiveProposalId(newActiveProposalId);
+
+    const currentState = window.history.state;
+    if (
+      !currentState ||
+      currentState.officialMode !== newOfficialMode ||
+      currentState.previewMode !== newPreviewMode ||
+      currentState.activeProposalId !== newActiveProposalId
+    ) {
+      window.history.pushState(
+        { officialMode: newOfficialMode, previewMode: newPreviewMode, activeProposalId: newActiveProposalId },
+        ''
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Set initial history state on load if not set
+    if (!window.history.state) {
+      window.history.replaceState(
+        { officialMode, previewMode, activeProposalId },
+        ''
+      );
+    }
+
+    const handlePopState = (event) => {
+      if (event.state) {
+        setOfficialMode(event.state.officialMode);
+        setPreviewMode(event.state.previewMode);
+        if (event.state.activeProposalId) {
+          setActiveProposalId(event.state.activeProposalId);
+        }
+      } else {
+        setOfficialMode(true);
+        setPreviewMode(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleGoBack = () => {
+    if (window.history.state && window.history.state.officialMode === false) {
+      window.history.back();
+    } else {
+      pushAppState(true, false, activeProposalId);
+    }
+  };
+
   const handleCreateProposal = (newProposal) => {
     setProposals((prev) => [...prev, newProposal]);
-    setActiveProposalId(newProposal.id);
+    pushAppState(false, false, newProposal.id);
     setSelectedId(newProposal.sections[0]?.id || null);
   };
 
   const handleDuplicateProposal = (proposalId) => {
     const source = proposals.find((p) => p.id === proposalId);
     if (!source) return;
+    const isDocInvoice = source.documentType === 'invoice';
     const copy = {
       ...source,
-      id: `prop-${Date.now()}`,
+      id: `${isDocInvoice ? 'inv' : 'prop'}-${Date.now()}`,
       proposalTitle: `${source.proposalTitle} (Copy)`,
       proposalNumber: `${source.proposalNumber}-COPY`,
-      sections: source.sections.map((s) => ({ ...s, id: crypto.randomUUID() }))
+      sections: Array.isArray(source.sections)
+        ? source.sections.map((s) => ({ ...s, id: crypto.randomUUID() }))
+        : []
     };
     setProposals((prev) => [...prev, copy]);
-    setActiveProposalId(copy.id);
+    pushAppState(false, false, copy.id);
   };
 
   const handleDeleteProposal = (proposalId) => {
-    if (proposals.length <= 1) return;
-    if (!confirm('Are you sure you want to delete this proposal?')) return;
+    const target = proposals.find((p) => p.id === proposalId);
+    const isTargetInvoice = target?.documentType === 'invoice';
+    const sameTypeList = proposals.filter((p) =>
+      isTargetInvoice ? p.documentType === 'invoice' : p.documentType !== 'invoice'
+    );
+    if (sameTypeList.length <= 1) return;
+    if (!confirm(`Are you sure you want to delete this ${isTargetInvoice ? 'invoice' : 'proposal'}?`)) return;
     const filtered = proposals.filter((p) => p.id !== proposalId);
     setProposals(filtered);
-    setActiveProposalId(filtered[0].id);
+    const remainingSameType = filtered.filter((p) =>
+      isTargetInvoice ? p.documentType === 'invoice' : p.documentType !== 'invoice'
+    );
+    const nextActive = remainingSameType[0]?.id || filtered[0]?.id;
+    pushAppState(false, false, nextActive);
   };
 
   const handleImportProposal = (importedProposal) => {
     setProposals((prev) => [...prev, importedProposal]);
-    setActiveProposalId(importedProposal.id);
+    pushAppState(false, false, importedProposal.id);
     setSelectedId(importedProposal.sections[0]?.id || null);
-    setOfficialMode(false);
   };
 
   const handleSelectTemplate = (template) => {
+    const existing = proposals.find((p) => p.documentType === 'invoice');
+    if (existing) {
+      setActiveProposalId(existing.id);
+      setSelectedId(existing.sections?.[0]?.id || null);
+      pushAppState(false, false, existing.id);
+      return;
+    }
+
     const newDoc = {
       ...template,
       id: `doc-${Date.now()}`,
-      proposalNumber: template.proposalNumber || `INV-2026-${String(proposals.length + 1).padStart(4, '0')}`,
+      proposalNumber: template.proposalNumber || `INV-2026-0001`,
       date: new Date().toISOString().slice(0, 10),
       sections: Array.isArray(template.sections)
         ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
@@ -238,34 +370,97 @@ function App() {
     delete newDoc.category;
 
     setProposals((prev) => [...prev, newDoc]);
-    setActiveProposalId(newDoc.id);
     setSelectedId(newDoc.sections[0]?.id || null);
-    setOfficialMode(false);
-    setPreviewMode(false);
+    pushAppState(false, false, newDoc.id);
   };
 
   if (!isAuthenticated) {
     return <Login onLogin={login} />;
   }
 
+  const handleOpenInvoice = () => {
+    let target = proposals.find((p) => p.documentType === 'invoice');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-invoice-standard') || proposalTemplates[0];
+      target = {
+        ...template,
+        id: `inv-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'INV-2026-0148',
+        date: new Date().toISOString().slice(0, 10),
+        sections: []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenBuilder = () => {
+    let target = proposals.find((p) => p.id === activeProposalId && p.documentType !== 'invoice');
+    if (!target) {
+      target = proposals.find((p) => p.documentType !== 'invoice');
+    }
+    if (!target) {
+      target = { ...sampleProposal, id: `prop-${Date.now()}` };
+      setProposals((prev) => [target, ...prev]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
   return (
     <div className="app-shell">
       <header className="topbar">
         <div className="brand-header">
-          <div className="brand-logo-box">
-            <span className="brand-logo-icon">📄</span>
-          </div>
-          <div>
-            <div className="eyebrow">ibunify</div>
-            <h1 className="brand-title">Sales proposal builder</h1>
+          <div
+            className={`brand-title-group ${!officialMode ? 'clickable' : ''}`}
+            onClick={!officialMode ? handleGoBack : undefined}
+            title={!officialMode ? 'Go back to workspace' : undefined}
+          >
+            <div className="brand-logo-full" aria-hidden="true">
+              <svg className="iglobus-logo-svg" viewBox="0 0 94 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* 1st Bar (Left - Shortest) */}
+                <rect x="5" y="30" width="19" height="26" rx="1.5" fill="#38b6ff"/>
+                <circle cx="14.5" cy="42" r="3.2" fill="#ffffff"/>
+                <path d="M8.5 56 C8.5 50.5 11 47.8 14.5 47.8 C18 47.8 20.5 50.5 20.5 56 Z" fill="#ffffff"/>
+
+                {/* 2nd Bar (Middle - Medium) */}
+                <rect x="30" y="15" width="19" height="41" rx="1.5" fill="#38b6ff"/>
+                <circle cx="39.5" cy="42" r="3.2" fill="#ffffff"/>
+                <path d="M33.5 56 C33.5 50.5 36 47.8 39.5 47.8 C43 47.8 45.5 50.5 45.5 56 Z" fill="#ffffff"/>
+
+                {/* 3rd Bar (Right - Tallest) */}
+                <rect x="55" y="0" width="19" height="56" rx="1.5" fill="#38b6ff"/>
+                <circle cx="64.5" cy="42" r="3.2" fill="#ffffff"/>
+                <path d="M58.5 56 C58.5 50.5 61 47.8 64.5 47.8 C68 47.8 70.5 50.5 70.5 56 Z" fill="#ffffff"/>
+
+                {/* iGLOBUS Wordmark text */}
+                <text x="39.5" y="74" textAnchor="middle" fill="#64748b" fontFamily="'Inter', system-ui, -apple-system, sans-serif" fontSize="15" fontWeight="500" letterSpacing="0.6">iGLOBUS</text>
+              </svg>
+            </div>
+            <div className="brand-divider" aria-hidden="true"></div>
+            <div>
+              <h1 className="brand-title">AI Deal Composer</h1>
+            </div>
           </div>
         </div>
         <ExportActions
           proposal={activeProposal}
           officialMode={officialMode}
-          setOfficialMode={setOfficialMode}
+          setOfficialMode={(val) => {
+            const nextMode = typeof val === 'function' ? val(officialMode) : val;
+            pushAppState(nextMode, false, activeProposalId);
+          }}
           previewMode={previewMode}
-          setPreviewMode={setPreviewMode}
+          setPreviewMode={(val) => {
+            const nextPreview = typeof val === 'function' ? val(previewMode) : val;
+            pushAppState(false, nextPreview, activeProposalId);
+          }}
           onImportProposal={handleImportProposal}
           onLogout={logout}
         />
@@ -282,20 +477,18 @@ function App() {
         />
       )}
 
-      <main className={`workspace ${officialMode ? 'official-library' : previewMode ? 'preview-only' : ''}`}>
+      <main className={`workspace ${officialMode ? 'official-library' : isInvoice ? 'invoice-workspace' : ''} ${previewMode ? 'preview-only' : ''}`}>
         {officialMode ? (
           <OfficialProposalLibrary
             activeDocumentFormat={activeDocumentFormat}
             setActiveDocumentFormat={setActiveDocumentFormat}
-            onOpenBuilder={() => {
-              setOfficialMode(false);
-              setPreviewMode(false);
-            }}
+            onOpenBuilder={handleOpenBuilder}
+            onOpenInvoice={handleOpenInvoice}
             onSelectTemplate={handleSelectTemplate}
           />
         ) : (
           <>
-            {!previewMode && (
+            {!previewMode && !isInvoice && (
               <SectionSidebar
                 sections={activeProposal.sections || []}
                 selectedId={selectedId}

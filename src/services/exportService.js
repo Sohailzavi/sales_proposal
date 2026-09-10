@@ -51,125 +51,152 @@ export function invoiceToHtml(doc, forWord = false) {
   const { netSubtotal, totalDiscount, cgstAmount, sgstAmount, totalDue } = calculateInvoiceTotals(items, doc.cgstPct, doc.sgstPct);
 
   if (style === 'standard') {
-    const rowsHtml = items.map((item) => {
+    const subtotal = items.reduce(
+      (total, item) => total + (Number(item.qty) || 0) * (Number(item.rate) || 0),
+      0
+    );
+    const curr = doc.currency || 'INR';
+    const currSymbol = curr === 'USD' ? '$' : '₹';
+    const cgstPct = typeof doc.cgstPct === 'number' ? doc.cgstPct : 9;
+    const sgstPct = typeof doc.sgstPct === 'number' ? doc.sgstPct : 9;
+    const cgst = (subtotal * cgstPct) / 100;
+    const sgst = (subtotal * sgstPct) / 100;
+    const total = subtotal + cgst + sgst;
+
+    const companyAddressLines = (doc.companyAddress || doc.companyMeta || 'Techno Enclave Madhapur, Hyderabad, Telangana 500081').split('\n');
+    const clientAddressLines = (doc.clientAddress || '22 Harbour Line Road\nBandra East, Mumbai 400051\nIndia').split('\n');
+
+    const formatMoney = (val) => {
+      try {
+        return new Intl.NumberFormat(curr === 'INR' ? 'en-IN' : 'en-US', {
+          style: 'currency',
+          currency: curr,
+          maximumFractionDigits: 2
+        }).format(val);
+      } catch {
+        return `${currSymbol}${Number(val).toLocaleString()}`;
+      }
+    };
+
+    const rowsHtml = items.map((item, index) => {
       const qty = Number(item.qty) || 0;
       const rate = Number(item.rate) || 0;
-      const lineGross = qty * rate;
-      let lineDisc = 0;
-      if (item.discountAmount) lineDisc = Number(item.discountAmount) || 0;
-      else if (item.discountPct) lineDisc = (lineGross * (Number(item.discountPct) || 0)) / 100;
-      const lineNet = lineGross - lineDisc;
-      const taxRate = item.taxPct || ((Number(doc.cgstPct) || 0) + (Number(doc.sgstPct) || 0));
-      const lineTotal = lineNet + (lineNet * taxRate) / 100;
+      const amount = qty * rate;
 
       return `
         <tr>
-          <td>${escapeHtml(item.description)}<div style="color:#6b7280;font-size:11px;margin-top:2px;">${escapeHtml(item.hsnSac || '')}</div></td>
-          <td style="text-align:right;">${qty} ${escapeHtml(item.unit || '')}</td>
-          <td style="text-align:right;">${currencySymbol}${rate.toLocaleString()}</td>
-          <td style="text-align:right;">${item.discountPct ? `${item.discountPct}%` : item.discountAmount ? `${currencySymbol}${item.discountAmount}` : '—'}</td>
-          <td style="text-align:right;">${taxRate}%</td>
-          <td style="text-align:right;">${currencySymbol}${lineTotal.toLocaleString()}</td>
+          <td style="color:#667085;font-size:13px;">${index + 1}</td>
+          <td>
+            <div style="font-weight:600;color:#101828;margin-bottom:3px;font-size:13.5px;">${escapeHtml(item.description)}</div>
+            ${item.detail ? `<div style="font-size:12.5px;color:#667085;">${escapeHtml(item.detail)}</div>` : ''}
+          </td>
+          <td style="text-align:right;">${qty}</td>
+          <td style="text-align:right;">${formatMoney(rate)}</td>
+          <td style="text-align:right;font-weight:600;">${formatMoney(amount)}</td>
         </tr>
       `;
     }).join('');
 
-    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(doc.proposalTitle)}</title>
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(doc.proposalTitle || 'Invoice')}</title>
     <style>
-      body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1f2937;background:#fff;}
-      .top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #2454a8;padding-bottom:16px;margin-bottom:22px;}
-      .brand-mark{width:44px;height:44px;border-radius:8px;background:#2454a8;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-bottom:10px;}
-      .company-name{font-size:19px;font-weight:700;margin:0 0 4px;}
-      .company-meta{font-size:12px;color:#6b7280;line-height:1.5;max-width:280px;}
-      .doc-title{font-size:26px;font-weight:700;color:#2454a8;text-align:right;margin:0 0 6px;}
-      .doc-meta{font-size:12px;color:#6b7280;text-align:right;line-height:1.6;}
-      .status{display:inline-block;margin-top:8px;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:600;background:#fff4e0;color:#a15c00;}
-      .parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
-      .party-label{font-size:11px;color:#6b7280;margin-bottom:6px;}
-      .party-name{font-size:14px;font-weight:700;margin-bottom:3px;}
-      .party-detail{font-size:12.5px;color:#6b7280;line-height:1.6;}
-      table.items{width:100%;border-collapse:collapse;margin-bottom:4px;}
-      table.items th{background:#eaf1fb;color:#2454a8;font-size:11px;text-transform:uppercase;letter-spacing:0.02em;text-align:left;padding:9px 10px;border-bottom:1px solid #e5e7eb;}
-      table.items td{font-size:12.5px;padding:10px 10px;border-bottom:1px solid #e5e7eb;vertical-align:top;}
-      .totals-wrap{display:flex;justify-content:flex-end;margin-top:14px;}
-      .totals{width:280px;font-size:12.5px;}
-      .totals .row{display:flex;justify-content:space-between;padding:6px 0;}
-      .totals .row.tax-split{color:#6b7280;font-size:11.5px;padding:3px 0;}
-      .totals .grand{border-top:2px solid #2454a8;margin-top:6px;padding-top:10px;font-size:16px;font-weight:700;color:#2454a8;}
-      .lower{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;margin-top:30px;padding-top:18px;border-top:1px solid #e5e7eb;}
-      .block-title{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:8px;}
-      .bank-grid{font-size:12px;line-height:1.9;}
-      .bank-grid span.k{color:#6b7280;display:inline-block;width:96px;}
-      .notes{font-size:12px;color:#6b7280;line-height:1.6;}
-      .footer{text-align:center;font-size:11px;color:#6b7280;margin-top:26px;padding-top:14px;border-top:1px solid #e5e7eb;}
+      body{margin:0;padding:40px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#101828;background:#fff;}
+      .top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;padding-bottom:26px;border-bottom:1px solid #e4e7ec;}
+      .title{font-size:32px;font-weight:700;color:#101828;margin:0 0 16px;letter-spacing:-0.02em;}
+      .meta-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:13px;margin:0;}
+      .meta-grid dt{color:#667085;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.04em;margin:0;}
+      .meta-grid dd{color:#101828;font-weight:600;margin:0;}
+      .company-block{display:flex;flex-direction:column;align-items:flex-end;text-align:right;}
+      .logo{height:48px;width:auto;max-width:220px;object-fit:contain;margin-bottom:8px;}
+      .company-name{font-size:15px;font-weight:700;color:#101828;margin:0 0 4px;}
+      .address{font-style:normal;font-size:12.5px;color:#667085;line-height:1.5;margin:0;}
+      .address p{margin:0;}
+      .bill-to{margin-top:24px;margin-bottom:24px;}
+      .section-label{font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 6px;}
+      .client-name{font-size:16px;font-weight:700;color:#101828;margin:0 0 4px;}
+      .client-address{font-style:normal;font-size:13px;color:#667085;line-height:1.55;margin:0;}
+      .client-address p{margin:0;}
+      table.items{width:100%;border-collapse:collapse;margin-top:24px;text-align:left;}
+      table.items th{padding:10px 12px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#667085;border-bottom:1px solid #e4e7ec;}
+      table.items td{padding:13px 12px;font-size:13.5px;color:#101828;vertical-align:top;border-bottom:1px solid #f2f4f7;}
+      .totals-wrap{display:flex;justify-content:flex-end;margin-top:22px;}
+      .totals{width:300px;margin:0;display:flex;flex-direction:column;gap:8px;}
+      .totals-row{display:flex;justify-content:space-between;font-size:13.5px;color:#667085;}
+      .totals-row dt{margin:0;}
+      .totals-row dd{margin:0;font-weight:600;color:#101828;}
+      .total-due{border-top:2px solid #101828;padding-top:10px;margin-top:4px;font-size:16px;font-weight:700;color:#101828;}
+      .total-due dt{color:#101828;font-weight:700;}
+      .total-due dd{color:#101828;font-weight:700;font-size:16.5px;}
+      .footer{margin-top:36px;padding-top:20px;border-top:1px solid #e4e7ec;}
+      .notes{font-size:12.5px;color:#667085;line-height:1.6;margin:6px 0 0;}
     </style></head><body>
     <div class="top">
       <div>
-        <div class="brand-mark">${escapeHtml(doc.companyBadge || 'NS')}</div>
-        <div class="company-name">${escapeHtml(doc.company)}</div>
-        <div class="company-meta">${escapeHtml(doc.companyMeta || '').replaceAll('\n', '<br>')}</div>
+        <h1 class="title">${escapeHtml(doc.proposalTitle || 'Invoice')}</h1>
+        <dl class="meta-grid">
+          <dt>Invoice no.</dt>
+          <dd>${escapeHtml(doc.proposalNumber || 'INV-2026-0148')}</dd>
+          <dt>Issued</dt>
+          <dd>${escapeHtml(doc.date || 'Sep 10, 2026')}</dd>
+          <dt>Due</dt>
+          <dd>${escapeHtml(doc.validUntil || 'Oct 10, 2026')}</dd>
+          <dt>Terms</dt>
+          <dd>${escapeHtml(doc.paymentTerms || 'Net 30')}</dd>
+        </dl>
       </div>
-      <div>
-        <div class="doc-title">${escapeHtml(doc.proposalTitle || 'INVOICE')}</div>
-        <div class="doc-meta">
-          <div><b>No.</b> ${escapeHtml(doc.proposalNumber)}</div>
-          <div><b>Issued</b> ${escapeHtml(doc.date)}</div>
-          <div><b>Due</b> ${escapeHtml(doc.validUntil)}</div>
-        </div>
-        <div style="text-align:right;"><span class="status">${escapeHtml(doc.invoiceStatus || 'Pending')}</span></div>
+      <div class="company-block">
+        ${doc.companyLogoUrl ? `<img src="${escapeHtml(doc.companyLogoUrl)}" alt="Logo" class="logo" />` : ''}
+        <div class="company-name">${escapeHtml(doc.company || 'I-Globus Corporate Consulting')}</div>
+        <address class="address">
+          ${companyAddressLines.map((l) => `<p>${escapeHtml(l)}</p>`).join('')}
+          ${doc.companyPhone ? `<p>Phone: ${escapeHtml(doc.companyPhone)}</p>` : ''}
+        </address>
       </div>
     </div>
-    <div class="parties">
-      <div>
-        <div class="party-label">Billed to</div>
-        <div class="party-name">${escapeHtml(doc.preparedFor)}</div>
-        <div class="party-detail">${escapeHtml(doc.clientAddress || '').replaceAll('\n', '<br>')}</div>
-      </div>
-      <div>
-        <div class="party-label">Place of supply</div>
-        <div class="party-detail">${escapeHtml(doc.placeOfSupply || 'Telangana')}</div>
-        <div class="party-label" style="margin-top:14px;">Payment terms</div>
-        <div class="party-detail">${escapeHtml(doc.paymentTerms || 'Net 15 days')}</div>
-      </div>
+    <div class="bill-to">
+      <div class="section-label">Bill to</div>
+      <div class="client-name">${escapeHtml(doc.preparedFor || 'Northwind Retail Pvt. Ltd.')}</div>
+      <address class="client-address">
+        ${doc.clientAttention ? `<p>${escapeHtml(doc.clientAttention)}</p>` : ''}
+        ${clientAddressLines.map((l) => `<p>${escapeHtml(l)}</p>`).join('')}
+        ${doc.clientEmail ? `<p>${escapeHtml(doc.clientEmail)}</p>` : ''}
+      </address>
     </div>
     <table class="items">
       <thead>
         <tr>
-          <th style="width:34%">Description</th>
+          <th style="width:56px;">S. No.</th>
+          <th>Description</th>
           <th style="text-align:right;">Qty</th>
           <th style="text-align:right;">Rate</th>
-          <th style="text-align:right;">Discount</th>
-          <th style="text-align:right;">Tax</th>
           <th style="text-align:right;">Amount</th>
         </tr>
       </thead>
       <tbody>${rowsHtml}</tbody>
     </table>
     <div class="totals-wrap">
-      <div class="totals">
-        <div class="row"><span>Subtotal</span><span>${currencySymbol}${(netSubtotal + totalDiscount).toLocaleString()}</span></div>
-        <div class="row"><span>Discount</span><span>−${currencySymbol}${totalDiscount.toLocaleString()}</span></div>
-        <div class="row tax-split"><span>CGST @ ${doc.cgstPct || 9}%</span><span>${currencySymbol}${cgstAmount.toLocaleString()}</span></div>
-        <div class="row tax-split"><span>SGST @ ${doc.sgstPct || 9}%</span><span>${currencySymbol}${sgstAmount.toLocaleString()}</span></div>
-        <div class="row grand"><span>Total Due</span><span>${currencySymbol}${totalDue.toLocaleString()}</span></div>
-      </div>
-    </div>
-    <div class="lower">
-      <div>
-        <div class="block-title">Notes</div>
-        <div class="notes">${escapeHtml(doc.notes)}</div>
-      </div>
-      <div>
-        <div class="block-title">Payment details</div>
-        <div class="bank-grid">
-          <div><span class="k">Bank</span>${escapeHtml(doc.bankName)}</div>
-          <div><span class="k">Account No.</span>${escapeHtml(doc.accountNo)}</div>
-          <div><span class="k">IFSC</span>${escapeHtml(doc.ifscCode)}</div>
-          <div><span class="k">UPI</span>${escapeHtml(doc.upiId)}</div>
+      <dl class="totals">
+        <div class="totals-row">
+          <dt>Subtotal</dt>
+          <dd>${formatMoney(subtotal)}</dd>
         </div>
-      </div>
+        <div class="totals-row">
+          <dt>CGST (${cgstPct}%)</dt>
+          <dd>${formatMoney(cgst)}</dd>
+        </div>
+        <div class="totals-row">
+          <dt>SGST (${sgstPct}%)</dt>
+          <dd>${formatMoney(sgst)}</dd>
+        </div>
+        <div class="totals-row total-due">
+          <dt>Total due</dt>
+          <dd>${formatMoney(total)}</dd>
+        </div>
+      </dl>
     </div>
-    <div class="footer">${escapeHtml(doc.company)} &nbsp;·&nbsp; Computer-generated invoice</div>
+    <div class="footer">
+      <div class="section-label">Payment details</div>
+      <div class="notes">${escapeHtml(doc.notes || '')}</div>
+    </div>
     </body></html>`;
   }
 
@@ -414,42 +441,60 @@ export async function downloadOfficialPdf() {
 export async function exportPdf(proposal) {
   const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'document'}.pdf`;
 
-  const originalOpen = window.open;
-  window.open = function () {
-    return null;
-  };
-
-  const container = document.createElement('div');
-  container.id = 'pdf-export-container';
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.zIndex = '-99999';
-  container.style.width = '210mm';
-  container.style.background = '#ffffff';
-  container.style.pointerEvents = 'none';
-  container.innerHTML = proposalToHtml(proposal);
-  document.body.appendChild(container);
-
   const opt = {
-    margin: [8, 8, 8, 8],
+    margin: [6, 6, 6, 6],
     filename: fileName,
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, logging: false },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      scrollY: 0
+    },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
+  const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
+
+  // 1. If the live preview element is in DOM, capture directly for 100% pixel-perfect output
+  const renderedEl = document.querySelector('.invoice-paper') || document.querySelector('.proposal-paper');
+  if (renderedEl && pdfEngine) {
+    try {
+      await pdfEngine().set(opt).from(renderedEl).save();
+      return;
+    } catch (err) {
+      console.warn('Direct preview element PDF capture failed, trying offscreen container:', err);
+    }
+  }
+
+  // 2. Offscreen container fallback
+  const rawHtml = proposalToHtml(proposal);
+  const parsedDoc = new DOMParser().parseFromString(rawHtml, 'text/html');
+  const styleContent = parsedDoc.querySelector('style')?.textContent || '';
+  const bodyContent = parsedDoc.body ? parsedDoc.body.innerHTML : rawHtml;
+
+  const container = document.createElement('div');
+  container.id = 'pdf-export-container';
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
+  container.style.top = '0';
+  container.style.width = '780px';
+  container.style.background = '#ffffff';
+  container.style.color = '#101828';
+  container.innerHTML = `<style>${styleContent}</style><div style="padding:20px;background:#fff;color:#101828;">${bodyContent}</div>`;
+  document.body.appendChild(container);
+
   try {
-    const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf.default || window.html2pdf;
-    const worker = pdfEngine().set(opt).from(container);
-    const pdfBlob = await worker.output('blob');
-    downloadBlob(pdfBlob, fileName, 'application/pdf');
+    if (pdfEngine) {
+      await pdfEngine().set(opt).from(container).save();
+    } else {
+      downloadBlob(rawHtml, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
+    }
   } catch (err) {
-    console.error('Direct PDF export error, downloading HTML document in first tab:', err);
-    const html = proposalToHtml(proposal);
-    downloadBlob(html, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
+    console.error('PDF export error:', err);
+    downloadBlob(rawHtml, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
   } finally {
-    window.open = originalOpen;
     container.remove();
   }
 }

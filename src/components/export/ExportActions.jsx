@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
-import { exportPdf, exportWord, exportHtml, exportJson, validateImportedJson, downloadOfficialPdf } from '../../services/exportService.js';
+import React, { useState } from 'react';
+import { exportPdf } from '../../services/exportService.js';
+import { IconDownload, IconCheck } from '../common/Icons.jsx';
 
 export function ExportActions({
   proposal,
@@ -7,68 +8,27 @@ export function ExportActions({
   setOfficialMode,
   previewMode,
   setPreviewMode,
-  onImportProposal,
   onLogout
 }) {
-  const fileInputRef = useRef(null);
+  const [pdfStatus, setPdfStatus] = useState('idle'); // 'idle' | 'loading' | 'success'
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result;
-      if (typeof content === 'string') {
-        const result = validateImportedJson(content);
-        if (result.valid && result.proposal) {
-          onImportProposal(result.proposal);
-          alert(`Successfully imported proposal: "${result.proposal.proposalTitle}"`);
-        } else {
-          alert(result.error || 'Failed to import JSON proposal.');
-        }
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
+  const handlePdfExport = async (e) => {
+    e.preventDefault();
+    if (pdfStatus === 'loading') return;
+    setPdfStatus('loading');
+    try {
+      await exportPdf(proposal);
+      setPdfStatus('success');
+      setTimeout(() => setPdfStatus('idle'), 1600);
+    } catch (err) {
+      console.error(err);
+      setPdfStatus('idle');
+    }
   };
 
   return (
     <div className="top-actions">
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept=".json,application/json"
-        style={{ display: 'none' }}
-      />
-
-      <button
-        type="button"
-        className="secondary btn-icon-text"
-        onClick={(e) => {
-          e.preventDefault();
-          setOfficialMode((value) => !value);
-          setPreviewMode(false);
-        }}
-      >
-        <span className="btn-icon">📄</span>
-        <span>{officialMode ? 'Open editable builder' : 'Use official proposal'}</span>
-      </button>
-
-      {officialMode ? (
-        <button
-          type="button"
-          className="primary-blue-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            downloadOfficialPdf();
-          }}
-        >
-          <span className="btn-icon">📥</span>
-          <span>Download PDF</span>
-        </button>
-      ) : (
+      {!officialMode && (
         <>
           <button
             type="button"
@@ -82,30 +42,38 @@ export function ExportActions({
           </button>
           <button
             type="button"
-            className="primary-blue-btn"
-            onClick={(e) => {
-              e.preventDefault();
-              exportPdf(proposal);
-            }}
+            className={`primary-blue-btn ${pdfStatus !== 'idle' ? 'btn-status-active' : ''}`}
+            disabled={pdfStatus === 'loading'}
+            onClick={handlePdfExport}
           >
-            <span className="btn-icon">📥</span>
-            <span>Download PDF</span>
+            {pdfStatus === 'loading' ? (
+              <>
+                <span className="btn-spinner" aria-hidden="true"></span>
+                <span>Generating PDF...</span>
+              </>
+            ) : pdfStatus === 'success' ? (
+              <>
+                <span className="btn-icon"><IconCheck size={14} /></span>
+                <span>Downloaded</span>
+              </>
+            ) : (
+              <>
+                <span className="btn-icon"><IconDownload size={14} /></span>
+                <span>Download PDF</span>
+              </>
+            )}
           </button>
-          <div className="dropdown">
-            <button type="button" className="secondary" onClick={(e) => e.preventDefault()}>
-              More exports ▾
-            </button>
-            <div className="dropdown-menu">
-              <button type="button" onClick={(e) => { e.preventDefault(); exportWord(proposal); }}>Word document (.doc)</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); exportHtml(proposal); }}>HTML</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); exportJson(proposal); }}>JSON backup</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); fileInputRef.current?.click(); }}>Import JSON backup</button>
-            </div>
-          </div>
         </>
       )}
 
-      <button type="button" className="secondary logout-btn" onClick={(e) => { e.preventDefault(); onLogout(); }}>
+      <button
+        type="button"
+        className="secondary logout-btn"
+        onClick={(e) => {
+          e.preventDefault();
+          onLogout();
+        }}
+      >
         Log out
       </button>
     </div>

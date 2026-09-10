@@ -6,12 +6,10 @@ export const LOGIN_PASSWORD = 'Sales@2026';
 export const OFFICIAL_PROPOSAL_FILE = '/iBunify-Overall-Proposal.pdf';
 
 export const documentFormats = [
-  { id: 'all', label: 'All documents', extension: 'ALL', icon: '📄', count: 3 },
-  { id: 'pdf', label: 'PDF', extension: 'PDF', icon: '📕', count: 1 },
-  { id: 'word', label: 'Word', extension: 'DOC', icon: '📘', count: 0 },
-  { id: 'html', label: 'Web', extension: 'HTML', icon: '🌐', count: 0 },
-  { id: 'json', label: 'Backups', extension: 'JSON', icon: '💾', count: 0 },
-  { id: 'invoice', label: 'Invoices', extension: 'INV', icon: '🧾', count: 2 }
+  { id: 'all', label: 'All Assets', extension: 'ALL', count: 3 },
+  { id: 'pdf', label: 'Corporate Deck', extension: 'PDF', count: 1 },
+  { id: 'proposal', label: 'Custom Proposal', extension: 'PROP', count: 1 },
+  { id: 'invoice', label: 'Invoices', extension: 'INV', count: 1 }
 ];
 
 export const sampleProposal = {
