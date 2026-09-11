@@ -2,7 +2,22 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-import { AUTH_STORAGE_KEY, LOGIN_EMAIL, LOGIN_PASSWORD, sampleProposal } from './data/defaults.js';
+import {
+  STORAGE_KEY_V2,
+  AUTH_STORAGE_KEY,
+  sampleProposal,
+  sampleDiscoveryDoc,
+  sampleNdaDoc,
+  sampleMsaDoc,
+  sampleCommercialProposalDoc,
+  sampleSlaDoc,
+  samplePoDoc,
+  sampleHandoverDoc,
+  sampleClosureDoc,
+  documentFormats,
+  LOGIN_EMAIL,
+  LOGIN_PASSWORD
+} from './data/defaults.js';
 import { proposalTemplates } from './data/templates.js';
 import { loadProposalsFromStorage, saveProposalsToStorage } from './services/proposalStorage.js';
 import { OfficialProposalLibrary } from './components/official/OfficialProposalLibrary.jsx';
@@ -135,6 +150,14 @@ function App() {
   );
 
   const isInvoice = activeProposal?.documentType === 'invoice';
+  const isDiscovery = activeProposal?.documentType === 'discovery';
+  const isNda = activeProposal?.documentType === 'nda';
+  const isMsa = activeProposal?.documentType === 'msa';
+  const isCommercialProposal = activeProposal?.documentType === 'commercial_proposal';
+  const isSla = activeProposal?.documentType === 'sla';
+  const isPo = activeProposal?.documentType === 'po';
+  const isHandover = activeProposal?.documentType === 'handover';
+  const isClosure = activeProposal?.documentType === 'closure';
 
   const [selectedId, setSelectedId] = useState(activeProposal?.sections?.[0]?.id ?? null);
   const [previewMode, setPreviewMode] = useState(false);
@@ -395,10 +418,196 @@ function App() {
     pushAppState(false, false, target.id);
   };
 
-  const handleOpenBuilder = () => {
-    let target = proposals.find((p) => p.id === activeProposalId && p.documentType !== 'invoice');
+  const handleOpenDiscovery = () => {
+    let target = proposals.find((p) => p.documentType === 'discovery');
     if (!target) {
-      target = proposals.find((p) => p.documentType !== 'invoice');
+      const template = proposalTemplates.find((t) => t.id === 'template-discovery-standard') || sampleDiscoveryDoc;
+      target = {
+        ...template,
+        id: `disc-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-01-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenNda = () => {
+    let target = proposals.find((p) => p.documentType === 'nda');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-nda-standard') || sampleNdaDoc;
+      target = {
+        ...template,
+        id: `nda-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-02-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenMsa = () => {
+    let target = proposals.find((p) => p.documentType === 'msa');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-msa-standard') || sampleMsaDoc;
+      target = {
+        ...template,
+        id: `msa-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-04-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenCommercialProposal = () => {
+    let target = proposals.find((p) => p.documentType === 'commercial_proposal');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-commercial-proposal-standard') || sampleCommercialProposalDoc;
+      target = {
+        ...template,
+        id: `ctp-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-PROP-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenSla = () => {
+    let target = proposals.find((p) => p.documentType === 'sla');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-sla-standard') || sampleSlaDoc;
+      target = {
+        ...template,
+        id: `sla-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-06-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenPo = () => {
+    let target = proposals.find((p) => p.documentType === 'po');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-po-standard') || samplePoDoc;
+      target = {
+        ...template,
+        id: `po-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-07-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenHandover = () => {
+    let target = proposals.find((p) => p.documentType === 'handover');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-handover-standard') || sampleHandoverDoc;
+      target = {
+        ...template,
+        id: `ho-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-08-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenClosure = () => {
+    let target = proposals.find((p) => p.documentType === 'closure');
+    if (!target) {
+      const template = proposalTemplates.find((t) => t.id === 'template-closure-standard') || sampleClosureDoc;
+      target = {
+        ...template,
+        id: `cls-${Date.now()}`,
+        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-09-2026',
+        date: new Date().toISOString().slice(0, 10),
+        sections: Array.isArray(template.sections)
+          ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
+          : []
+      };
+      delete target.name;
+      delete target.description;
+      delete target.category;
+      setProposals((prev) => [...prev, target]);
+    }
+    setActiveProposalId(target.id);
+    setSelectedId(target.sections?.[0]?.id || null);
+    pushAppState(false, false, target.id);
+  };
+
+  const handleOpenBuilder = () => {
+    let target = proposals.find(
+      (p) => p.id === activeProposalId && p.documentType !== 'invoice' && p.documentType !== 'discovery' && p.documentType !== 'nda' && p.documentType !== 'msa' && p.documentType !== 'commercial_proposal' && p.documentType !== 'sla' && p.documentType !== 'po' && p.documentType !== 'handover' && p.documentType !== 'closure'
+    );
+    if (!target) {
+      target = proposals.find((p) => p.documentType !== 'invoice' && p.documentType !== 'discovery' && p.documentType !== 'nda' && p.documentType !== 'msa' && p.documentType !== 'commercial_proposal' && p.documentType !== 'sla' && p.documentType !== 'po' && p.documentType !== 'handover' && p.documentType !== 'closure');
     }
     if (!target) {
       target = { ...sampleProposal, id: `prop-${Date.now()}` };
@@ -441,7 +650,7 @@ function App() {
             </div>
             <div className="brand-divider" aria-hidden="true"></div>
             <div>
-              <h1 className="brand-title">IN&P Composer</h1>
+              <h1 className="brand-title">DealDesk</h1>
             </div>
           </div>
         </div>
@@ -472,18 +681,50 @@ function App() {
         />
       )}
 
-      <main className={`workspace ${officialMode ? 'official-library' : isInvoice ? 'invoice-workspace' : ''} ${previewMode ? 'preview-only' : ''}`}>
+      <main
+        className={`workspace ${
+          officialMode
+            ? 'official-library'
+            : isInvoice
+            ? 'invoice-workspace'
+            : isDiscovery
+            ? 'discovery-workspace'
+            : isNda
+            ? 'nda-workspace'
+            : isMsa
+            ? 'msa-workspace'
+            : isCommercialProposal
+            ? 'commercial-proposal-workspace'
+            : isSla
+            ? 'sla-workspace'
+            : isPo
+            ? 'po-workspace'
+            : isHandover
+            ? 'handover-workspace'
+            : isClosure
+            ? 'closure-workspace'
+            : ''
+        } ${previewMode ? 'preview-only' : ''}`}
+      >
         {officialMode ? (
           <OfficialProposalLibrary
             activeDocumentFormat={activeDocumentFormat}
             setActiveDocumentFormat={setActiveDocumentFormat}
             onOpenBuilder={handleOpenBuilder}
             onOpenInvoice={handleOpenInvoice}
+            onOpenDiscovery={handleOpenDiscovery}
+            onOpenNda={handleOpenNda}
+            onOpenMsa={handleOpenMsa}
+            onOpenCommercialProposal={handleOpenCommercialProposal}
+            onOpenSla={handleOpenSla}
+            onOpenPo={handleOpenPo}
+            onOpenHandover={handleOpenHandover}
+            onOpenClosure={handleOpenClosure}
             onSelectTemplate={handleSelectTemplate}
           />
         ) : (
           <>
-            {!previewMode && !isInvoice && (
+            {!previewMode && !isInvoice && !isDiscovery && !isNda && !isMsa && !isCommercialProposal && !isSla && !isPo && !isHandover && !isClosure && (
               <SectionSidebar
                 sections={activeProposal.sections || []}
                 selectedId={selectedId}

@@ -396,6 +396,2304 @@ export function SectionEditor({
     );
   }
 
+  const isDiscovery = proposal.documentType === 'discovery';
+
+  if (isDiscovery) {
+    const pipelineStages = proposal.pipelineStages || [];
+    const useStructuredTable = proposal.useStructuredTable !== false;
+
+    const handleAddStage = () => {
+      const newStage = {
+        id: `ps-${Date.now()}`,
+        stage: `Stage ${pipelineStages.length + 1}: New Pipeline Stage`,
+        objective: 'Enter stage primary objective',
+        action: 'Enter automated system action trigger'
+      };
+      onUpdateField('pipelineStages', [...pipelineStages, newStage]);
+    };
+
+    const handleUpdateStage = (stageId, patch) => {
+      const updated = pipelineStages.map((st) => (st.id === stageId ? { ...st, ...patch } : st));
+      onUpdateField('pipelineStages', updated);
+    };
+
+    const handleDeleteStage = (stageId) => {
+      const updated = pipelineStages.filter((st) => st.id !== stageId);
+      onUpdateField('pipelineStages', updated);
+    };
+
+    return (
+      <section className="editor panel">
+        <h2>Discovery & Scoping Settings</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '8px', marginBottom: '12px' }}>
+          Cover Page & Enterprise Metadata
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Category Badge / Eyebrow</span>
+            <input
+              value={proposal.badge || 'DISCOVERY — REQUIREMENT GATHERING & SCOPING'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Title</span>
+            <input
+              value={proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Ref</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-01-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Date</span>
+            <input
+              value={proposal.date || ''}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Company Name</span>
+            <input
+              value={proposal.preparedFor || ''}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              placeholder="e.g. Acme Realty Pvt. Ltd."
+            />
+          </label>
+          <label>
+            <span>Client Attention / Sponsor</span>
+            <input
+              value={proposal.clientAttention || ''}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Office Location</span>
+            <input
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Portals</span>
+            <input
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Key Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Legal Governance Scope</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Document Sections (Page 2 Flow)
+        </h3>
+        {selectedSection ? (
+          <div className="section-editor-box">
+            <label>
+              <span>Section Title</span>
+              <input
+                value={selectedSection.title || ''}
+                onChange={(e) => onUpdateSection(selectedSection.id, { title: e.target.value })}
+              />
+            </label>
+            <label style={{ marginTop: '12px' }}>
+              <span>Section Content (Supports Bullet points & Markdown)</span>
+              <textarea
+                rows="6"
+                value={selectedSection.content || ''}
+                onChange={(e) => onUpdateSection(selectedSection.id, { content: e.target.value })}
+              />
+            </label>
+          </div>
+        ) : (
+          <div className="form-grid">
+            {(proposal.sections || []).map((sec, idx) => (
+              <div key={sec.id} className="section-card-inline" style={{ gridColumn: '1 / -1', background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <strong style={{ color: '#0f2b6e', fontSize: '14px' }}>Section {idx + 1}</strong>
+                </div>
+                <input
+                  style={{ width: '100%', marginBottom: '8px', fontWeight: '600' }}
+                  value={sec.title || ''}
+                  onChange={(e) => onUpdateSection(sec.id, { title: e.target.value })}
+                />
+                <textarea
+                  rows="3"
+                  style={{ width: '100%' }}
+                  value={sec.content || ''}
+                  onChange={(e) => onUpdateSection(sec.id, { content: e.target.value })}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="commercial-toggle-bar" style={{ marginTop: '24px' }}>
+          <div>
+            <strong>Sales Hierarchy & Pipeline Stages Table</strong>
+            <p>Render structured 3-column table for pipeline stages, primary objectives, and automation triggers.</p>
+          </div>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={useStructuredTable}
+              onChange={(e) => onUpdateField('useStructuredTable', e.target.checked)}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+
+        {useStructuredTable && (
+          <div className="invoice-items-table-wrap" style={{ marginTop: '14px' }}>
+            <table className="invoice-items-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '28%' }}>Pipeline Stage</th>
+                  <th style={{ width: '32%' }}>Primary Objective</th>
+                  <th style={{ width: '34%' }}>Automated System Action</th>
+                  <th style={{ width: '6%' }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {pipelineStages.map((stage) => (
+                  <tr key={stage.id}>
+                    <td>
+                      <input
+                        value={stage.stage || ''}
+                        placeholder="e.g. Stage 1: Lead Ingested"
+                        onChange={(e) => handleUpdateStage(stage.id, { stage: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        value={stage.objective || ''}
+                        placeholder="Capture prospect metadata"
+                        onChange={(e) => handleUpdateStage(stage.id, { objective: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        value={stage.action || ''}
+                        placeholder="Instant CRM record created"
+                        onChange={(e) => handleUpdateStage(stage.id, { action: e.target.value })}
+                      />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <button
+                        type="button"
+                        className="del-item-btn"
+                        onClick={() => handleDeleteStage(stage.id)}
+                        title="Delete stage row"
+                      >
+                        ×
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button
+              type="button"
+              className="add-invoice-item-btn"
+              onClick={handleAddStage}
+              style={{ marginTop: '10px' }}
+            >
+              ＋ Add Pipeline Stage
+            </button>
+          </div>
+        )}
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '28px', marginBottom: '12px' }}>
+          Sign-off & Governance Baseline
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Client Signatory Label</span>
+            <input
+              value={proposal.clientSignatory || 'Client Signatory: ______________________'}
+              onChange={(e) => onUpdateField('clientSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Lead Signatory</span>
+            <input
+              value={proposal.leadSignatory || 'iBUNIFY Lead: Rama Krishna / Sohail'}
+              onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Company Name</span>
+            <input
+              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              onChange={(e) => onUpdateField('footerCompany', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Office Address</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Websites / Portals</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isNda = proposal.documentType === 'nda';
+
+  if (isNda) {
+    return (
+      <section className="editor panel">
+        <h2>Mutual NDA Settings</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '8px', marginBottom: '12px' }}>
+          Cover Page & Agreement Metadata
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Category Badge / Eyebrow</span>
+            <input
+              value={proposal.badge || 'MUTUAL NON-DISCLOSURE AGREEMENT (NDA)'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Agreement Title</span>
+            <input
+              value={proposal.proposalTitle || 'Mutual Non-Disclosure Agreement'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Ref</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-02-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Effective Date</span>
+            <input
+              value={proposal.effectiveDate || proposal.date || ''}
+              onChange={(e) => onUpdateField('effectiveDate', e.target.value)}
+              placeholder="e.g. 2026-09-11 or [Effective Date]"
+            />
+          </label>
+          <label>
+            <span>Issue Date</span>
+            <input
+              value={proposal.date || ''}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Company Name</span>
+            <input
+              value={proposal.preparedFor || ''}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              placeholder="e.g. Acme Technologies Pvt. Ltd."
+            />
+          </label>
+          <label>
+            <span>Client Attention / Sponsor</span>
+            <input
+              value={proposal.clientAttention || ''}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Office Location</span>
+            <input
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Portals</span>
+            <input
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Key Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Legal Governance Scope</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          NDA Clauses & Sections (Page 2 Flow)
+        </h3>
+        {selectedSection ? (
+          <div className="section-editor-box">
+            <label>
+              <span>Clause / Section Title</span>
+              <input
+                value={selectedSection.title || ''}
+                onChange={(e) => onUpdateSection(selectedSection.id, { title: e.target.value })}
+              />
+            </label>
+            <label style={{ marginTop: '12px' }}>
+              <span>Clause Body Content (Supports Bullet points & Markdown)</span>
+              <textarea
+                rows="6"
+                value={selectedSection.content || ''}
+                onChange={(e) => onUpdateSection(selectedSection.id, { content: e.target.value })}
+              />
+            </label>
+          </div>
+        ) : (
+          <div className="form-grid">
+            {(proposal.sections || []).map((sec, idx) => (
+              <div
+                key={sec.id}
+                className="section-card-inline"
+                style={{
+                  gridColumn: '1 / -1',
+                  background: '#f8fafc',
+                  padding: '14px',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  marginBottom: '10px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <strong style={{ color: '#0f2b6e', fontSize: '14px' }}>Clause {idx + 1}</strong>
+                </div>
+                <input
+                  style={{ width: '100%', marginBottom: '8px', fontWeight: '600' }}
+                  value={sec.title || ''}
+                  onChange={(e) => onUpdateSection(sec.id, { title: e.target.value })}
+                />
+                <textarea
+                  rows="3"
+                  style={{ width: '100%' }}
+                  value={sec.content || ''}
+                  onChange={(e) => onUpdateSection(sec.id, { content: e.target.value })}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '28px', marginBottom: '12px' }}>
+          Execution & Sign-Off Blocks (Section 4)
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Client Signatory Header</span>
+            <input
+              value={proposal.clientSignatory || 'FOR: [CLIENT COMPANY NAME]'}
+              onChange={(e) => onUpdateField('clientSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Signatory Name / Title</span>
+            <input
+              value={proposal.clientSignatoryName || ''}
+              onChange={(e) => onUpdateField('clientSignatoryName', e.target.value)}
+              placeholder="e.g. Managing Director / CEO"
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Lead Header</span>
+            <input
+              value={proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
+              onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Signatory Name</span>
+            <input
+              value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
+              onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Signatory Title</span>
+            <input
+              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Company Name</span>
+            <input
+              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              onChange={(e) => onUpdateField('footerCompany', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Office Address</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Websites / Portals</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isMsa = proposal.documentType === 'msa';
+
+  if (isMsa) {
+    return (
+      <section className="editor panel">
+        <h2>Master Services Agreement (MSA) Settings</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '8px', marginBottom: '12px' }}>
+          Cover Page & Master Agreement Metadata
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Category Badge / Eyebrow</span>
+            <input
+              value={proposal.badge || 'MASTER SERVICES AGREEMENT (MSA)'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Agreement Title</span>
+            <input
+              value={proposal.proposalTitle || 'Master Services Agreement (MSA)'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Ref</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-04-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Effective Date</span>
+            <input
+              value={proposal.effectiveDate || proposal.date || ''}
+              onChange={(e) => onUpdateField('effectiveDate', e.target.value)}
+              placeholder="e.g. 2026-09-11 or [Effective Date]"
+            />
+          </label>
+          <label>
+            <span>Issue Date</span>
+            <input
+              value={proposal.date || ''}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Company Name</span>
+            <input
+              value={proposal.preparedFor || ''}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              placeholder="e.g. Acme Technologies Pvt. Ltd."
+            />
+          </label>
+          <label>
+            <span>Client Attention / Sponsor</span>
+            <input
+              value={proposal.clientAttention || ''}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Office Location</span>
+            <input
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Portals</span>
+            <input
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Key Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Legal Governance Scope</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          MSA Clauses & Framework (Page 2 Flow)
+        </h3>
+        {selectedSection ? (
+          <div className="section-editor-box">
+            <label>
+              <span>Clause / Section Title</span>
+              <input
+                value={selectedSection.title || ''}
+                onChange={(e) => onUpdateSection(selectedSection.id, { title: e.target.value })}
+              />
+            </label>
+            <label style={{ marginTop: '12px' }}>
+              <span>Clause Body Content (Supports Bullet points & Markdown)</span>
+              <textarea
+                rows="6"
+                value={selectedSection.content || ''}
+                onChange={(e) => onUpdateSection(selectedSection.id, { content: e.target.value })}
+              />
+            </label>
+          </div>
+        ) : (
+          <div className="form-grid">
+            {(proposal.sections || []).map((sec, idx) => (
+              <div
+                key={sec.id}
+                className="section-card-inline"
+                style={{
+                  gridColumn: '1 / -1',
+                  background: '#f8fafc',
+                  padding: '14px',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  marginBottom: '10px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <strong style={{ color: '#0f2b6e', fontSize: '14px' }}>Clause {idx + 1}</strong>
+                </div>
+                <input
+                  style={{ width: '100%', marginBottom: '8px', fontWeight: '600' }}
+                  value={sec.title || ''}
+                  onChange={(e) => onUpdateSection(sec.id, { title: e.target.value })}
+                />
+                <textarea
+                  rows="3"
+                  style={{ width: '100%' }}
+                  value={sec.content || ''}
+                  onChange={(e) => onUpdateSection(sec.id, { content: e.target.value })}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '28px', marginBottom: '12px' }}>
+          Execution & Sign-Off Blocks
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Client Signatory Header</span>
+            <input
+              value={proposal.clientSignatory || 'FOR: [CLIENT COMPANY NAME]'}
+              onChange={(e) => onUpdateField('clientSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Signatory Name / Title</span>
+            <input
+              value={proposal.clientSignatoryName || ''}
+              onChange={(e) => onUpdateField('clientSignatoryName', e.target.value)}
+              placeholder="e.g. Managing Director / CEO"
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Lead Header</span>
+            <input
+              value={proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
+              onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Signatory Name</span>
+            <input
+              value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
+              onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Company Name</span>
+            <input
+              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              onChange={(e) => onUpdateField('footerCompany', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Office Address</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Websites / Portals</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isCommercialProposal = proposal.documentType === 'commercial_proposal';
+
+  if (isCommercialProposal) {
+    const metrics = proposal.metrics || [];
+    const serviceBreakdown = proposal.serviceBreakdown || [];
+    const commercialScheduleItems = proposal.commercialScheduleItems || [];
+    const sowScopeActivities = proposal.sowScopeActivities || [];
+    const sowDeliverables = proposal.sowDeliverables || [];
+    const sowTimelineMilestones = proposal.sowTimelineMilestones || [];
+    const sowInvoicingMilestones = proposal.sowInvoicingMilestones || [];
+    const sowAssumptions = proposal.sowAssumptions || [];
+
+    return (
+      <section className="editor panel">
+        <h2>Statement of Work (SOW) Settings</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '8px', marginBottom: '12px' }}>
+          Cover Page & Engagement Metadata (Page 1)
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Category Badge / Pill</span>
+            <input
+              value={proposal.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Proposal Title</span>
+            <input
+              value={proposal.proposalTitle || 'Unified CRM, Communication & AI Sales Automation'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Proposal Ref</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-PROP-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>SOW Ref</span>
+            <input
+              value={proposal.sowNumber || 'IGC-IBUNIFY-SOW-2026'}
+              onChange={(e) => onUpdateField('sowNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Engagement Scope</span>
+            <input
+              value={proposal.engagement || 'iBUNIFY CRM & Automation Platform Deployment'}
+              onChange={(e) => onUpdateField('engagement', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Company Name</span>
+            <input
+              value={proposal.preparedFor || ''}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              placeholder="e.g. Acme Realty Pvt. Ltd."
+            />
+          </label>
+          <label>
+            <span>Client Attention / Sponsor</span>
+            <input
+              value={proposal.clientAttention || ''}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Headquarters</span>
+            <input
+              value={proposal.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Digital Portals</span>
+            <input
+              value={proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramyasree (+91 63005 61742)'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Philosophy Statement</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Key Metrics Highlights (Page 2)
+        </h3>
+        <div className="form-grid">
+          {metrics.map((m, mIdx) => (
+            <div key={mIdx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+              <label>
+                <span style={{ fontSize: '11px' }}>Metric Value</span>
+                <input
+                  value={m.value}
+                  onChange={(e) => {
+                    const next = [...metrics];
+                    next[mIdx] = { ...next[mIdx], value: e.target.value };
+                    onUpdateField('metrics', next);
+                  }}
+                />
+              </label>
+              <label style={{ marginTop: '6px' }}>
+                <span style={{ fontSize: '11px' }}>Metric Label</span>
+                <input
+                  value={m.label}
+                  onChange={(e) => {
+                    const next = [...metrics];
+                    next[mIdx] = { ...next[mIdx], label: e.target.value };
+                    onUpdateField('metrics', next);
+                  }}
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Section 2: Granular Service Breakdown & Costing (Page 2)
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {serviceBreakdown.map((item, idx) => (
+            <div key={item.key || idx} style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <label>
+                <span>{item.key}. Service Pillar Title</span>
+                <input
+                  value={item.title}
+                  onChange={(e) => {
+                    const next = [...serviceBreakdown];
+                    next[idx] = { ...next[idx], title: e.target.value };
+                    onUpdateField('serviceBreakdown', next);
+                  }}
+                />
+              </label>
+              <label style={{ marginTop: '8px' }}>
+                <span>Core Features Scope</span>
+                <textarea
+                  rows="3"
+                  value={item.features}
+                  onChange={(e) => {
+                    const next = [...serviceBreakdown];
+                    next[idx] = { ...next[idx], features: e.target.value };
+                    onUpdateField('serviceBreakdown', next);
+                  }}
+                />
+              </label>
+              <label style={{ marginTop: '8px' }}>
+                <span>Individual Costing</span>
+                <input
+                  value={item.costing}
+                  onChange={(e) => {
+                    const next = [...serviceBreakdown];
+                    next[idx] = { ...next[idx], costing: e.target.value };
+                    onUpdateField('serviceBreakdown', next);
+                  }}
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Section 3: Overall Costing & Commercial Schedule (Page 2 & 3)
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {commercialScheduleItems.map((item, idx) => (
+            <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+              <input
+                value={item.component}
+                placeholder="Service Component"
+                onChange={(e) => {
+                  const next = [...commercialScheduleItems];
+                  next[idx] = { ...next[idx], component: e.target.value };
+                  onUpdateField('commercialScheduleItems', next);
+                }}
+              />
+              <input
+                value={item.scope}
+                placeholder="Scope & Deliverables"
+                onChange={(e) => {
+                  const next = [...commercialScheduleItems];
+                  next[idx] = { ...next[idx], scope: e.target.value };
+                  onUpdateField('commercialScheduleItems', next);
+                }}
+              />
+              <input
+                value={item.investment}
+                placeholder="Investment (₹)"
+                onChange={(e) => {
+                  const next = [...commercialScheduleItems];
+                  next[idx] = { ...next[idx], investment: e.target.value };
+                  onUpdateField('commercialScheduleItems', next);
+                }}
+              />
+            </div>
+          ))}
+          <label style={{ marginTop: '8px' }}>
+            <span>Base Activation Package Total</span>
+            <input
+              value={proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
+              onChange={(e) => onUpdateField('basePackageTotal', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '28px', marginBottom: '12px' }}>
+          Part 2: Statement of Work (SOW) Settings (Page 4 & 5)
+        </h3>
+        <label>
+          <span>SOW Preamble</span>
+          <textarea
+            rows="3"
+            value={proposal.sowPreamble || ''}
+            onChange={(e) => onUpdateField('sowPreamble', e.target.value)}
+          />
+        </label>
+
+        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
+          1. Scope Activities (5 Bullets)
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {sowScopeActivities.map((act, idx) => (
+            <textarea
+              key={idx}
+              rows="2"
+              value={act}
+              onChange={(e) => {
+                const next = [...sowScopeActivities];
+                next[idx] = e.target.value;
+                onUpdateField('sowScopeActivities', next);
+              }}
+            />
+          ))}
+        </div>
+
+        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
+          2. Deliverables Matrix (4 Bullets)
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {sowDeliverables.map((del, idx) => (
+            <input
+              key={idx}
+              value={del}
+              onChange={(e) => {
+                const next = [...sowDeliverables];
+                next[idx] = e.target.value;
+                onUpdateField('sowDeliverables', next);
+              }}
+            />
+          ))}
+        </div>
+
+        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
+          3. Timeline Schedule (Gantt Matrix)
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {sowTimelineMilestones.map((m, idx) => (
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+              <input
+                value={m.activity}
+                onChange={(e) => {
+                  const next = [...sowTimelineMilestones];
+                  next[idx] = { ...next[idx], activity: e.target.value };
+                  onUpdateField('sowTimelineMilestones', next);
+                }}
+              />
+              <select
+                value={m.activeWeek}
+                onChange={(e) => {
+                  const next = [...sowTimelineMilestones];
+                  next[idx] = { ...next[idx], activeWeek: Number(e.target.value) };
+                  onUpdateField('sowTimelineMilestones', next);
+                }}
+              >
+                <option value={1}>Active in Week 1</option>
+                <option value={2}>Active in Week 2</option>
+                <option value={3}>Active in Week 3</option>
+                <option value={4}>Active in Week 4</option>
+              </select>
+            </div>
+          ))}
+        </div>
+
+        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
+          4. Milestone Invoicing Schedule
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {sowInvoicingMilestones.map((inv, idx) => (
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+              <input
+                value={inv.deliverable}
+                onChange={(e) => {
+                  const next = [...sowInvoicingMilestones];
+                  next[idx] = { ...next[idx], deliverable: e.target.value };
+                  onUpdateField('sowInvoicingMilestones', next);
+                }}
+              />
+              <input
+                value={inv.percentage}
+                onChange={(e) => {
+                  const next = [...sowInvoicingMilestones];
+                  next[idx] = { ...next[idx], percentage: e.target.value };
+                  onUpdateField('sowInvoicingMilestones', next);
+                }}
+              />
+              <input
+                value={inv.amount}
+                onChange={(e) => {
+                  const next = [...sowInvoicingMilestones];
+                  next[idx] = { ...next[idx], amount: e.target.value };
+                  onUpdateField('sowInvoicingMilestones', next);
+                }}
+              />
+            </div>
+          ))}
+          <label style={{ marginTop: '6px' }}>
+            <span>Total Base Implementation Fee</span>
+            <input
+              value={proposal.totalImplementationFee || '₹50,000'}
+              onChange={(e) => onUpdateField('totalImplementationFee', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
+          5. Engagement Assumptions & SLAs
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {sowAssumptions.map((assump, idx) => (
+            <textarea
+              key={idx}
+              rows="2"
+              value={assump}
+              onChange={(e) => {
+                const next = [...sowAssumptions];
+                next[idx] = e.target.value;
+                onUpdateField('sowAssumptions', next);
+              }}
+            />
+          ))}
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '28px', marginBottom: '12px' }}>
+          Section 6: Authorization & Sign-Off (Page 5)
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Client Signatory Name</span>
+            <input
+              value={proposal.clientSignatoryName || ''}
+              onChange={(e) => onUpdateField('clientSignatoryName', e.target.value)}
+              placeholder="e.g. Authorized Signatory"
+            />
+          </label>
+          <label>
+            <span>Client Signatory Title</span>
+            <input
+              value={proposal.clientSignatoryTitle || ''}
+              onChange={(e) => onUpdateField('clientSignatoryTitle', e.target.value)}
+              placeholder="e.g. Director / Managing Partner"
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Lead Signatory</span>
+            <input
+              value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
+              onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>iBUNIFY Signatory Title</span>
+            <input
+              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isSla = proposal.documentType === 'sla';
+
+  if (isSla) {
+    const incidentBenchmarks = proposal.incidentBenchmarks || [];
+    const escalationMatrix = proposal.escalationMatrix || [];
+
+    const handleUpdateBenchmark = (idx, patch) => {
+      const updated = [...incidentBenchmarks];
+      updated[idx] = { ...updated[idx], ...patch };
+      onUpdateField('incidentBenchmarks', updated);
+    };
+
+    const handleUpdateEscalation = (idx, value) => {
+      const updated = [...escalationMatrix];
+      updated[idx] = value;
+      onUpdateField('escalationMatrix', updated);
+    };
+
+    return (
+      <section className="editor panel">
+        <h2>Service Level Agreement (SLA) Settings</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '8px', marginBottom: '12px' }}>
+          Cover Page & SLA Metadata (Page 1)
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Category Badge / Pill</span>
+            <input
+              value={proposal.badge || 'SERVICE LEVEL AGREEMENT (SLA)'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Agreement Title</span>
+            <input
+              value={proposal.proposalTitle || 'Service Level Agreement (SLA)'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Ref</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-06-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Issue Date</span>
+            <input
+              value={proposal.date || '[Date]'}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Company Name</span>
+            <input
+              value={proposal.preparedFor || ''}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              placeholder="e.g. [Client Company Name]"
+            />
+          </label>
+          <label>
+            <span>Client Attention / Sponsor</span>
+            <input
+              value={proposal.clientAttention || ''}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Office Location</span>
+            <input
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Digital Portals</span>
+            <input
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Governance Statement</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          1. Service Uptime & Infrastructure Commitment
+        </h3>
+        <div className="form-grid">
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Platform Availability Commitment Text</span>
+            <textarea
+              rows="3"
+              value={proposal.uptimeCommitment || 'iBUNIFY guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
+              onChange={(e) => onUpdateField('uptimeCommitment', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          2. Incident Priority & Turnaround Benchmarks (4-Column Matrix)
+        </h3>
+        <div className="invoice-items-table-wrap">
+          <table className="invoice-items-table">
+            <thead>
+              <tr>
+                <th style={{ width: '22%' }}>Priority Level</th>
+                <th style={{ width: '42%' }}>Definition & Impact</th>
+                <th style={{ width: '18%' }}>Response SLA</th>
+                <th style={{ width: '18%' }}>Resolution Target</th>
+              </tr>
+            </thead>
+            <tbody>
+              {incidentBenchmarks.map((inc, idx) => (
+                <tr key={inc.id || idx}>
+                  <td>
+                    <input
+                      style={{ fontWeight: '700' }}
+                      value={inc.level || ''}
+                      onChange={(e) => handleUpdateBenchmark(idx, { level: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={inc.impact || ''}
+                      onChange={(e) => handleUpdateBenchmark(idx, { impact: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={inc.responseSla || ''}
+                      onChange={(e) => handleUpdateBenchmark(idx, { responseSla: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={inc.resolutionTarget || ''}
+                      onChange={(e) => handleUpdateBenchmark(idx, { resolutionTarget: e.target.value })}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          3. Escalation Matrix (Tiers 1 to 3)
+        </h3>
+        <div className="form-grid">
+          {escalationMatrix.map((esc, idx) => (
+            <label key={idx} className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+              <span>Level {idx + 1} Escalation</span>
+              <input
+                value={esc}
+                onChange={(e) => handleUpdateEscalation(idx, e.target.value)}
+              />
+            </label>
+          ))}
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Acknowledgment & Corporate Details
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Client Acknowledgment Line</span>
+            <input
+              value={proposal.clientAcknowledgment || 'Client Acknowledgment: ___________________'}
+              onChange={(e) => onUpdateField('clientAcknowledgment', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Service Provider Signatory</span>
+            <input
+              value={proposal.leadSignatory || 'iBUNIFY Success Lead: Ramyasree'}
+              onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Company Name</span>
+            <input
+              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              onChange={(e) => onUpdateField('footerCompany', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Office Address</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Portals</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isPo = proposal.documentType === 'po';
+
+  if (isPo) {
+    const orderScheduleItems = proposal.orderScheduleItems || [
+      {
+        id: 'po-item-1',
+        description: 'One-Time Implementation & Setup Fee',
+        qtyUnit: '1 Package',
+        unitPrice: '₹50,000',
+        totalAmount: '₹50,000'
+      },
+      {
+        id: 'po-item-2',
+        description: 'iBUNIFY CRM User Licenses (Quarterly)',
+        qtyUnit: '[User Count]',
+        unitPrice: '₹2,500 / user / mo',
+        totalAmount: 'As Per Count'
+      },
+      {
+        id: 'po-item-3',
+        description: 'WhatsApp Business Platform Setup (6 Months)',
+        qtyUnit: '1 Package',
+        unitPrice: '₹15,000',
+        totalAmount: '₹15,000'
+      },
+      {
+        id: 'po-item-4',
+        description: 'WhatsApp Prepaid Message Wallet',
+        qtyUnit: '1 Wallet',
+        unitPrice: '₹10,000',
+        totalAmount: '₹10,000'
+      },
+      {
+        id: 'po-item-5',
+        description: 'Cloud Telephony Virtual Numbers',
+        qtyUnit: '[Qty] Nos.',
+        unitPrice: '₹1,500 / no / mo',
+        totalAmount: 'As Per Qty'
+      }
+    ];
+
+    const handleUpdateOrderItem = (index, patch) => {
+      const updated = [...orderScheduleItems];
+      updated[index] = { ...updated[index], ...patch };
+      onUpdateField('orderScheduleItems', updated);
+    };
+
+    const handleDeleteOrderItem = (index) => {
+      const updated = orderScheduleItems.filter((_, idx) => idx !== index);
+      onUpdateField('orderScheduleItems', updated);
+    };
+
+    const handleAddOrderItem = () => {
+      const newItem = {
+        id: `po-item-${Date.now()}`,
+        description: 'New Service Component',
+        qtyUnit: '1 Package',
+        unitPrice: '₹0',
+        totalAmount: '₹0'
+      };
+      onUpdateField('orderScheduleItems', [...orderScheduleItems, newItem]);
+    };
+
+    return (
+      <section className="editor panel invoice-editor">
+        <h2>Purchase Order (PO Template) Customizer</h2>
+
+        <div className="form-grid">
+          <label>
+            <span>Document Badge / Label</span>
+            <input
+              value={proposal.badge || 'PURCHASE ORDER (PO TEMPLATE)'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Title</span>
+            <input
+              value={proposal.proposalTitle || 'Purchase Order (PO Template)'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle</span>
+            <input
+              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Reference ID</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-07-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client / Prepared For</span>
+            <input
+              value={proposal.preparedFor || '[Client Company Name]'}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Attention</span>
+            <input
+              value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Office Location</span>
+            <input
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Digital Portals</span>
+            <input
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Handover Statement</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          1. Purchase Order Summary
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>PO Number</span>
+            <input
+              value={proposal.poNumber || 'PO-IBUNIFY-2026-001'}
+              onChange={(e) => onUpdateField('poNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>PO Date</span>
+            <input
+              value={proposal.poDate || proposal.date || ''}
+              onChange={(e) => {
+                onUpdateField('poDate', e.target.value);
+                onUpdateField('date', e.target.value);
+              }}
+            />
+          </label>
+          <label>
+            <span>Payment Terms</span>
+            <input
+              value={proposal.paymentTerms || 'NET 30'}
+              onChange={(e) => onUpdateField('paymentTerms', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Currency</span>
+            <input
+              value={proposal.currency || 'INR (₹)'}
+              onChange={(e) => onUpdateField('currency', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          2. Itemized Order Schedule (4 Columns)
+        </h3>
+        <div className="invoice-items-table-wrap">
+          <table className="invoice-items-table">
+            <thead>
+              <tr>
+                <th style={{ width: '38%' }}>Item Description</th>
+                <th style={{ width: '20%' }}>Qty / Unit</th>
+                <th style={{ width: '20%' }}>Unit Price</th>
+                <th style={{ width: '16%' }}>Total Amount</th>
+                <th style={{ width: '6%' }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderScheduleItems.map((item, idx) => (
+                <tr key={item.id || idx}>
+                  <td>
+                    <input
+                      style={{ fontWeight: '600' }}
+                      value={item.description || ''}
+                      onChange={(e) => handleUpdateOrderItem(idx, { description: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={item.qtyUnit || ''}
+                      onChange={(e) => handleUpdateOrderItem(idx, { qtyUnit: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={item.unitPrice || ''}
+                      onChange={(e) => handleUpdateOrderItem(idx, { unitPrice: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      style={{ fontWeight: '700' }}
+                      value={item.totalAmount || ''}
+                      onChange={(e) => handleUpdateOrderItem(idx, { totalAmount: e.target.value })}
+                    />
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <button
+                      type="button"
+                      className="del-item-btn"
+                      onClick={() => handleDeleteOrderItem(idx)}
+                      title="Delete item"
+                    >
+                      ×
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button
+            type="button"
+            className="add-invoice-item-btn"
+            onClick={handleAddOrderItem}
+            style={{ marginTop: '10px' }}
+          >
+            ＋ Add Order Item
+          </button>
+        </div>
+
+        <div className="form-grid" style={{ marginTop: '14px' }}>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Total Initial Purchase Order Value (Excl. Taxes)</span>
+            <input
+              style={{ fontWeight: '700', color: '#0f2b6e' }}
+              value={proposal.totalInitialPoValue || '₹75,000 + Users'}
+              onChange={(e) => onUpdateField('totalInitialPoValue', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          3. Authorization & Approval
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Issued By (Client)</strong>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Client Entity Name</span>
+              <input
+                value={proposal.issuedByClient || '[CLIENT COMPANY NAME]'}
+                onChange={(e) => onUpdateField('issuedByClient', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Authorized By</span>
+              <input
+                value={proposal.issuedByAuthorized || '__________________________'}
+                onChange={(e) => onUpdateField('issuedByAuthorized', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Designation</span>
+              <input
+                value={proposal.issuedByDesignation || '____________________________'}
+                onChange={(e) => onUpdateField('issuedByDesignation', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+              <input
+                value={proposal.issuedByDate || '[Date]'}
+                onChange={(e) => onUpdateField('issuedByDate', e.target.value)}
+              />
+            </label>
+          </div>
+
+          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Accepted By (Service Provider)</strong>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Service Provider Entity</span>
+              <input
+                value={proposal.acceptedByCompany || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
+                onChange={(e) => onUpdateField('acceptedByCompany', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Authorized By</span>
+              <input
+                value={proposal.acceptedByAuthorized || 'Rama Krishna / Sohail'}
+                onChange={(e) => onUpdateField('acceptedByAuthorized', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Designation</span>
+              <input
+                value={proposal.acceptedByDesignation || 'Enterprise Practice Leads'}
+                onChange={(e) => onUpdateField('acceptedByDesignation', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+              <input
+                value={proposal.acceptedByDate || '[Date]'}
+                onChange={(e) => onUpdateField('acceptedByDate', e.target.value)}
+              />
+            </label>
+          </div>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Corporate Office & Footer
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Footer Company Name</span>
+            <input
+              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              onChange={(e) => onUpdateField('footerCompany', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Office Address</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Portals</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Running Page Footnote</span>
+            <input
+              value={proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}
+              onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isHandover = proposal.documentType === 'handover';
+
+  if (isHandover) {
+    const checklistItems = proposal.handoverChecklistItems || [];
+
+    const handleAddChecklistItem = () => {
+      const newItem = {
+        id: `ho-${Date.now()}`,
+        component: 'New Component',
+        feature: 'Delivered capability and verification description',
+        status: 'Completed & Verified'
+      };
+      onUpdateField('handoverChecklistItems', [...checklistItems, newItem]);
+    };
+
+    const handleUpdateChecklistItem = (index, patch) => {
+      const updated = checklistItems.map((item, idx) => (idx === index ? { ...item, ...patch } : item));
+      onUpdateField('handoverChecklistItems', updated);
+    };
+
+    const handleDeleteChecklistItem = (index) => {
+      const updated = checklistItems.filter((_, idx) => idx !== index);
+      onUpdateField('handoverChecklistItems', updated);
+    };
+
+    return (
+      <section className="editor panel">
+        <h2>Project Delivery & Handover Sign-off Customizer</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '16px', marginBottom: '12px' }}>
+          Document Header & Cover Details
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Document Title</span>
+            <input
+              value={proposal.proposalTitle || 'Project Delivery & Handover Sign-off'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.handoverSubtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('handoverSubtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Reference Number</span>
+            <input
+              value={proposal.handoverRefNo || 'IGC-IBUNIFY-08-2026'}
+              onChange={(e) => onUpdateField('handoverRefNo', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Delivery Date</span>
+            <input
+              value={proposal.handoverDate || 'August 2026'}
+              onChange={(e) => onUpdateField('handoverDate', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Project Lead</span>
+            <input
+              value={proposal.handoverClientLead || 'Rama Krishna'}
+              onChange={(e) => onUpdateField('handoverClientLead', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client Organization</span>
+            <input
+              value={proposal.handoverClientOrg || '[CLIENT ORGANIZATION]'}
+              onChange={(e) => onUpdateField('handoverClientOrg', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.handoverProvider || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              onChange={(e) => onUpdateField('handoverProvider', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Solution Architect / Delivery Lead</span>
+            <input
+              value={proposal.handoverProviderLead || 'Sohail'}
+              onChange={(e) => onUpdateField('handoverProviderLead', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          1. Delivery Scope Verification
+        </h3>
+        <label style={{ display: 'block', marginBottom: '16px' }}>
+          <span style={{ fontSize: '12px', color: '#64748b' }}>Scope Verification Statement</span>
+          <textarea
+            rows="3"
+            value={proposal.handoverScopeText || 'This Delivery & Handover Document certifies that the implementation of the iBUNIFY CRM Platform has been completed in accordance with the Statement of Work.'}
+            onChange={(e) => onUpdateField('handoverScopeText', e.target.value)}
+          />
+        </label>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          2. Handover Checklist & Verification Matrix
+        </h3>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="customizer-table" style={{ width: '100%', fontSize: '13px' }}>
+            <thead>
+              <tr style={{ background: '#0f2b6e', color: '#fff' }}>
+                <th style={{ width: '28%' }}>Component</th>
+                <th style={{ width: '44%' }}>Delivered Feature</th>
+                <th style={{ width: '22%' }}>Status</th>
+                <th style={{ width: '6%' }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {checklistItems.map((item, idx) => (
+                <tr key={item.id || idx}>
+                  <td>
+                    <input
+                      style={{ fontWeight: '600' }}
+                      value={item.component || ''}
+                      onChange={(e) => handleUpdateChecklistItem(idx, { component: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <textarea
+                      rows="2"
+                      value={item.feature || ''}
+                      onChange={(e) => handleUpdateChecklistItem(idx, { feature: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      style={{ fontWeight: '600', color: '#047857' }}
+                      value={item.status || ''}
+                      onChange={(e) => handleUpdateChecklistItem(idx, { status: e.target.value })}
+                    />
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <button
+                      type="button"
+                      className="del-item-btn"
+                      onClick={() => handleDeleteChecklistItem(idx)}
+                      title="Delete checklist item"
+                    >
+                      ×
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button
+            type="button"
+            className="add-invoice-item-btn"
+            onClick={handleAddChecklistItem}
+            style={{ marginTop: '10px' }}
+          >
+            ＋ Add Checklist Item
+          </button>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          3. Formal Delivery Acceptance (Dual Sign-Off)
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Accepted by (Client Project Manager)</strong>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
+              <input
+                value={proposal.handoverAcceptClientName || 'Rama Krishna'}
+                onChange={(e) => onUpdateField('handoverAcceptClientName', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Designation / Title</span>
+              <input
+                value={proposal.handoverAcceptClientTitle || 'Project Manager / Delivery Sponsor'}
+                onChange={(e) => onUpdateField('handoverAcceptClientTitle', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Organization</span>
+              <input
+                value={proposal.handoverAcceptClientOrg || '[CLIENT ORGANIZATION]'}
+                onChange={(e) => onUpdateField('handoverAcceptClientOrg', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+              <input
+                value={proposal.handoverAcceptClientDate || 'Date: ________________________'}
+                onChange={(e) => onUpdateField('handoverAcceptClientDate', e.target.value)}
+              />
+            </label>
+          </div>
+
+          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Delivered by (iBUNIFY Lead)</strong>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
+              <input
+                value={proposal.handoverDeliveredLeadName || 'Sohail'}
+                onChange={(e) => onUpdateField('handoverDeliveredLeadName', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Designation / Title</span>
+              <input
+                value={proposal.handoverDeliveredLeadTitle || 'Practice Lead — Enterprise Delivery'}
+                onChange={(e) => onUpdateField('handoverDeliveredLeadTitle', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Organization</span>
+              <input
+                value={proposal.handoverDeliveredLeadOrg || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
+                onChange={(e) => onUpdateField('handoverDeliveredLeadOrg', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+              <input
+                value={proposal.handoverDeliveredLeadDate || 'Date: August 2026'}
+                onChange={(e) => onUpdateField('handoverDeliveredLeadDate', e.target.value)}
+              />
+            </label>
+          </div>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Corporate Office & Footer
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Footer Registered Office</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Websites</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Running Page Footnote</span>
+            <input
+              value={proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | Project Delivery Sign-off'}
+              onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
+  const isClosure = proposal.documentType === 'closure';
+
+  if (isClosure) {
+    const metrics = proposal.operationalMetrics || [
+      { id: 'metric-1', value: '100%', label: 'REQUIREMENTS DELIVERED' },
+      { id: 'metric-2', value: '100%', label: 'UAT SIGN-OFF' },
+      { id: 'metric-3', value: '< 1 Min', label: 'AVG. RESPONSE TIME' },
+      { id: 'metric-4', value: '24/7', label: 'SUPPORT ACTIVE' }
+    ];
+
+    const handleUpdateMetric = (index, patch) => {
+      const updated = metrics.map((m, idx) => (idx === index ? { ...m, ...patch } : m));
+      onUpdateField('operationalMetrics', updated);
+    };
+
+    return (
+      <section className="editor panel">
+        <h2>Project Closure & Hypercare Transition Customizer</h2>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '16px', marginBottom: '12px' }}>
+          Document Header & Cover Details (Page 1)
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Document Title</span>
+            <input
+              value={proposal.proposalTitle || 'Project Closure & Hypercare Transition'}
+              onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Subtitle / Platform</span>
+            <input
+              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              onChange={(e) => onUpdateField('subtitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Category Badge / Pill</span>
+            <input
+              value={proposal.badge || 'PROJECT CLOSURE & HYPERCARE TRANSITION'}
+              onChange={(e) => onUpdateField('badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Ref</span>
+            <input
+              value={proposal.proposalNumber || 'IGC-IBUNIFY-09-2026'}
+              onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Date</span>
+            <input
+              value={proposal.date || '[Date]'}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Client / Prepared For</span>
+            <input
+              value={proposal.preparedFor || '[Client Company Name]'}
+              onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Attention</span>
+            <input
+              value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+              onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Service Provider</span>
+            <input
+              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              onChange={(e) => onUpdateField('company', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Office Location</span>
+            <input
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Digital Portals</span>
+            <input
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('portals', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Contacts</span>
+            <input
+              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Overview & Governance Statement</span>
+            <textarea
+              rows="2"
+              value={proposal.description || proposal.descriptionText || ''}
+              onChange={(e) => {
+                onUpdateField('description', e.target.value);
+                onUpdateField('descriptionText', e.target.value);
+              }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          1. Formal Project Closure Statement
+        </h3>
+        <label style={{ display: 'block', marginBottom: '16px' }}>
+          <span style={{ fontSize: '12px', color: '#64748b' }}>Closure Confirmation Text</span>
+          <textarea
+            rows="3"
+            value={proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the iBUNIFY CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
+            onChange={(e) => onUpdateField('formalClosureStatement', e.target.value)}
+          />
+        </label>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          2. Operational Metrics Achieved (4 Cards)
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+          {metrics.map((m, idx) => (
+            <div key={m.id || idx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+              <label style={{ display: 'block', marginBottom: '6px' }}>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>Metric Value</span>
+                <input
+                  style={{ fontWeight: '800', color: '#0284c7', fontSize: '16px' }}
+                  value={m.value || ''}
+                  onChange={(e) => handleUpdateMetric(idx, { value: e.target.value })}
+                />
+              </label>
+              <label style={{ display: 'block' }}>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>Metric Label</span>
+                <input
+                  style={{ fontSize: '11px', fontWeight: '700' }}
+                  value={m.label || ''}
+                  onChange={(e) => handleUpdateMetric(idx, { label: e.target.value })}
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          3. Transition to Ongoing Support & Customer Success
+        </h3>
+        <div className="form-grid">
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Transition Statement</span>
+            <textarea
+              rows="2"
+              value={proposal.supportTransitionText || 'The project is transitioned from the Implementation Engineering Team to the Customer Success & Managed Support Practice under the SLA terms.'}
+              onChange={(e) => onUpdateField('supportTransitionText', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Support Email</span>
+            <input
+              value={proposal.supportEmail || 'support@ibunify.com | Contact@iglobuscc.com'}
+              onChange={(e) => onUpdateField('supportEmail', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Dedicated Success Manager</span>
+            <input
+              value={proposal.dedicatedSuccessManager || 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}
+              onChange={(e) => onUpdateField('dedicatedSuccessManager', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          4. Mutual Final Project Sign-off
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>FOR: Client</strong>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Client Entity</span>
+              <input
+                value={proposal.preparedFor || '[CLIENT COMPANY NAME]'}
+                onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Name & Title</span>
+              <input
+                value={proposal.clientSignatoryName || proposal.clientAttention || '______________________'}
+                onChange={(e) => onUpdateField('clientSignatoryName', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+              <input
+                value={proposal.clientSignDate || proposal.date || '[Date]'}
+                onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+              />
+            </label>
+          </div>
+
+          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>FOR: iBUNIFY (iGLOBUS)</strong>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
+              <input
+                value={proposal.providerSignatoryName || 'Rama Krishna / Sohail'}
+                onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
+              <input
+                value={proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
+                onChange={(e) => onUpdateField('providerSignatoryTitle', e.target.value)}
+              />
+            </label>
+          </div>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Corporate Office & Footer
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Footer Registered Office</span>
+            <input
+              value={proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+              onChange={(e) => onUpdateField('footerAddress', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Footer Websites</span>
+            <input
+              value={proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+              onChange={(e) => onUpdateField('footerWebsites', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Running Page Footnote</span>
+            <input
+              value={proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}
+              onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
+            />
+          </label>
+        </div>
+      </section>
+    );
+  }
+
   // Regular Proposal Editor
   const commercialItems = proposal.commercialItems || [];
   const useStructuredCommercials = Boolean(proposal.useStructuredCommercials);

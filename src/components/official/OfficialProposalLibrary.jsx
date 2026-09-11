@@ -8,6 +8,14 @@ import {
   IconCorporateDeck,
   IconCustomProposal,
   IconInvoices,
+  IconDiscovery,
+  IconNda,
+  IconMsa,
+  IconCommercialProposal,
+  IconSla,
+  IconPo,
+  IconHandover,
+  IconClosure,
   IconEdit,
   IconFullScreen
 } from '../common/Icons.jsx';
@@ -20,6 +28,22 @@ function getFormatIcon(formatId) {
       return <IconCustomProposal size={16} />;
     case 'invoice':
       return <IconInvoices size={16} />;
+    case 'discovery':
+      return <IconDiscovery size={16} />;
+    case 'nda':
+      return <IconNda size={16} />;
+    case 'msa':
+      return <IconMsa size={16} />;
+    case 'commercial_proposal':
+      return <IconCommercialProposal size={16} />;
+    case 'sla':
+      return <IconSla size={16} />;
+    case 'po':
+      return <IconPo size={16} />;
+    case 'handover':
+      return <IconHandover size={16} />;
+    case 'closure':
+      return <IconClosure size={16} />;
     case 'all':
     default:
       return <IconAllAssets size={16} />;
@@ -31,10 +55,16 @@ export function OfficialProposalLibrary({
   setActiveDocumentFormat,
   onOpenBuilder,
   onOpenInvoice,
+  onOpenDiscovery,
+  onOpenNda,
+  onOpenMsa,
+  onOpenCommercialProposal,
+  onOpenSla,
+  onOpenPo,
+  onOpenHandover,
+  onOpenClosure,
   onSelectTemplate
 }) {
-  const invoiceTemplates = proposalTemplates.filter((t) => t.category === 'Invoice');
-
   return (
     <>
       <aside className="document-sidebar panel" aria-label="Document workspace">
@@ -53,6 +83,22 @@ export function OfficialProposalLibrary({
                   onOpenBuilder();
                 } else if (format.id === 'invoice') {
                   onOpenInvoice();
+                } else if (format.id === 'discovery') {
+                  onOpenDiscovery();
+                } else if (format.id === 'nda') {
+                  onOpenNda();
+                } else if (format.id === 'msa') {
+                  onOpenMsa();
+                } else if (format.id === 'commercial_proposal') {
+                  onOpenCommercialProposal();
+                } else if (format.id === 'sla') {
+                  onOpenSla();
+                } else if (format.id === 'po') {
+                  onOpenPo();
+                } else if (format.id === 'handover') {
+                  onOpenHandover();
+                } else if (format.id === 'closure') {
+                  onOpenClosure();
                 } else {
                   setActiveDocumentFormat(format.id);
                 }
@@ -63,65 +109,9 @@ export function OfficialProposalLibrary({
                 <span className="format-icon">{getFormatIcon(format.id)}</span>
                 <span className="format-name">{format.label}</span>
               </span>
-              <span className="format-count">{format.count}</span>
             </button>
           ))}
         </nav>
-
-        <div className="document-list">
-          <div className="document-list-label">Deliverables</div>
-
-          {(activeDocumentFormat === 'all' || activeDocumentFormat === 'pdf') && (
-            <button
-              type="button"
-              className="document-card active invoice-card-btn"
-              onClick={downloadOfficialPdf}
-            >
-              <span className="file-icon-box pdf">
-                <IconCorporateDeck size={18} />
-              </span>
-              <span>
-                <strong>AI-Powered Unified Custo...</strong>
-                <small>Official proposal · {OFFICIAL_PROPOSAL.fileSize}</small>
-              </span>
-            </button>
-          )}
-
-          {(activeDocumentFormat === 'all' || activeDocumentFormat === 'proposal') && (
-            <button
-              type="button"
-              className="document-card invoice-card-btn"
-              onClick={onOpenBuilder}
-            >
-              <span className="file-icon-box prop">
-                <IconCustomProposal size={18} />
-              </span>
-              <span>
-                <strong>Custom Proposal</strong>
-                <small>Editable Proposal · Deal Studio</small>
-              </span>
-            </button>
-          )}
-
-          {(activeDocumentFormat === 'all' || activeDocumentFormat === 'invoice') && (
-            invoiceTemplates.map((tpl) => (
-              <button
-                key={tpl.id}
-                type="button"
-                className="document-card invoice-card-btn"
-                onClick={onOpenInvoice}
-              >
-                <span className="file-icon-box inv">
-                  <IconInvoices size={18} />
-                </span>
-                <span>
-                  <strong>{tpl.name}</strong>
-                  <small>Editable Invoice · Standard Executive</small>
-                </span>
-              </button>
-            ))
-          )}
-        </div>
       </aside>
 
       {(activeDocumentFormat === 'all' || activeDocumentFormat === 'pdf') ? (
@@ -140,34 +130,14 @@ export function OfficialProposalLibrary({
             </div>
           </div>
           <div className="pdf-viewer-wrapper">
-            <object
-              className="official-pdf"
-              data={`${OFFICIAL_PROPOSAL.filePath}#view=FitH&toolbar=1`}
-              type="application/pdf"
-              aria-label="iBunify product proposal"
-            >
-              <div className="pdf-fallback">
-                <p>Your browser cannot display the proposal inline.</p>
-                <a className="button-link" href={OFFICIAL_PROPOSAL.filePath} target="_blank" rel="noreferrer">
-                  Open the proposal
-                </a>
-              </div>
-            </object>
-          </div>
-
-          <div className="deck-bottom-action-bar">
-            <div className="deck-bottom-info">
-              <strong>Need to create or customize a client proposal?</strong>
-              <span>Tailor executive summary, scope of work, timeline, and commercial pricing.</span>
+            <div className="pdf-inner-clipper">
+              <iframe
+                src={`${OFFICIAL_PROPOSAL.filePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+                title="Official iGlobus Proposal PDF"
+                className="official-pdf"
+                scrolling="no"
+              />
             </div>
-            <button
-              type="button"
-              className="primary-blue-btn deck-customize-btn"
-              onClick={onOpenBuilder}
-            >
-              <span className="btn-icon"><IconEdit size={14} /></span>
-              <span>Customize in Proposal Studio</span>
-            </button>
           </div>
         </section>
       ) : activeDocumentFormat === 'proposal' ? (
@@ -176,7 +146,7 @@ export function OfficialProposalLibrary({
             <IconCustomProposal size={34} />
           </div>
           <h2>Custom Proposal Studio</h2>
-          <p>Create, customize, and export client-ready sales proposals with custom scope, timelines, and commercial tables.</p>
+          <p>Create, customize, and export interactive business proposals tailored to your client's needs.</p>
           <div className="invoice-action-buttons">
             <button type="button" className="primary-blue-btn" onClick={onOpenBuilder}>
               <span className="btn-icon"><IconEdit size={14} /></span>
@@ -184,17 +154,129 @@ export function OfficialProposalLibrary({
             </button>
           </div>
         </section>
-      ) : (
+      ) : activeDocumentFormat === 'invoice' ? (
         <section className="format-empty panel">
           <div className="empty-file-icon">
             <IconInvoices size={34} />
           </div>
-          <h2>Standard Invoice Studio</h2>
-          <p>Create, customize, and export executive invoices with corporate branding, line item details, and CGST/SGST tax breakdown.</p>
+          <h2>Interactive Invoice Studio</h2>
+          <p>Create, customize, and export professional invoices with itemized billing, taxes, discounts, and payment terms.</p>
           <div className="invoice-action-buttons">
             <button type="button" className="primary-blue-btn" onClick={onOpenInvoice}>
               <span className="btn-icon"><IconEdit size={14} /></span>
               <span>Launch Invoice Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'discovery' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconDiscovery size={34} />
+          </div>
+          <h2>Discovery — Requirement Gathering & Scoping</h2>
+          <p>Create, customize, and export executive requirement discovery blueprints, functional architecture tables, stakeholder goals, and technical integrations.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenDiscovery}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch Discovery Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'nda' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconNda size={34} />
+          </div>
+          <h2>Mutual Non-Disclosure Agreement (NDA) Studio</h2>
+          <p>Create, customize, and export legally vetted mutual NDAs, confidentiality covenants, disclosure exceptions, and non-circumvention terms.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenNda}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch NDA Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'msa' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconMsa size={34} />
+          </div>
+          <h2>Master Services Agreement (MSA) Studio</h2>
+          <p>Create, customize, and export master services agreements, framework terms, SOW governance, intellectual property rights, and jurisdiction terms.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenMsa}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch MSA Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'commercial_proposal' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconCommercialProposal size={34} />
+          </div>
+          <h2>Statement of Work (SOW) Studio</h2>
+          <p>Create, customize, and export high-velocity 5-page enterprise statements of work with AI calling, cloud telephony, WhatsApp workflows, Gantt timeline, milestone invoicing, and full commercial schedules.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenCommercialProposal}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch SOW Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'sla' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconSla size={34} />
+          </div>
+          <h2>Service Level Agreement (SLA) Studio</h2>
+          <p>Create, customize, and export official service level agreements, uptime guarantees (99.9%), incident turnaround benchmarks, and multi-tier escalation matrix.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenSla}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch SLA Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'po' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconPo size={34} />
+          </div>
+          <h2>Purchase Order (PO) Studio</h2>
+          <p>Create, customize, and export official purchase orders, PO summaries, itemized order schedules, and dual authorization approval blocks.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenPo}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch PO Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : activeDocumentFormat === 'closure' ? (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconClosure size={34} />
+          </div>
+          <h2>Project Closure & Hypercare Studio</h2>
+          <p>Create, customize, and export official project closure certificates, operational KPI scorecards, and warranty support terms.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenClosure}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch Closure Studio</span>
+            </button>
+          </div>
+        </section>
+      ) : (
+        <section className="format-empty panel">
+          <div className="empty-file-icon">
+            <IconHandover size={34} />
+          </div>
+          <h2>Delivery & Handover Studio</h2>
+          <p>Create, customize, and export official delivery & handover certificates, feature verification checklists, and client PM sign-off acceptance blocks.</p>
+          <div className="invoice-action-buttons">
+            <button type="button" className="primary-blue-btn" onClick={onOpenHandover}>
+              <span className="btn-icon"><IconEdit size={14} /></span>
+              <span>Launch Delivery Studio</span>
             </button>
           </div>
         </section>
