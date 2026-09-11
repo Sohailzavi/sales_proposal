@@ -11,11 +11,11 @@ export function loadProposalsFromStorage() {
       if (Array.isArray(parsed) && parsed.length > 0) {
         // Filter out legacy compact invoices and ensure INR currency with GST
         const cleaned = withoutCompact.map((p) => {
-          const company = p.company === 'I-Globus Corporate Consulting' ? 'iGlobus Corporate Consulting' : p.company;
+          const company = (p.company === 'I-Globus Corporate Consulting' || p.company === 'iGlobus Corporate Consulting') ? 'iGLOBUS Corporate Consulting' : p.company;
           if (p.documentType === 'invoice') {
             return {
               ...p,
-              company: company || 'iGlobus Corporate Consulting',
+              company: company || 'iGLOBUS Corporate Consulting',
               currency: 'INR',
               cgstPct: typeof p.cgstPct === 'number' ? p.cgstPct : 9,
               sgstPct: typeof p.sgstPct === 'number' ? p.sgstPct : 9,

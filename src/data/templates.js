@@ -6,7 +6,7 @@ export const proposalTemplates = [
     category: 'Invoice',
     documentType: 'invoice',
     invoiceStyle: 'standard',
-    company: 'iGlobus Corporate Consulting',
+    company: 'iGLOBUS Corporate Consulting',
     companyLogoUrl: 'https://cdn.magicpatterns.com/uploads/3KkWC6KLDLBJ93VSkPP3wQ/image.png',
     companyAddress: 'Techno Enclave Madhapur, Hyderabad, Telangana 500081',
     companyPhone: '084648 48389',
@@ -54,7 +54,7 @@ export const proposalTemplates = [
       }
     ],
     notes:
-      'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.',
+      'Payment by bank transfer to iGLOBUS Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.',
     sections: []
   },
   {

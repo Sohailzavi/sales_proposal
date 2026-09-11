@@ -245,7 +245,7 @@ export function invoiceToHtml(doc, forWord = false) {
       </div>
       <div class="company-block">
         ${doc.companyLogoUrl ? `<img src="${escapeHtml(doc.companyLogoUrl)}" alt="Logo" class="logo" />` : ''}
-        <div class="company-name">${escapeHtml(doc.company || 'iGlobus Corporate Consulting')}</div>
+        <div class="company-name">${escapeHtml(doc.company || 'iGLOBUS Corporate Consulting')}</div>
         <address class="address">
           ${companyAddressLines.map((l) => `<p>${escapeHtml(l)}</p>`).join('')}
           ${doc.companyPhone ? `<p>Phone: ${escapeHtml(doc.companyPhone)}</p>` : ''}

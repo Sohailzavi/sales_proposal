@@ -68,7 +68,7 @@ export function ProposalPreview({ proposal }) {
                     {proposal.companyBadge || 'iG'}
                   </div>
                 )}
-                <p className="std-inv-company-name">{proposal.company || 'iGlobus Corporate Consulting'}</p>
+                <p className="std-inv-company-name">{proposal.company || 'iGLOBUS Corporate Consulting'}</p>
                 <address className="std-inv-address">
                   {companyAddressLines.map((line, i) => (
                     <p key={i}>{line}</p>
@@ -148,7 +148,7 @@ export function ProposalPreview({ proposal }) {
 
             <footer className="std-inv-footer">
               <h2 className="std-inv-section-label">Payment details</h2>
-              <p className="std-inv-notes">{proposal.notes || 'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}</p>
+              <p className="std-inv-notes">{proposal.notes || 'Payment by bank transfer to iGLOBUS Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}</p>
             </footer>
           </section>
         </div>
