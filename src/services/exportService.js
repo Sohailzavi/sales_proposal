@@ -2329,6 +2329,106 @@ export async function exportPdf(proposal) {
   }
 }
 
+export async function generatePdfBlob(proposal) {
+  const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'Proposal'}.pdf`;
+  const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
+
+  const opt = {
+    margin: 0,
+    filename: fileName,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      scrollY: 0,
+      scrollX: 0
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  const containerToCapture =
+    document.querySelector('.proposal-pages-container') ||
+    document.querySelector('.invoice-paper') ||
+    document.querySelector('.proposal-paper');
+
+  if (containerToCapture && pdfEngine) {
+    const origMaxHeight = containerToCapture.style.maxHeight;
+    const origOverflow = containerToCapture.style.overflow;
+    const origGap = containerToCapture.style.gap;
+    const origPaddingBottom = containerToCapture.style.paddingBottom;
+
+    const cardHeaders = containerToCapture.querySelectorAll('.preview-page-card-header');
+    const headerDisplayStates = [];
+    cardHeaders.forEach((hdr) => {
+      headerDisplayStates.push(hdr.style.display);
+      hdr.style.display = 'none';
+    });
+
+    const pageCards = containerToCapture.querySelectorAll('.sample-letterhead-paper, .standard-invoice-paper, .compact-invoice-paper');
+    const origCardHeights = [];
+    pageCards.forEach((card) => {
+      origCardHeights.push(card.style.height);
+      card.style.height = '1120px';
+    });
+
+    try {
+      containerToCapture.style.maxHeight = 'none';
+      containerToCapture.style.overflow = 'visible';
+      containerToCapture.style.gap = '0px';
+      containerToCapture.style.paddingBottom = '0px';
+
+      const blob = await pdfEngine().set(opt).from(containerToCapture).output('blob');
+      return new File([blob], fileName, { type: 'application/pdf' });
+    } catch (err) {
+      console.warn('Direct preview element PDF blob capture failed, trying offscreen container:', err);
+    } finally {
+      containerToCapture.style.maxHeight = origMaxHeight;
+      containerToCapture.style.overflow = origOverflow;
+      containerToCapture.style.gap = origGap;
+      containerToCapture.style.paddingBottom = origPaddingBottom;
+
+      cardHeaders.forEach((hdr, idx) => {
+        hdr.style.display = headerDisplayStates[idx];
+      });
+
+      pageCards.forEach((card, idx) => {
+        card.style.height = origCardHeights[idx];
+      });
+    }
+  }
+
+  const isInvoice = proposal.documentType === 'invoice';
+  const rawHtml = isInvoice ? invoiceToHtml(proposal) : proposalToHtml(proposal);
+  const parsedDoc = new DOMParser().parseFromString(rawHtml, 'text/html');
+  const styleContent = parsedDoc.querySelector('style')?.textContent || '';
+  const bodyContent = parsedDoc.body ? parsedDoc.body.innerHTML : rawHtml;
+
+  const container = document.createElement('div');
+  container.id = 'pdf-export-container';
+  container.style.position = 'fixed';
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.zIndex = '-9999';
+  container.style.width = '794px';
+  container.style.background = '#ffffff';
+  container.style.color = '#101828';
+  container.innerHTML = `<style>${styleContent}</style><div>${bodyContent}</div>`;
+  document.body.appendChild(container);
+
+  try {
+    if (pdfEngine) {
+      const blob = await pdfEngine().set(opt).from(container).output('blob');
+      return new File([blob], fileName, { type: 'application/pdf' });
+    } else {
+      return new File([new Blob([rawHtml], { type: 'text/html' })], `${fileName}.html`, { type: 'text/html' });
+    }
+  } finally {
+    container.remove();
+  }
+}
+
 export function exportWord(proposal) {
   const html = proposalToHtml(proposal, true);
   downloadBlob(html, `${proposal.proposalNumber || 'sales-proposal'}.doc`, 'application/msword');
