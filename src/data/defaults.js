@@ -22,7 +22,7 @@ export const documentFormats = [
 
 export const sampleProposal = {
   id: 'sample-ibunify-proposal-001',
-  documentType: 'commercial_proposal',
+  documentType: 'proposal',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
   subtitle: 'Built for High-Velocity Real Estate & Sales Enterprises',
@@ -35,7 +35,7 @@ export const sampleProposal = {
   preparedBy: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  productLead: 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)',
+  productLead: 'Rama Krishna | CTO',
   date: new Date().toISOString().slice(0, 10),
   validUntil: '',
   currency: 'INR',
