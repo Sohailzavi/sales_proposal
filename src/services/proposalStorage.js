@@ -26,6 +26,7 @@ export function loadProposalsFromStorage() {
     if (v2Raw) {
       const parsed = JSON.parse(v2Raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
+<<<<<<< Updated upstream
         // Filter out legacy compact invoices, ensure INR currency with GST, and normalize ibunify
         const cleanDateField = (val) => {
           if (!val || typeof val !== 'string') return '';
@@ -110,6 +111,12 @@ export function loadProposalsFromStorage() {
             handoverAcceptClientDate: cleanDateField(p.handoverAcceptClientDate),
             handoverDeliveredLeadDate: cleanDateField(p.handoverDeliveredLeadDate),
           };
+=======
+        // Filter out legacy compact invoices and ensure INR currency with GST
+        const withoutCompact = parsed.filter((p) => p.invoiceStyle !== 'compact');
+        const cleaned = withoutCompact.map((p) => {
+          const company = p.company === 'I-Globus Corporate Consulting' ? 'iGlobus Corporate Consulting' : p.company;
+>>>>>>> Stashed changes
           if (p.documentType === 'invoice') {
             return {
               ...sanitizedProposal,
@@ -121,7 +128,17 @@ export function loadProposalsFromStorage() {
               invoiceStyle: 'standard'
             };
           }
+<<<<<<< Updated upstream
           return { ...sanitizedProposal, company };
+=======
+          if (p.id === 'sample-ibunify-proposal-001' || p.proposalTitle === 'Digital Workspace Transformation Proposal') {
+            return {
+              ...sampleProposal,
+              id: 'sample-ibunify-proposal-001'
+            };
+          }
+          return { ...p, company };
+>>>>>>> Stashed changes
         });
 
         // Deduplicate proposals based on type, title and preparedFor

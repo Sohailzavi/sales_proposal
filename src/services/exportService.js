@@ -432,6 +432,7 @@ export function discoveryToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -442,23 +443,39 @@ export function discoveryToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; margin-top: auto; margin-bottom: 0; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 16px; }
-    .sec-title { font-size: 14px; font-weight: 800; color: #1e3a8a; margin: 16px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .sec-text { font-size: 12.5px; line-height: 1.55; color: #334155; margin-bottom: 12px; }
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 14px; }
-    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 11px; font-weight: 700; padding: 8px 10px; text-align: left; letter-spacing: 0.04em; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 10px; font-size: 12.5px; }
-    .corp-box { text-align: center; font-size: 11px; color: #475569; padding: 10px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 16px; }
+    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; }
+    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; text-align: left; letter-spacing: 0.04em; }
+    .pipe-table td { padding: 5px 8px; font-size: 11px; line-height: 1.35; color: #334155; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-logo">ibunify</div>
         <div class="p1-sublogo">CRM BY IGLOBUS</div>
@@ -484,6 +501,32 @@ export function discoveryToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
+        <div>
+          <div class="p1-badge">${escapeHtml(doc.badge || 'DISCOVERY — REQUIREMENT GATHERING & SCOPING')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Discovery — Requirement Gathering & Scoping')}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || '')}</p>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-01-2026')}</div>
+            <div class="p1-meta-sub">Date: ${escapeHtml(doc.date || '[Date]')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
@@ -564,6 +607,7 @@ export function ndaToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -574,21 +618,36 @@ export function ndaToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 16px; }
-    .sec-title { font-size: 14px; font-weight: 800; color: #1e3a8a; margin: 16px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .sec-text { font-size: 12.5px; line-height: 1.55; color: #334155; margin-bottom: 12px; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 10px; font-size: 12.5px; }
-    .corp-box { text-align: center; font-size: 11px; color: #475569; padding: 10px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 16px; }
+    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-logo">ibunify</div>
         <div class="p1-sublogo">CRM BY IGLOBUS</div>
@@ -614,6 +673,32 @@ export function ndaToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
+        <div>
+          <div class="p1-badge">${escapeHtml(doc.badge || 'MUTUAL NON-DISCLOSURE AGREEMENT (NDA)')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Mutual Non-Disclosure Agreement')}${doc.proposalTitle && !doc.proposalTitle.includes('(NDA)') ? '<br/>(NDA)' : ''}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-02-2026')}</div>
+            <div class="p1-meta-sub">Date: ${escapeHtml(doc.date || '[Date]')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
@@ -709,6 +794,7 @@ export function msaToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -719,21 +805,36 @@ export function msaToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; margin-top: auto; margin-bottom: 0; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 16px; }
-    .sec-title { font-size: 14px; font-weight: 800; color: #1e3a8a; margin: 16px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .sec-text { font-size: 12.5px; line-height: 1.55; color: #334155; margin-bottom: 12px; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 10px; font-size: 12.5px; }
-    .corp-box { text-align: center; font-size: 11px; color: #475569; padding: 10px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 16px; }
+    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-logo">ibunify</div>
         <div class="p1-sublogo">CRM BY IGLOBUS</div>
@@ -759,6 +860,32 @@ export function msaToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
+        <div>
+          <div class="p1-badge">${escapeHtml(doc.badge || 'MASTER SERVICES AGREEMENT (MSA)')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Master Services Agreement (MSA)')}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-04-2026')}</div>
+            <div class="p1-meta-sub">Date: ${escapeHtml(doc.date || '[Date]')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
@@ -846,7 +973,7 @@ export function commercialProposalToHtml(doc, forWord = false) {
       key: 'B',
       title: 'Conversational AI Agent Calling Service',
       features:
-        'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
+        'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
       costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
     },
     {
@@ -949,8 +1076,9 @@ export function commercialProposalToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
-    .page-card { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .page-card { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .page-card:last-child { page-break-after: auto; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -961,6 +1089,20 @@ export function commercialProposalToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; margin-top: auto; margin-bottom: 0; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
@@ -978,36 +1120,29 @@ export function commercialProposalToHtml(doc, forWord = false) {
     .breakdown-features { color: #334155; margin-bottom: 2px; line-height: 1.35; }
     .breakdown-costing { color: #047857; font-weight: 600; font-size: 10.5px; }
     
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; }
-    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 6px 8px; text-align: left; }
-    .pipe-table td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px; color: #334155; vertical-align: middle; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; }
+    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; text-align: left; }
+    .pipe-table td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px; color: #334155; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
     
-    .gantt-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 11px; }
-    .gantt-table th { background: #0f2b6e; color: #fff; padding: 6px 8px; text-align: left; font-size: 10px; }
-    .gantt-table td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; }
+    .gantt-table { width: 100%; border-collapse: collapse; margin: 4px 0 6px; font-size: 10.5px; table-layout: fixed; }
+    .gantt-table th { background: #0f2b6e; color: #fff; padding: 5px 6px; text-align: left; font-size: 9.5px; }
+    .gantt-table td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 10.5px; }
     .gantt-chip { display: inline-block; padding: 2px 8px; background: #2563eb; color: #fff; border-radius: 999px; font-size: 9.5px; font-weight: 700; }
     
     .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 80px; font-weight: 900; color: rgba(15, 23, 42, 0.03); pointer-events: none; white-space: nowrap; z-index: 0; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 10px; font-size: 11.5px; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 8px; border-top: 1px solid #e2e8f0; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <!-- Page 1: Cover -->
     <div class="page-1">
-      <div>
-        <div class="p1-logo">ibunify</div>
-        <div class="p1-sublogo">CRM BY IGLOBUS</div>
-      </div>
-      <div>
-        <div class="p1-badge">${escapeHtml(doc.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK')}</div>
-        <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Unified CRM, Communication & AI Sales Automation')}</h1>
-        <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises')}</div>
-        <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.')}</p>
-      </div>
-      <div class="p1-meta-grid">
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
         <div>
+<<<<<<< Updated upstream
           <div class="p1-meta-head">PREPARED FOR</div>
           <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
@@ -1021,6 +1156,28 @@ export function commercialProposalToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+          <div class="p1-badge">${escapeHtml(doc.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Unified CRM, Communication & AI Sales Automation')}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises')}</div>
+          <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.')}</p>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PROPOSAL PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Enterprise / Jayabheri Group]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Engagement: ${escapeHtml(doc.engagement || 'iBUNIFY Platform & Integrated Services Deployment')}</div>
+            <div class="p1-meta-sub">Proposal Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-2026-088')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">PREPARED BY</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">Headquarters: ${escapeHtml(doc.companyAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">Digital Portals: ${escapeHtml(doc.portals || 'www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">Product Lead: ${escapeHtml(doc.productLead || 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)')}</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
@@ -1164,21 +1321,39 @@ export function commercialProposalToHtml(doc, forWord = false) {
           ${sowAssumptions.slice(1).map((assump) => `<div style="margin-bottom:4px;">• ${escapeHtml(assump)}</div>`).join('')}
         </div>
 
-        <div class="sec-title" style="margin-top:16px;">6. AUTHORIZATION & SIGN-OFF</div>
-        <div class="sign-box">
-          <div>
-            <div style="font-weight:700;color:#1e3a8a;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || `FOR: [${doc.preparedFor || 'CLIENT COMPANY NAME'}]`)}</div>
-            <div style="font-size:10.5px;color:#64748b;margin-bottom:8px;">${escapeHtml(doc.clientSignatorySub || 'Client Authorized Signatory')}</div>
-            <div style="margin-top:16px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+        <div class="sec-title" style="margin-top:16px;">8. PROPOSAL ACCEPTANCE & SIGN-OFF</div>
+        <div class="sec-text" style="margin-bottom:12px;">By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.</div>
+        <div class="sign-box" style="align-items:flex-start;">
+          <div style="flex:1;padding-right:16px;">
+            <div style="font-weight:700;color:#0f2b6e;font-size:13px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || 'ACCEPTED FOR: [CLIENT ENTERPRISE]')}</div>
+            <div style="font-size:10.5px;color:#64748b;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #cbd5e1;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
+            <div style="margin-top:12px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
             <div style="margin-top:4px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
             <div style="margin-top:4px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : '____________________________')}</div>
           </div>
+<<<<<<< Updated upstream
           <div>
             <div style="font-weight:700;color:#1e3a8a;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || 'FOR: ibunify (iGLOBUS)')}</div>
             <div style="font-size:10.5px;color:#64748b;margin-bottom:8px;">${escapeHtml(doc.providerSignatorySub || 'Service Provider Signatory')}</div>
             <div style="margin-top:16px;">Name: ${escapeHtml(doc.providerSignatoryName || 'Rama Krishna / Sohail')}</div>
             <div style="margin-top:4px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
             <div style="margin-top:4px;color:#64748b;">Date: ${escapeHtml((doc.providerSignDate || doc.leadSignDate) ? (doc.providerSignDate || doc.leadSignDate) : '____________________________')}</div>
+=======
+          <div style="flex:1;padding-left:16px;border-left:1px solid #e2e8f0;">
+            <div style="font-weight:700;color:#0f2b6e;font-size:13px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)')}</div>
+            <div style="font-size:10.5px;color:#64748b;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #cbd5e1;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
+            <div style="margin-top:12px;">Name: ${escapeHtml(doc.providerSignatoryName || 'Rama Krishna')}</div>
+            <div style="margin-top:4px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'CTO')}</div>
+            <div style="margin-top:4px;color:#64748b;">Date: ${escapeHtml(doc.date || 'August 25, 2026')}</div>
+          </div>
+        </div>
+
+        <div class="corp-box" style="margin-top:20px;padding:12px 16px;background:#f0f7ff;border:1px solid #dbeafe;border-radius:8px;text-align:center;">
+          <div><strong style="color:#0f2b6e;">${escapeHtml(doc.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</strong></div>
+          <div style="margin:2px 0;">${escapeHtml(doc.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081')}</div>
+          <div style="font-size:10px;color:#475569;margin:2px 0;">${escapeHtml(doc.footerContacts || 'Contact: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com) | Rama Krishna: +91 78420 97496')}</div>
+          <div style="color:#2563eb;font-weight:500;">${escapeHtml(doc.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com')}</div>
+>>>>>>> Stashed changes
         </div>
       </div>
       <div class="p2-foot"><span>${escapeHtml(doc.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com')}</span><span>Page 5 of 5</span></div>
@@ -1228,6 +1403,7 @@ export function slaToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -1238,24 +1414,39 @@ export function slaToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; margin-top: auto; margin-bottom: 0; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 16px; }
-    .sec-title { font-size: 14px; font-weight: 800; color: #1e3a8a; margin: 16px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .sec-text { font-size: 12.5px; line-height: 1.55; color: #334155; margin-bottom: 12px; }
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 14px; }
-    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10.5px; font-weight: 700; padding: 8px 10px; text-align: left; }
-    .pipe-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size: 11.5px; color: #334155; vertical-align: middle; }
-    .sign-box { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 10px; font-size: 12.5px; }
-    .corp-box { text-align: center; font-size: 11px; color: #475569; padding: 10px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 16px; }
+    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; }
+    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; text-align: left; }
+    .pipe-table td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px; color: #334155; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
+    .sign-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-logo">ibunify</div>
         <div class="p1-sublogo">CRM BY IGLOBUS</div>
@@ -1281,6 +1472,32 @@ export function slaToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
+        <div>
+          <div class="p1-badge">${escapeHtml(doc.badge || 'SERVICE LEVEL AGREEMENT (SLA)')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Service Level Agreement (SLA)')}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-06-2026')}</div>
+            <div class="p1-meta-sub">Date: ${escapeHtml(doc.date || '[Date]')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
@@ -1386,6 +1603,7 @@ export function poToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -1396,24 +1614,39 @@ export function poToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 16px; }
-    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 14px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 12px; margin-bottom: 12px; }
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; border: 1px solid #e2e8f0; }
-    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 11px; font-weight: 700; padding: 7px 10px; border-right: 1px solid #1e3a8a; text-align: left; }
-    .pipe-table td { padding: 8px 10px; font-size: 11.5px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 14px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 12px; font-size: 12px; }
-    .corp-box { text-align: center; font-size: 11px; color: #475569; padding: 10px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 14px; }
+    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11.5px; margin-bottom: 10px; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; border: 1px solid #e2e8f0; table-layout: fixed; }
+    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10.5px; font-weight: 700; padding: 5px 8px; border-right: 1px solid #1e3a8a; text-align: left; }
+    .pipe-table td { padding: 5px 8px; font-size: 11px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-logo">ibunify</div>
         <div class="p1-sublogo">CRM BY IGLOBUS</div>
@@ -1439,6 +1672,32 @@ export function poToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
+        <div>
+          <div class="p1-badge">${escapeHtml(doc.badge || 'PURCHASE ORDER (PO TEMPLATE)')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Purchase Order (PO Template)')}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-07-2026')}</div>
+            <div class="p1-meta-sub">Date: ${escapeHtml(doc.date || '[Date]')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
@@ -1577,13 +1836,17 @@ export function handoverToHtml(doc, forWord = false) {
         width: 210mm;
         height: 297mm;
         margin: 0 auto 20px auto;
-        padding: 24mm 20mm;
+        padding: 120px 44px 135px 44px;
         background: #ffffff;
         position: relative;
         page-break-after: always;
         overflow: hidden;
       }
       .page-1 {
+<<<<<<< Updated upstream
+=======
+        padding: 135px 48px 145px 48px;
+>>>>>>> Stashed changes
         background: #ffffff;
         color: #1e293b;
         display: flex;
@@ -1591,11 +1854,35 @@ export function handoverToHtml(doc, forWord = false) {
         justify-content: space-between;
         border-bottom: 1px solid #e2e8f0;
       }
+      .page-1 .bg-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        z-index: 0;
+      }
+      .page-1 .inner-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        box-sizing: border-box;
+      }
       .p1-tag {
         display: inline-block;
+<<<<<<< Updated upstream
         background: #eff6ff;
         border: 1px solid #bfdbfe;
         color: #1d4ed8;
+=======
+        background: #f0f7ff;
+        border: 1px solid #bfdbfe;
+        color: #1e3a8a;
+>>>>>>> Stashed changes
         font-size: 11px;
         font-weight: 700;
         letter-spacing: 2px;
@@ -1608,7 +1895,11 @@ export function handoverToHtml(doc, forWord = false) {
         font-weight: 800;
         line-height: 1.2;
         margin: 0 0 10px 0;
+<<<<<<< Updated upstream
         color: #0b1f4d;
+=======
+        color: #0f2b6e;
+>>>>>>> Stashed changes
       }
       .p1-sub {
         font-size: 15px;
@@ -1617,11 +1908,19 @@ export function handoverToHtml(doc, forWord = false) {
       }
       .p1-ref {
         font-size: 13px;
+<<<<<<< Updated upstream
         color: #64748b;
       }
       .p1-divider {
         height: 1px;
         background: #e2e8f0;
+=======
+        color: #475569;
+      }
+      .p1-divider {
+        height: 1px;
+        background: #cbd5e1;
+>>>>>>> Stashed changes
         margin: 30px 0;
       }
       .p1-grid {
@@ -1631,7 +1930,11 @@ export function handoverToHtml(doc, forWord = false) {
       }
       .p1-card {
         background: #f8fafc;
+<<<<<<< Updated upstream
         border: 1px solid #e2e8f0;
+=======
+        border: 1px solid #cbd5e1;
+>>>>>>> Stashed changes
         border-radius: 10px;
         padding: 16px;
       }
@@ -1645,7 +1948,11 @@ export function handoverToHtml(doc, forWord = false) {
       .p1-meta-val {
         font-size: 16px;
         font-weight: 700;
+<<<<<<< Updated upstream
         color: #0b1f4d;
+=======
+        color: #0f2b6e;
+>>>>>>> Stashed changes
         margin-bottom: 6px;
       }
       .p1-meta-sub {
@@ -1741,6 +2048,7 @@ export function handoverToHtml(doc, forWord = false) {
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-tag">${escapeHtml(doc.badge || 'PROJECT DELIVERY & HANDOVER SIGN-OFF')}</div>
         <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Project Delivery & Handover Sign-off')}</h1>
@@ -1765,8 +2073,35 @@ export function handoverToHtml(doc, forWord = false) {
           <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+        <div>
+          <div class="p1-tag">${escapeHtml(doc.badge || 'PROJECT DELIVERY & HANDOVER SIGN-OFF')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Project Delivery & Handover Sign-off')}</h1>
+          <div class="p1-sub">${escapeHtml(doc.handoverSubtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-ref">Ref: ${escapeHtml(doc.handoverRefNo || 'IGC-IBUNIFY-08-2026')} · Delivery: ${escapeHtml(doc.handoverDate || 'August 2026')}</div>
+        </div>
+
+        <div class="p1-divider"></div>
+
+        <div class="p1-grid">
+          <div class="p1-card">
+            <div class="p1-meta-head">CLIENT ORGANIZATION</div>
+            <div class="p1-meta-val">${escapeHtml(doc.handoverClientOrg || '[CLIENT ORGANIZATION]')}</div>
+            <div class="p1-meta-sub">Project Lead: <strong>${escapeHtml(doc.handoverClientLead || 'Rama Krishna')}</strong></div>
+            <div class="p1-meta-sub">Sign-off Role: Delivery Sponsor / PM</div>
+          </div>
+          <div class="p1-card">
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.handoverProvider || 'iGLOBUS Corporate Consulting Pvt. Ltd.')}</div>
+            <div class="p1-meta-sub">Practice Lead: <strong>${escapeHtml(doc.handoverProviderLead || 'Sohail')}</strong></div>
+            <div class="p1-meta-sub">Platform: iBUNIFY CRM Suite</div>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
+    </div>
 
       <div style="font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px; display: flex; justify-content: space-between;">
         <span>iGLOBUS Corporate Consulting Pvt. Ltd. · www.ibunify.com</span>
@@ -1849,6 +2184,7 @@ export function closureToHtml(doc, forWord = false) {
   <style>
     @page { size: A4 portrait; margin: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #1e293b; }
+<<<<<<< Updated upstream
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 48px; background: #ffffff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 1px solid #e2e8f0; }
     .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0b1f4d; }
     .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
@@ -1859,25 +2195,40 @@ export function closureToHtml(doc, forWord = false) {
     .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
     .p1-meta-val { font-size: 15px; font-weight: 700; color: #0b1f4d; margin-bottom: 4px; }
+=======
+    .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
+    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
+    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
+    .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
+    .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
+    .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
+    .p1-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; margin-top: auto; margin-bottom: 0; }
+    .p1-meta-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2563eb; margin-bottom: 8px; }
+    .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
+>>>>>>> Stashed changes
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 44px 48px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 16px; }
-    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 14px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .stat-box { background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 12px; line-height: 1.6; color: #334155; margin-bottom: 12px; }
-    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #f8fafc; padding: 14px 10px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 12px; }
+    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .stat-box { background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11.5px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f8fafc; padding: 10px 8px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 10px; }
     .metric-cell { padding: 0 4px; }
-    .metric-val { font-size: 22px; font-weight: 800; color: #0284c7; margin-bottom: 4px; }
-    .metric-lbl { font-size: 9.5px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.04em; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 14px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 12px; font-size: 12px; }
-    .corp-box { text-align: center; font-size: 11px; color: #475569; padding: 10px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 14px; }
+    .metric-val { font-size: 20px; font-weight: 800; color: #0284c7; margin-bottom: 2px; }
+    .metric-lbl { font-size: 9px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.04em; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
   </head>
   <body>
     <div class="page-1">
+<<<<<<< Updated upstream
       <div>
         <div class="p1-logo">ibunify</div>
         <div class="p1-sublogo">CRM BY IGLOBUS</div>
@@ -1909,6 +2260,34 @@ export function closureToHtml(doc, forWord = false) {
         <span style="font-weight:700;color:#0b1f4d;">ibunify <small style="font-weight:400;color:#2563eb;">CRM BY IGLOBUS</small></span>
         <span>Official Handover & Acceptance Document</span>
       </div>
+=======
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
+      <div class="inner-content">
+
+        <div>
+          <div class="p1-badge">${escapeHtml(doc.badge || 'PROJECT CLOSURE & HYPERCARE TRANSITION')}</div>
+          <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Project Closure & Hypercare Transition')}</h1>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</div>
+        </div>
+        <div class="p1-meta-grid">
+          <div>
+            <div class="p1-meta-head">PREPARED FOR</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-09-2026')}</div>
+            <div class="p1-meta-sub">Date: ${escapeHtml(doc.date || '[Date]')}</div>
+          </div>
+          <div>
+            <div class="p1-meta-head">SERVICE PROVIDER</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+          </div>
+        </div>
+      </div>
+>>>>>>> Stashed changes
     </div>
 
     <div class="page-2">

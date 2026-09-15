@@ -1,9 +1,6 @@
 /**
  * Email Service Module
- * Handles sending proposal emails with PDF attachments.
- * 
- * IMPORTANT SECURITY:
- * No private SMTP credentials or secret API keys are embedded in this client file.
+ * Direct Email Delivery via Node backend / Google SMTP (.env)
  */
 
 export async function sendProposalEmail({ to, subject, message, proposal, attachment }) {
@@ -16,18 +13,46 @@ export async function sendProposalEmail({ to, subject, message, proposal, attach
     throw new Error('Please enter a valid email address.');
   }
 
-  // Simulate network delivery with delay to ensure clean state transitions
-  await new Promise((resolve) => setTimeout(resolve, 1400));
-
-  // If mock error testing is needed, can check email domain
-  if (to.toLowerCase().includes('fail@error.com')) {
-    throw new Error('Unable to send proposal. Please try again.');
+  const recipient = to.trim();
+  const fileName = `${proposal?.proposalNumber || proposal?.proposalTitle || 'Proposal'}.pdf`;
+  
+  let attachmentBase64 = '';
+  if (attachment) {
+    attachmentBase64 = await blobToBase64(attachment);
   }
 
+  const apiRes = await fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: recipient,
+      subject,
+      message,
+      attachmentBase64,
+      attachmentFileName: fileName
+    })
+  });
+
+  if (!apiRes.ok) {
+    const errorData = await apiRes.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to send email.');
+  }
+
+  const data = await apiRes.json();
   return {
     success: true,
-    messageId: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-    recipient: to.trim(),
+    method: data.method, // 'smtp' | 'ethereal'
+    recipient,
+    previewUrl: data.previewUrl,
     sentAt: new Date().toISOString()
   };
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }

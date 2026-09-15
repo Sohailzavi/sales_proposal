@@ -16,6 +16,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
   const [status, setStatus] = useState('IDLE'); // 'IDLE' | 'SENDING' | 'SUCCESS' | 'ERROR'
   const [errorMessage, setErrorMessage] = useState('');
   const [successEmail, setSuccessEmail] = useState('');
+  const [sendResult, setSendResult] = useState(null);
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,7 +24,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
   };
 
   const handleSend = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (status === 'SENDING') return;
 
     if (!toEmail.trim()) {
@@ -42,10 +43,9 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
     setErrorMessage('');
 
     try {
-      // Generate PDF attachment from current editable proposal
       const pdfBlob = await generatePdfBlob(proposal);
 
-      await sendProposalEmail({
+      const result = await sendProposalEmail({
         to: toEmail.trim(),
         subject: defaultSubject,
         message,
@@ -54,6 +54,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
       });
 
       setSuccessEmail(toEmail.trim());
+      setSendResult(result);
       setStatus('SUCCESS');
     } catch (err) {
       console.error('Send Email Error:', err);
@@ -68,6 +69,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
     setErrorMessage('');
     setToEmail('');
     setMessage(defaultMessage);
+    setSendResult(null);
     onClose();
   };
 
@@ -75,7 +77,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
     <div className="email-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="send-proposal-title">
       <div className="email-modal-card">
         <header className="email-modal-header">
-          <h2 id="send-proposal-title">Send Proposal</h2>
+          <h2 id="send-proposal-title">Send Proposal via Email</h2>
           <button
             type="button"
             className="email-modal-close-btn"
@@ -93,8 +95,23 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
               <div className="email-success-icon">
                 <IconCheck size={20} />
               </div>
-              <p>Proposal sent successfully to <strong>{successEmail}</strong></p>
+              <p style={{ fontWeight: '700', fontSize: '15px', margin: 0 }}>
+                Proposal Delivered Successfully!
+              </p>
+              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#166534' }}>
+                Sent to <strong>{successEmail}</strong>
+              </p>
+
+              {sendResult?.method === 'ethereal' && (
+                <div style={{ marginTop: '10px', padding: '10px 12px', background: '#fffbebf0', borderRadius: '8px', border: '1px solid #fde68a', fontSize: '12px', color: '#92400e', textAlign: 'left', width: '100%' }}>
+                  <p style={{ margin: '0 0 4px 0', fontWeight: '800' }}>⚠️ Google SMTP Setup Needed</p>
+                  <p style={{ margin: 0, lineHeight: '1.4' }}>
+                    Please configure <code>SMTP_USER</code> and <code>SMTP_PASS</code> in your <code>.env</code> file to deliver directly to real recipient inboxes.
+                  </p>
+                </div>
+              )}
             </div>
+
             <div className="email-modal-footer">
               <button
                 type="button"
@@ -145,7 +162,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
               <span>Message</span>
               <textarea
                 className="email-textarea"
-                rows={6}
+                rows={5}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={status === 'SENDING'}
