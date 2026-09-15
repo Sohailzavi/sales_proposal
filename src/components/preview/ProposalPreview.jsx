@@ -41,7 +41,6 @@ export function ProposalPreview({ proposal }) {
       return (
         <div className="proposal-pages-container invoice-pages-container">
           <section className="invoice-paper standard-invoice-paper">
-<<<<<<< Updated upstream
             <header className="std-inv-header">
               <div>
                 <h1 className="std-inv-title">{proposal.proposalTitle || 'Invoice'}</h1>
@@ -74,120 +73,56 @@ export function ProposalPreview({ proposal }) {
                   {companyAddressLines.map((line, i) => (
                     <p key={i}>{line}</p>
                   ))}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <header className="std-inv-header">
-                <div>
-                  <h1 className="std-inv-title">{proposal.proposalTitle || 'Invoice'}</h1>
-                  <dl className="std-inv-meta-grid">
-                    <dt>Invoice no.</dt>
-                    <dd>{proposal.proposalNumber || 'INV-2026-0148'}</dd>
-                    <dt>Issued</dt>
-                    <dd>{proposal.date || 'Sep 10, 2026'}</dd>
-                    <dt>Due</dt>
-                    <dd>{proposal.validUntil || 'Oct 10, 2026'}</dd>
-                    <dt>Terms</dt>
-                    <dd>{proposal.paymentTerms || 'Net 30'}</dd>
-                  </dl>
-                </div>
-
-                <div className="std-inv-company-block">
-                  {proposal.companyLogoUrl ? (
-                    <img
-                      src={proposal.companyLogoUrl}
-                      alt={`${proposal.company} logo`}
-                      className="std-inv-logo"
-                    />
-                  ) : (
-                    <div className="std-inv-brand-mark">
-                      {proposal.companyBadge || 'iG'}
-                    </div>
-                  )}
-                  <p className="std-inv-company-name">{proposal.company || 'iGlobus Corporate Consulting'}</p>
-                  <address className="std-inv-address">
-                    {companyAddressLines.map((line, i) => (
-                      <p key={i}>{line}</p>
-                    ))}
-                    {proposal.companyPhone && <p>Phone: {proposal.companyPhone}</p>}
-                  </address>
-                </div>
-              </header>
-
-              <section className="std-inv-billto-section" aria-labelledby="std-bill-to">
-                <h2 id="std-bill-to" className="std-inv-section-label">
-                  Bill to
-                </h2>
-                <p className="std-inv-client-name">{proposal.preparedFor || 'Northwind Retail Pvt. Ltd.'}</p>
-                <address className="std-inv-client-address">
-                  {proposal.clientAttention && <p>{proposal.clientAttention}</p>}
-                  {clientAddressLines.map((line, i) => (
-                    <p key={i}>{line}</p>
-                  ))}
-                  {proposal.clientEmail && <p>{proposal.clientEmail}</p>}
->>>>>>> Stashed changes
                 </address>
-              </section>
+              </div>
+            </header>
 
-              <section className="std-inv-items-section">
-                <table className="std-inv-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: '56px', textAlign: 'left' }}>S. No.</th>
-                      <th style={{ textAlign: 'left' }}>Description</th>
-                      <th style={{ textAlign: 'right' }}>Qty</th>
-                      <th style={{ textAlign: 'right' }}>Rate</th>
-                      <th style={{ textAlign: 'right' }}>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((item, index) => {
-                      const qty = Number(item.qty) || 0;
-                      const rate = Number(item.rate) || 0;
-                      const amount = qty * rate;
-                      return (
-                        <tr key={item.id || index}>
-                          <td className="std-inv-sno">{index + 1}</td>
-                          <td>
-                            <p className="std-inv-item-desc">{item.description}</p>
-                            {item.detail && <p className="std-inv-item-detail">{item.detail}</p>}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>{qty}</td>
-                          <td style={{ textAlign: 'right' }}>{formatMoney(rate)}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatMoney(amount)}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+            <section className="std-inv-billto-section" aria-labelledby="std-bill-to">
+              <h2 id="std-bill-to" className="std-inv-section-label">
+                Bill to
+              </h2>
+              <p className="std-inv-client-name">{proposal.preparedFor || 'Northwind Retail Pvt. Ltd.'}</p>
+              <address className="std-inv-client-address">
+                {proposal.clientAttention && <p>{proposal.clientAttention}</p>}
+                {clientAddressLines.map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+                {proposal.clientEmail && <p>{proposal.clientEmail}</p>}
+              </address>
+            </section>
 
-                <div className="std-inv-totals-wrap">
-                  <dl className="std-inv-totals-list">
-                    <div className="std-inv-totals-row">
-                      <dt>Subtotal</dt>
-                      <dd>{formatMoney(subtotal)}</dd>
-                    </div>
-                    <div className="std-inv-totals-row">
-                      <dt>CGST ({cgstPct}%)</dt>
-                      <dd>{formatMoney(cgst)}</dd>
-                    </div>
-                    <div className="std-inv-totals-row">
-                      <dt>SGST ({sgstPct}%)</dt>
-                      <dd>{formatMoney(sgst)}</dd>
-                    </div>
-                    <div className="std-inv-totals-row std-inv-total-due">
-                      <dt>Total due</dt>
-                      <dd>{formatMoney(total)}</dd>
-                    </div>
-                  </dl>
-                </div>
-              </section>
+            <section className="std-inv-items-section">
+              <table className="std-inv-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '56px', textAlign: 'left' }}>S. No.</th>
+                    <th style={{ textAlign: 'left' }}>Description</th>
+                    <th style={{ textAlign: 'right' }}>Qty</th>
+                    <th style={{ textAlign: 'right' }}>Rate</th>
+                    <th style={{ textAlign: 'right' }}>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item, index) => {
+                    const qty = Number(item.qty) || 0;
+                    const rate = Number(item.rate) || 0;
+                    const amount = qty * rate;
+                    return (
+                      <tr key={item.id || index}>
+                        <td className="std-inv-sno">{index + 1}</td>
+                        <td>
+                          <p className="std-inv-item-desc">{item.description}</p>
+                          {item.detail && <p className="std-inv-item-detail">{item.detail}</p>}
+                        </td>
+                        <td style={{ textAlign: 'right' }}>{qty}</td>
+                        <td style={{ textAlign: 'right' }}>{formatMoney(rate)}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatMoney(amount)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
 
-<<<<<<< Updated upstream
               <div className="std-inv-totals-wrap">
                 <dl className="std-inv-totals-list">
                   <div className="std-inv-totals-row">
@@ -214,13 +149,6 @@ export function ProposalPreview({ proposal }) {
               <h2 className="std-inv-section-label">Payment details</h2>
               <p className="std-inv-notes">{proposal.notes || 'Payment by bank transfer to iGLOBUS Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}</p>
             </footer>
-=======
-              <footer className="std-inv-footer">
-                <h2 className="std-inv-section-label">Payment details</h2>
-                <p className="std-inv-notes">{proposal.notes || 'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}</p>
-              </footer>
-            </div>
->>>>>>> Stashed changes
           </section>
         </div>
       );
@@ -230,7 +158,6 @@ export function ProposalPreview({ proposal }) {
     return (
       <div className="proposal-pages-container invoice-pages-container">
         <section className="invoice-paper compact-invoice-paper">
-<<<<<<< Updated upstream
           <div className="compact-top">
             <div>
               <div className="compact-company-name">{proposal.company}</div>
@@ -240,107 +167,89 @@ export function ProposalPreview({ proposal }) {
               <div className="compact-doc-title">{proposal.proposalTitle || 'INVOICE'}</div>
               <div className="compact-doc-meta">
                 No. {proposal.proposalNumber} &nbsp;|&nbsp; Issued {proposal.date ? proposal.date : '______________________'} &nbsp;|&nbsp; Due {proposal.validUntil || '______________________'}
-=======
-          <img
-            src={SAMPLE_LETTERHEAD_BASE64}
-            className="letterhead-bg-img"
-            alt="Letterhead Background"
-          />
-          <div className="letterhead-content-wrap">
-            <div className="compact-top">
-              <div>
-                <div className="compact-company-name">{proposal.company}</div>
-                <div className="compact-company-meta">{proposal.companyMeta}</div>
->>>>>>> Stashed changes
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div className="compact-doc-title">{proposal.proposalTitle || 'INVOICE'}</div>
-                <div className="compact-doc-meta">
-                  No. {proposal.proposalNumber} &nbsp;|&nbsp; Issued {proposal.date} &nbsp;|&nbsp; Due {proposal.validUntil}
-                </div>
-                <span className="compact-status-tag">{proposal.invoiceStatus || 'PENDING'}</span>
-              </div>
+              <span className="compact-status-tag">{proposal.invoiceStatus || 'PENDING'}</span>
             </div>
-
-            <div className="compact-parties">
-              <div>
-                <div className="compact-lbl">Bill to</div>
-                <div className="compact-name">{proposal.preparedFor}</div>
-                {proposal.clientAddress}
-              </div>
-              <div>
-                <div className="compact-lbl">Terms</div>
-                {proposal.paymentTerms || 'Net 15 days'} &nbsp;|&nbsp; Place of supply: {proposal.placeOfSupply || 'Telangana'}
-              </div>
-            </div>
-
-            <table className="compact-items-table">
-              <thead>
-                <tr>
-                  <th style={{ width: '40%' }}>Description</th>
-                  <th style={{ textAlign: 'right' }}>Qty</th>
-                  <th style={{ textAlign: 'right' }}>Rate</th>
-                  <th style={{ textAlign: 'right' }}>Disc.</th>
-                  <th style={{ textAlign: 'right' }}>Tax</th>
-                  <th style={{ textAlign: 'right' }}>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => {
-                  const qty = Number(item.qty) || 0;
-                  const rate = Number(item.rate) || 0;
-                  const lineGross = qty * rate;
-                  let lineDisc = 0;
-                  if (item.discountAmount) lineDisc = Number(item.discountAmount) || 0;
-                  else if (item.discountPct) lineDisc = (lineGross * (Number(item.discountPct) || 0)) / 100;
-                  const lineNet = lineGross - lineDisc;
-                  const taxRate = item.taxPct || ((Number(proposal.cgstPct) || 0) + (Number(proposal.sgstPct) || 0));
-                  const lineTotal = lineNet + (lineNet * taxRate) / 100;
-
-                  return (
-                    <tr key={item.id}>
-                      <td>{item.description} ({item.hsnSac || ''})</td>
-                      <td style={{ textAlign: 'right' }}>{qty} {item.unit || ''}</td>
-                      <td style={{ textAlign: 'right' }}>{rate.toLocaleString()}</td>
-                      <td style={{ textAlign: 'right' }}>
-                        {item.discountPct ? `${item.discountPct}%` : item.discountAmount ? `${item.discountAmount}` : '—'}
-                      </td>
-                      <td style={{ textAlign: 'right' }}>{taxRate}%</td>
-                      <td style={{ textAlign: 'right' }}>{lineTotal.toLocaleString()}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <div className="compact-totals-wrap">
-              <div className="compact-totals">
-                <div className="compact-row"><span>Subtotal</span><span>{(netSubtotal + totalDiscount).toLocaleString()}</span></div>
-                <div className="compact-row"><span>Discount</span><span>−{totalDiscount.toLocaleString()}</span></div>
-                <div className="compact-row"><span>CGST {proposal.cgstPct || 9}%</span><span>{cgstAmount.toLocaleString()}</span></div>
-                <div className="compact-row"><span>SGST {proposal.sgstPct || 9}%</span><span>{sgstAmount.toLocaleString()}</span></div>
-                <div className="compact-row compact-grand"><span>Total Due</span><span>{currencySymbol}{totalDue.toLocaleString()}</span></div>
-              </div>
-            </div>
-
-            <div className="compact-lower">
-              <div>
-                <div className="compact-lbl">Notes</div>
-                {proposal.notes}
-              </div>
-              <div>
-                <div className="compact-lbl">Payment</div>
-                <div className="compact-bank-grid">
-                  <div><span className="compact-k">Bank</span>{proposal.bankName}</div>
-                  <div><span className="compact-k">A/C</span>{proposal.accountNo}</div>
-                  <div><span className="compact-k">IFSC</span>{proposal.ifscCode}</div>
-                  <div><span className="compact-k">UPI</span>{proposal.upiId}</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="compact-footer">Computer-generated invoice · {proposal.company}</div>
           </div>
+
+          <div className="compact-parties">
+            <div>
+              <div className="compact-lbl">Bill to</div>
+              <div className="compact-name">{proposal.preparedFor}</div>
+              {proposal.clientAddress}
+            </div>
+            <div>
+              <div className="compact-lbl">Terms</div>
+              {proposal.paymentTerms || 'Net 15 days'} &nbsp;|&nbsp; Place of supply: {proposal.placeOfSupply || 'Telangana'}
+            </div>
+          </div>
+
+          <table className="compact-items-table">
+            <thead>
+              <tr>
+                <th style={{ width: '40%' }}>Description</th>
+                <th style={{ textAlign: 'right' }}>Qty</th>
+                <th style={{ textAlign: 'right' }}>Rate</th>
+                <th style={{ textAlign: 'right' }}>Disc.</th>
+                <th style={{ textAlign: 'right' }}>Tax</th>
+                <th style={{ textAlign: 'right' }}>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => {
+                const qty = Number(item.qty) || 0;
+                const rate = Number(item.rate) || 0;
+                const lineGross = qty * rate;
+                let lineDisc = 0;
+                if (item.discountAmount) lineDisc = Number(item.discountAmount) || 0;
+                else if (item.discountPct) lineDisc = (lineGross * (Number(item.discountPct) || 0)) / 100;
+                const lineNet = lineGross - lineDisc;
+                const taxRate = item.taxPct || ((Number(proposal.cgstPct) || 0) + (Number(proposal.sgstPct) || 0));
+                const lineTotal = lineNet + (lineNet * taxRate) / 100;
+
+                return (
+                  <tr key={item.id}>
+                    <td>{item.description} ({item.hsnSac || ''})</td>
+                    <td style={{ textAlign: 'right' }}>{qty} {item.unit || ''}</td>
+                    <td style={{ textAlign: 'right' }}>{rate.toLocaleString()}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      {item.discountPct ? `${item.discountPct}%` : item.discountAmount ? `${item.discountAmount}` : '—'}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>{taxRate}%</td>
+                    <td style={{ textAlign: 'right' }}>{lineTotal.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <div className="compact-totals-wrap">
+            <div className="compact-totals">
+              <div className="compact-row"><span>Subtotal</span><span>{(netSubtotal + totalDiscount).toLocaleString()}</span></div>
+              <div className="compact-row"><span>Discount</span><span>−{totalDiscount.toLocaleString()}</span></div>
+              <div className="compact-row"><span>CGST {proposal.cgstPct || 9}%</span><span>{cgstAmount.toLocaleString()}</span></div>
+              <div className="compact-row"><span>SGST {proposal.sgstPct || 9}%</span><span>{sgstAmount.toLocaleString()}</span></div>
+              <div className="compact-row compact-grand"><span>Total Due</span><span>{currencySymbol}{totalDue.toLocaleString()}</span></div>
+            </div>
+          </div>
+
+          <div className="compact-lower">
+            <div>
+              <div className="compact-lbl">Notes</div>
+              {proposal.notes}
+            </div>
+            <div>
+              <div className="compact-lbl">Payment</div>
+              <div className="compact-bank-grid">
+                <div><span className="compact-k">Bank</span>{proposal.bankName}</div>
+                <div><span className="compact-k">A/C</span>{proposal.accountNo}</div>
+                <div><span className="compact-k">IFSC</span>{proposal.ifscCode}</div>
+                <div><span className="compact-k">UPI</span>{proposal.upiId}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="compact-footer">Computer-generated invoice · {proposal.company}</div>
         </section>
       </div>
     );
@@ -376,21 +285,20 @@ export function ProposalPreview({ proposal }) {
 
     return (
       <div className="proposal-pages-container discovery-pages-container">
-        {/* Page 1: Official Cover Page */}
+        {/* Page 1: Official Dark Blue Cover Page */}
         <div className="preview-page-card">
           <div className="preview-page-card-header">
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            {/* Top Logo Block */}
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             {/* Central Badge, Title & Overview */}
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
@@ -426,49 +334,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                {/* Central Badge, Title & Overview */}
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'DISCOVERY — REQUIREMENT GATHERING & SCOPING'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                {/* Bottom Two-Column Metadata Box */}
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-01-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -479,7 +348,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · Requirement Gathering & Scoping</span>
           </div>
           <section className="discovery-content-paper">
-<<<<<<< Updated upstream
             {/* Page 2 Header */}
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
@@ -506,78 +374,43 @@ export function ProposalPreview({ proposal }) {
                   {secIngestion.content.split('\n').map((line, lIdx) => (
                     <div key={lIdx} className="discovery-bullet-item">{line}</div>
                   ))}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              {/* Page 2 Header */}
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'DISCOVERY — REQUIREMENT GATHERING & SCOPING'}
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              {/* Document Body Sections */}
-              <div className="discovery-p2-body">
-                {/* Section 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secObjectives.title}</h2>
-                  <div className="discovery-section-text">{secObjectives.content}</div>
-                </div>
-
-                {/* Section 2 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secIngestion.title}</h2>
-                  <div className="discovery-section-text discovery-bullet-list">
-                    {secIngestion.content.split('\n').map((line, lIdx) => (
-                      <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Section 3 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secPipeline.title}</h2>
-                  {useStructuredTable ? (
-                    <div className="discovery-pipeline-table-wrap">
-                      <table className="discovery-pipeline-table">
-                        <thead>
-                          <tr>
-                            <th style={{ width: '28%' }}>PIPELINE STAGE</th>
-                            <th style={{ width: '32%' }}>PRIMARY OBJECTIVE</th>
-                            <th style={{ width: '40%' }}>AUTOMATED SYSTEM ACTION</th>
+              {/* Section 3 */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">{secPipeline.title}</h2>
+                {useStructuredTable ? (
+                  <div className="discovery-pipeline-table-wrap">
+                    <table className="discovery-pipeline-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: '28%' }}>PIPELINE STAGE</th>
+                          <th style={{ width: '32%' }}>PRIMARY OBJECTIVE</th>
+                          <th style={{ width: '40%' }}>AUTOMATED SYSTEM ACTION</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pipelineStages.map((st) => (
+                          <tr key={st.id}>
+                            <td className="stage-name-cell"><strong>{st.stage}</strong></td>
+                            <td>{st.objective}</td>
+                            <td>{st.action}</td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {pipelineStages.map((st) => (
-                            <tr key={st.id}>
-                              <td className="stage-name-cell"><strong>{st.stage}</strong></td>
-                              <td>{st.objective}</td>
-                              <td>{st.action}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="discovery-section-text">{secPipeline.content}</div>
-                  )}
-                </div>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="discovery-section-text">{secPipeline.content}</div>
+                )}
+              </div>
 
-                {/* Section 4: Sign-off Baseline */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secSignoff.title}</h2>
-                  <p className="discovery-signoff-desc">{secSignoff.content}</p>
+              {/* Section 4: Sign-off Baseline */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">{secSignoff.title}</h2>
+                <p className="discovery-signoff-desc">{secSignoff.content}</p>
 
-<<<<<<< Updated upstream
                 <div className="discovery-signoff-box">
                   <div className="discovery-signoff-col">
                     <div className="sign-line">{proposal.clientSignatory || 'Client Signatory: ______________________'}</div>
@@ -586,37 +419,10 @@ export function ProposalPreview({ proposal }) {
                   <div className="discovery-signoff-col">
                     <div className="sign-line"><strong>{proposal.leadSignatory || 'ibunify Lead: Rama Krishna / Sohail'}</strong></div>
                     <div className="sign-date">Date: {proposal.leadSignDate ? proposal.leadSignDate : '______________________'}</div>
-=======
-                  <div className="discovery-signoff-box">
-                    <div className="discovery-signoff-col">
-                      <div className="sign-line">{proposal.clientSignatory || 'Client Signatory: ______________________'}</div>
-                      <div className="sign-date">Date: {proposal.date || '[Date]'}</div>
-                    </div>
-                    <div className="discovery-signoff-col">
-                      <div className="sign-line"><strong>{proposal.leadSignatory || 'iBUNIFY Lead: Rama Krishna / Sohail'}</strong></div>
-                      <div className="sign-date">Date: {proposal.date || '[Date]'}</div>
-                    </div>
                   </div>
-                </div>
-
-                {/* Any user-added extra sections */}
-                {remainingSections.map((sec) => (
-                  <div key={sec.id} className="discovery-section-block">
-                    <h2 className="discovery-section-title">{sec.title}</h2>
-                    <div className="discovery-section-text">{sec.content}</div>
->>>>>>> Stashed changes
-                  </div>
-                ))}
-
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box">
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
                 </div>
               </div>
 
-<<<<<<< Updated upstream
               {/* Any user-added extra sections */}
               {remainingSections.map((sec) => (
                 <div key={sec.id} className="discovery-section-block">
@@ -632,14 +438,6 @@ export function ProposalPreview({ proposal }) {
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
-=======
-              {/* Page 2 Bottom Footnote */}
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
-            </div>
->>>>>>> Stashed changes
           </section>
         </div>
       </div>
@@ -674,21 +472,20 @@ export function ProposalPreview({ proposal }) {
 
     return (
       <div className="proposal-pages-container nda-pages-container">
-        {/* Page 1: Official Cover Page */}
+        {/* Page 1: Official Deep Royal Blue Cover Page */}
         <div className="preview-page-card">
           <div className="preview-page-card-header">
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper nda-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            {/* Top Logo Block */}
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             {/* Central Badge, Title & Overview */}
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
@@ -727,52 +524,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                {/* Central Badge, Title & Overview */}
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'MUTUAL NON-DISCLOSURE AGREEMENT (NDA)'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Mutual Non-Disclosure Agreement'}
-                    {proposal.proposalTitle && !proposal.proposalTitle.includes('(NDA)') && (
-                      <span style={{ display: 'block', marginTop: '4px' }}>(NDA)</span>
-                    )}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                {/* Bottom Two-Column Metadata Box */}
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-02-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -783,7 +538,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · Terms & Execution</span>
           </div>
           <section className="discovery-content-paper nda-content-paper">
-<<<<<<< Updated upstream
             {/* Page 2 Header */}
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
@@ -816,34 +570,14 @@ export function ProposalPreview({ proposal }) {
                   {sec3.content.split('\n').map((line, lIdx) => (
                     <div key={lIdx} className="discovery-bullet-item">{line}</div>
                   ))}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              {/* Page 2 Header */}
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'MUTUAL NON-DISCLOSURE AGREEMENT (NDA)'}
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              {/* Document Clauses Flow */}
-              <div className="discovery-p2-body">
-                {/* Clause 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec1.title}</h2>
-                  <div className="discovery-section-text">{sec1.content}</div>
-                </div>
+              {/* Clause 4 & Execution Block */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">{sec4.title}</h2>
+                <p className="discovery-signoff-desc">{sec4.content}</p>
 
-<<<<<<< Updated upstream
                 <div className="discovery-signoff-box nda-signoff-box">
                   <div className="discovery-signoff-col">
                     <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
@@ -861,79 +595,24 @@ export function ProposalPreview({ proposal }) {
                     <div className="sign-line">Name: {proposal.leadSignatoryName || 'Rama Krishna / Sohail'}</div>
                     <div className="sign-line">Title: {proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}</div>
                     <div className="sign-date">Date: {proposal.leadSignDate ? proposal.leadSignDate : '__________________________'}</div>
-=======
-                {/* Clause 2 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec2.title}</h2>
-                  <div className="discovery-section-text">{sec2.content}</div>
-                </div>
-
-                {/* Clause 3 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec3.title}</h2>
-                  <div className="discovery-section-text discovery-bullet-list">
-                    {sec3.content.split('\n').map((line, lIdx) => (
-                      <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                    ))}
->>>>>>> Stashed changes
                   </div>
                 </div>
+              </div>
 
-                {/* Clause 4 & Execution Block */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec4.title}</h2>
-                  <p className="discovery-signoff-desc">{sec4.content}</p>
-
-                  <div className="discovery-signoff-box nda-signoff-box">
-                    <div className="discovery-signoff-col">
-                      <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
-                        {proposal.clientSignatory || `FOR: [${proposal.preparedFor || 'CLIENT COMPANY NAME'}]`}
-                      </div>
-                      <div className="sign-line">Signature: __________________________</div>
-                      <div className="sign-line">Name & Title: {proposal.clientSignatoryName || '______________________'}</div>
-                      <div className="sign-date">Date: {proposal.date || '[Date]'}</div>
-                    </div>
-                    <div className="discovery-signoff-col">
-                      <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
-                        {proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
-                      </div>
-                      <div className="sign-line">Signature: __________________________</div>
-                      <div className="sign-line">Name: {proposal.leadSignatoryName || 'Rama Krishna / Sohail'}</div>
-                      <div className="sign-date">Title: {proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}</div>
-                    </div>
-                  </div>
+              {/* Any user-added extra clauses */}
+              {remainingSections.map((sec) => (
+                <div key={sec.id} className="discovery-section-block">
+                  <h2 className="discovery-section-title">{sec.title}</h2>
+                  <div className="discovery-section-text">{sec.content}</div>
                 </div>
+              ))}
 
-<<<<<<< Updated upstream
             </div>
 
             {/* Page 2 Bottom Footnote */}
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
-=======
-                {/* Any user-added extra clauses */}
-                {remainingSections.map((sec) => (
-                  <div key={sec.id} className="discovery-section-block">
-                    <h2 className="discovery-section-title">{sec.title}</h2>
-                    <div className="discovery-section-text">{sec.content}</div>
-                  </div>
-                ))}
-
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box">
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-                </div>
-              </div>
-
-              {/* Page 2 Bottom Footnote */}
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
@@ -974,21 +653,19 @@ export function ProposalPreview({ proposal }) {
 
     return (
       <div className="proposal-pages-container msa-pages-container">
-        {/* Page 1: Official Cover Page */}
+        {/* Page 1: Official Deep Royal Blue Cover Page */}
         <div className="preview-page-card">
           <div className="preview-page-card-header">
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper msa-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
                 {proposal.badge || 'MASTER SERVICES AGREEMENT (MSA)'}
@@ -1022,47 +699,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'MASTER SERVICES AGREEMENT (MSA)'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Master Services Agreement (MSA)'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-04-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -1073,7 +713,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · Framework & Execution</span>
           </div>
           <section className="discovery-content-paper msa-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
@@ -1101,36 +740,19 @@ export function ProposalPreview({ proposal }) {
                   {sec3.content.split('\n').map((line, lIdx) => (
                     <div key={lIdx} className="discovery-bullet-item">{line}</div>
                   ))}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'MASTER SERVICES AGREEMENT (MSA)'}
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec1.title}</h2>
-                  <div className="discovery-section-text">{sec1.content}</div>
-                </div>
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">{sec4.title}</h2>
+                <div className="discovery-section-text">{sec4.content}</div>
+              </div>
 
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec2.title}</h2>
-                  <div className="discovery-section-text">{sec2.content}</div>
-                </div>
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">{sec5.title}</h2>
+                <div className="discovery-section-text">{sec5.content}</div>
+              </div>
 
-<<<<<<< Updated upstream
               {/* Execution Block */}
               <div className="discovery-section-block">
                 <div className="discovery-signoff-box nda-signoff-box">
@@ -1149,73 +771,22 @@ export function ProposalPreview({ proposal }) {
                     <div className="sign-line">Signature: __________________________</div>
                     <div className="sign-line">Name: {proposal.leadSignatoryName || 'Rama Krishna / Sohail'}</div>
                     <div className="sign-date">Date: {proposal.leadSignDate ? proposal.leadSignDate : '__________________________'}</div>
-=======
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec3.title}</h2>
-                  <div className="discovery-section-text discovery-bullet-list">
-                    {sec3.content.split('\n').map((line, lIdx) => (
-                      <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                    ))}
->>>>>>> Stashed changes
                   </div>
                 </div>
+              </div>
 
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec4.title}</h2>
-                  <div className="discovery-section-text">{sec4.content}</div>
+              {remainingSections.map((sec) => (
+                <div key={sec.id} className="discovery-section-block">
+                  <h2 className="discovery-section-title">{sec.title}</h2>
+                  <div className="discovery-section-text">{sec.content}</div>
                 </div>
+              ))}
 
-<<<<<<< Updated upstream
             </div>
 
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
-=======
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec5.title}</h2>
-                  <div className="discovery-section-text">{sec5.content}</div>
-                </div>
-
-                {/* Execution Block */}
-                <div className="discovery-section-block">
-                  <div className="discovery-signoff-box nda-signoff-box">
-                    <div className="discovery-signoff-col">
-                      <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
-                        {proposal.clientSignatory || `FOR: [${proposal.preparedFor || 'CLIENT COMPANY NAME'}]`}
-                      </div>
-                      <div className="sign-line">Signature: __________________________</div>
-                      <div className="sign-line">Name & Title: {proposal.clientSignatoryName || '______________________'}</div>
-                    </div>
-                    <div className="discovery-signoff-col">
-                      <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
-                        {proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
-                      </div>
-                      <div className="sign-line">Signature: __________________________</div>
-                      <div className="sign-line">Name: {proposal.leadSignatoryName || 'Rama Krishna / Sohail'}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {remainingSections.map((sec) => (
-                  <div key={sec.id} className="discovery-section-block">
-                    <h2 className="discovery-section-title">{sec.title}</h2>
-                    <div className="discovery-section-text">{sec.content}</div>
-                  </div>
-                ))}
-
-                <div className="discovery-corp-footer-box">
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-                </div>
-              </div>
-
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
@@ -1245,7 +816,7 @@ export function ProposalPreview({ proposal }) {
         key: 'B',
         title: 'Conversational AI Agent Calling Service',
         features:
-          'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
+          'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
         costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
       },
       {
@@ -1352,16 +923,28 @@ export function ProposalPreview({ proposal }) {
             <span>Page 1 of 5 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper ctp-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
+            <div className="discovery-cover-main">
+              <div className="discovery-badge-pill">
+                {proposal.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK'}
+              </div>
+              <h1 className="discovery-main-title">
+                {proposal.proposalTitle || 'Unified CRM, Communication & AI Sales Automation'}
+              </h1>
+              <div className="discovery-main-subtitle">
+                {proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
+              </div>
+              <p className="discovery-main-description">
+                {proposal.description || proposal.descriptionText || 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.'}
+              </p>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-cover-bottom-meta">
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">PREPARED FOR</div>
@@ -1380,46 +963,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Unified CRM, Communication & AI Sales Automation'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.'}
-                  </p>
-                </div>
 
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PROPOSAL PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Enterprise / Jayabheri Group]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Engagement: {proposal.engagement || 'iBUNIFY Platform & Integrated Services Deployment'}</div>
-                    <div className="discovery-meta-sub">Proposal Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-2026-088'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED BY</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">Headquarters: {proposal.companyAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">Digital Portals: {proposal.portals || 'www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">Product Lead: {proposal.productLead || 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -1430,7 +977,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 5 · Part 1: Commercial & Technical Proposal</span>
           </div>
           <section className="discovery-content-paper ctp-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
@@ -1447,43 +993,31 @@ export function ProposalPreview({ proposal }) {
                 <h2 className="discovery-section-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
                 <div className="discovery-section-text" style={{ marginBottom: '8px', fontSize: '11.5px', lineHeight: '1.45' }}>
                   ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
->>>>>>> Stashed changes
                 </div>
-                <div className="ctp-part-banner">
-                  PART 1: COMMERCIAL & TECHNICAL PROPOSAL
+
+                <div className="ctp-callout-box">
+                  <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+                </div>
+
+                <div className="ctp-metrics-grid">
+                  {metrics.map((m, idx) => (
+                    <div key={idx} className="ctp-metric-card">
+                      <div className="ctp-metric-val">{m.value}</div>
+                      <div className="ctp-metric-lbl">{m.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                {/* Section 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
-                  <div className="discovery-section-text" style={{ marginBottom: '8px', fontSize: '11.5px', lineHeight: '1.45' }}>
-                    iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.
-                  </div>
-
-                  <div className="ctp-callout-box">
-                    <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
-                  </div>
-
-                  <div className="ctp-metrics-grid">
-                    {metrics.map((m, idx) => (
-                      <div key={idx} className="ctp-metric-card">
-                        <div className="ctp-metric-val">{m.value}</div>
-                        <div className="ctp-metric-lbl">{m.label}</div>
+              {/* Section 2 */}
+              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
+                <h2 className="discovery-section-title">2. GRANULAR SERVICE BREAKDOWN, FEATURES & COSTING</h2>
+                <div className="ctp-breakdown-list">
+                  {serviceBreakdown.map((item) => (
+                    <div key={item.key} className="ctp-breakdown-card">
+                      <div className="ctp-breakdown-title">
+                        {item.key}. {item.title}
                       </div>
-<<<<<<< Updated upstream
                       <div className="ctp-breakdown-features">
                         <strong>Core Features:</strong> {item.features}
                       </div>
@@ -1510,66 +1044,15 @@ export function ProposalPreview({ proposal }) {
                         <td style={{ color: '#64748b' }}></td>
                         <td style={{ textAlign: 'right', fontWeight: '700' }}>{item.investment}</td>
                       </tr>
-=======
->>>>>>> Stashed changes
                     ))}
-                  </div>
-                </div>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 5</span>
-=======
-                {/* Section 2 */}
-                <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                  <h2 className="discovery-section-title">2. GRANULAR SERVICE BREAKDOWN, FEATURES & COSTING</h2>
-                  <div className="ctp-breakdown-list">
-                    {serviceBreakdown.map((item) => (
-                      <div key={item.key} className="ctp-breakdown-card">
-                        <div className="ctp-breakdown-title">
-                          {item.key}. {item.title}
-                        </div>
-                        <div className="ctp-breakdown-features">
-                          <strong>Core Features:</strong> {item.features}
-                        </div>
-                        <div className="ctp-breakdown-costing">
-                          <strong>Individual Costing:</strong> {item.costing}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Section 3 Table Start (Row 1) */}
-                <div className="discovery-section-block" style={{ marginTop: '6px' }}>
-                  <h2 className="discovery-section-title">3. OVERALL COSTING & COMMERCIAL SCHEDULE</h2>
-                  <table className="discovery-pipeline-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '38%' }}>SERVICE COMPONENT</th>
-                        <th style={{ width: '38%' }}>SCOPE & DELIVERABLES</th>
-                        <th style={{ width: '24%', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {commercialScheduleItems.slice(0, 1).map((item) => (
-                        <tr key={item.id}>
-                          <td><strong>{item.component}</strong></td>
-                          <td style={{ color: '#64748b' }}></td>
-                          <td style={{ textAlign: 'right', fontWeight: '700' }}>{item.investment}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 5</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
@@ -1579,82 +1062,64 @@ export function ProposalPreview({ proposal }) {
           <div className="preview-page-card-header">
             <span>Page 3 of 5 · Schedule Continued</span>
           </div>
-<<<<<<< Updated upstream
           <section className="discovery-content-paper ctp-content-paper" style={{ position: 'relative' }}>
             <div className="ctp-watermark">ibunify CRM</div>
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
-=======
-          <section className="discovery-content-paper ctp-content-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
-                </div>
->>>>>>> Stashed changes
               </div>
+            </div>
 
-              <div className="discovery-p2-body">
-                <div className="discovery-section-block">
-                  <table className="discovery-pipeline-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '34%' }}>SERVICE COMPONENT</th>
-                        <th style={{ width: '42%' }}>SCOPE & DELIVERABLES</th>
-                        <th style={{ width: '24%', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+            <div className="discovery-p2-body">
+              <div className="discovery-section-block">
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '34%' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '42%' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td>{commercialScheduleItems[0]?.scope || 'System config, Meta CAPI, Google Ads, telephony & team training'}</td>
+                      <td style={{ textAlign: 'right', fontWeight: '700' }}></td>
+                    </tr>
+                    {commercialScheduleItems.slice(1).map((item) => (
+                      <tr key={item.id}>
+                        <td><strong>{item.component}</strong></td>
+                        <td>{item.scope}</td>
+                        <td style={{ textAlign: 'right', fontWeight: '600' }}>{item.investment}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {commercialScheduleItems.slice(1).map((item) => (
-                        <tr key={item.id}>
-                          <td><strong>{item.component}</strong></td>
-                          <td style={{ fontSize: '11px' }}>{item.scope}</td>
-                          <td style={{ textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                    <tr style={{ background: '#f0f7ff', borderTop: '2px solid #2563eb' }}>
+                      <td colSpan="2" style={{ fontWeight: '800', color: '#1e3a8a', padding: '12px' }}>
+                        Base Activation Package Total (Excl. Consumption & Lic.)
+                      </td>
+                      <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '12px', fontSize: '13px' }}>
+                        {proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 3 of 5</span>
-=======
-                {/* Part 2 Banner */}
-                <div className="ctp-part-banner" style={{ marginTop: '14px' }}>
-                  PART 2: STATEMENT OF WORK (SOW) & IMPLEMENTATION TERMS
-                </div>
-
-                <div className="ctp-sow-preamble">
-                  {proposal.sowPreamble || 'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the iBUNIFY platform.'}
-                </div>
-              </div>
-
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 3 of 5</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
 
-        {/* Page 4: SOW Scope, Deliverables & Timelines */}
+        {/* Page 4: Part 2 SOW - Scope, Deliverables, Timeline Gantt, Invoicing */}
         <div className="preview-page-card">
           <div className="preview-page-card-header">
-            <span>Page 4 of 5 · SOW Scope & Milestones</span>
+            <span>Page 4 of 5 · Part 2: Statement of Work (SOW)</span>
           </div>
           <section className="discovery-content-paper ctp-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
@@ -1684,127 +1149,94 @@ export function ProposalPreview({ proposal }) {
                   {sowScopeActivities.map((act, idx) => (
                     <div key={idx} className="discovery-bullet-item">• {act}</div>
                   ))}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                {/* Section 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">1. DESCRIPTION OF ASSIGNMENT & SCOPE OF WORK</h2>
-                  <div style={{ fontSize: '11px', color: '#475569', marginBottom: '6px' }}>
-                    This engagement operates under a Fixed-Price Phase-I Delivery Model. The following scope activities will be executed:
-                  </div>
-                  <div className="discovery-bullet-list">
-                    {sowScopeActivities.map((act, idx) => (
-                      <div key={idx} className="discovery-bullet-item">• {act}</div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Section 2 */}
-                <div className="discovery-section-block" style={{ marginTop: '8px' }}>
-                  <h2 className="discovery-section-title">2. DELIVERABLES MATRIX</h2>
-                  <div className="discovery-bullet-list">
-                    {sowDeliverables.map((del, idx) => (
-                      <div key={idx} className="discovery-bullet-item">• {del}</div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Section 3: Gantt Timeline */}
-                <div className="discovery-section-block" style={{ marginTop: '8px' }}>
-                  <h2 className="discovery-section-title">3. PROJECT SCHEDULE & EXECUTION TIMELINE</h2>
-                  <table className="ctp-gantt-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '52%' }}>MILESTONE ACTIVITY</th>
-                        <th style={{ width: '12%', textAlign: 'center' }}>WEEK 1</th>
-                        <th style={{ width: '12%', textAlign: 'center' }}>WEEK 2</th>
-                        <th style={{ width: '12%', textAlign: 'center' }}>WEEK 3</th>
-                        <th style={{ width: '12%', textAlign: 'center' }}>WEEK 4</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sowTimelineMilestones.map((m, idx) => (
-                        <tr key={idx}>
-                          <td>{m.activity}</td>
-                          <td className={m.activeWeek === 1 ? 'gantt-active-cell' : ''}>
-                            {m.activeWeek === 1 && <span className="gantt-active-chip">Active</span>}
-                          </td>
-                          <td className={m.activeWeek === 2 ? 'gantt-active-cell' : ''}>
-                            {m.activeWeek === 2 && <span className="gantt-active-chip">Active</span>}
-                          </td>
-                          <td className={m.activeWeek === 3 ? 'gantt-active-cell' : ''}>
-                            {m.activeWeek === 3 && <span className="gantt-active-chip">Active</span>}
-                          </td>
-                          <td className={m.activeWeek === 4 ? 'gantt-active-cell' : ''}>
-                            {m.activeWeek === 4 && <span className="gantt-active-chip">Active</span>}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Section 4: Invoicing Milestones */}
-                <div className="discovery-section-block" style={{ marginTop: '8px' }}>
-                  <h2 className="discovery-section-title">4. SOW MILESTONE INVOICING SCHEDULE</h2>
-                  <table className="discovery-pipeline-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '56%' }}>MILESTONE DELIVERABLE</th>
-                        <th style={{ width: '20%', textAlign: 'center' }}>MILESTONE %</th>
-                        <th style={{ width: '24%', textAlign: 'right' }}>AMOUNT (INR / ₹)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sowInvoicingMilestones.map((inv, idx) => (
-                        <tr key={idx}>
-                          <td>{inv.deliverable}</td>
-                          <td style={{ textAlign: 'center', fontWeight: '600' }}>{inv.percentage}</td>
-                          <td style={{ textAlign: 'right', fontWeight: '600' }}>{inv.amount}</td>
-                        </tr>
-                      ))}
-                      <tr style={{ background: '#f8fafc', fontWeight: '700' }}>
-                        <td><strong>Total Base Fixed Implementation Fee</strong></td>
-                        <td style={{ textAlign: 'center', fontWeight: '700' }}>100%</td>
-                        <td style={{ textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{proposal.totalImplementationFee || '₹50,000'}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Section 5 Start */}
-                <div className="discovery-section-block" style={{ marginTop: '8px' }}>
-                  <h2 className="discovery-section-title">5. ENGAGEMENT ASSUMPTIONS & SLAS</h2>
-                  <div className="discovery-bullet-list">
-                    <div className="discovery-bullet-item">• {sowAssumptions[0]}</div>
-                  </div>
+              {/* Section 2 */}
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
+                <h2 className="discovery-section-title">2. DELIVERABLES MATRIX</h2>
+                <div className="discovery-bullet-list">
+                  {sowDeliverables.map((del, idx) => (
+                    <div key={idx} className="discovery-bullet-item">• {del}</div>
+                  ))}
                 </div>
               </div>
 
-<<<<<<< Updated upstream
+              {/* Section 3: Gantt Timeline */}
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
+                <h2 className="discovery-section-title">3. PROJECT SCHEDULE & EXECUTION TIMELINE</h2>
+                <table className="ctp-gantt-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '52%' }}>MILESTONE ACTIVITY</th>
+                      <th style={{ width: '12%', textAlign: 'center' }}>WEEK 1</th>
+                      <th style={{ width: '12%', textAlign: 'center' }}>WEEK 2</th>
+                      <th style={{ width: '12%', textAlign: 'center' }}>WEEK 3</th>
+                      <th style={{ width: '12%', textAlign: 'center' }}>WEEK 4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sowTimelineMilestones.map((m, idx) => (
+                      <tr key={idx}>
+                        <td>{m.activity}</td>
+                        <td className={m.activeWeek === 1 ? 'gantt-active-cell' : ''}>
+                          {m.activeWeek === 1 && <span className="gantt-active-chip">Active</span>}
+                        </td>
+                        <td className={m.activeWeek === 2 ? 'gantt-active-cell' : ''}>
+                          {m.activeWeek === 2 && <span className="gantt-active-chip">Active</span>}
+                        </td>
+                        <td className={m.activeWeek === 3 ? 'gantt-active-cell' : ''}>
+                          {m.activeWeek === 3 && <span className="gantt-active-chip">Active</span>}
+                        </td>
+                        <td className={m.activeWeek === 4 ? 'gantt-active-cell' : ''}>
+                          {m.activeWeek === 4 && <span className="gantt-active-chip">Active</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Section 4: Invoicing Milestones */}
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
+                <h2 className="discovery-section-title">4. SOW MILESTONE INVOICING SCHEDULE</h2>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '56%' }}>MILESTONE DELIVERABLE</th>
+                      <th style={{ width: '20%', textAlign: 'center' }}>MILESTONE %</th>
+                      <th style={{ width: '24%', textAlign: 'right' }}>AMOUNT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sowInvoicingMilestones.map((inv, idx) => (
+                      <tr key={idx}>
+                        <td>{inv.deliverable}</td>
+                        <td style={{ textAlign: 'center', fontWeight: '600' }}>{inv.percentage}</td>
+                        <td style={{ textAlign: 'right', fontWeight: '600' }}>{inv.amount}</td>
+                      </tr>
+                    ))}
+                    <tr style={{ background: '#f8fafc', fontWeight: '700' }}>
+                      <td><strong>Total Base Fixed Implementation Fee</strong></td>
+                      <td style={{ textAlign: 'center', fontWeight: '700' }}>100%</td>
+                      <td style={{ textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{proposal.totalImplementationFee || '₹50,000'}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Section 5 Start */}
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
+                <h2 className="discovery-section-title">5. ENGAGEMENT ASSUMPTIONS & SLAS</h2>
+                <div className="discovery-bullet-list">
+                  <div className="discovery-bullet-item">• {sowAssumptions[0]}</div>
+                </div>
+              </div>
+            </div>
+
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 4 of 5</span>
-=======
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 4 of 5</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
@@ -1814,7 +1246,6 @@ export function ProposalPreview({ proposal }) {
           <div className="preview-page-card-header">
             <span>Page 5 of 5 · Authorization & Sign-Off</span>
           </div>
-<<<<<<< Updated upstream
           <section className="discovery-content-paper ctp-content-paper" style={{ position: 'relative' }}>
             <div className="ctp-watermark">ibunify CRM</div>
             <div className="discovery-p2-header">
@@ -1850,87 +1281,15 @@ export function ProposalPreview({ proposal }) {
                     <div className="sign-line" style={{ marginTop: '16px' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna / Sohail'}</div>
                     <div className="sign-line">Title: {proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
                     <div className="sign-date">Date: {(proposal.providerSignDate || proposal.leadSignDate) ? (proposal.providerSignDate || proposal.leadSignDate) : '____________________________'}</div>
-=======
-          <section className="discovery-content-paper ctp-content-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                {/* Section 5 Continued */}
-                <div className="discovery-section-block">
-                  <div className="discovery-bullet-list">
-                    {sowAssumptions.slice(1).map((assump, idx) => (
-                      <div key={idx} className="discovery-bullet-item">• {assump}</div>
-                    ))}
->>>>>>> Stashed changes
-                  </div>
-                </div>
-
-<<<<<<< Updated upstream
             </div>
 
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 5 of 5</span>
-=======
-                {/* Section 8: Proposal Acceptance & Sign-off */}
-                <div className="discovery-section-block" style={{ marginTop: '16px' }}>
-                  <h2 className="discovery-section-title">8. PROPOSAL ACCEPTANCE & SIGN-OFF</h2>
-                  <div className="discovery-section-text" style={{ marginBottom: '12px', fontSize: '11.5px', color: '#334155' }}>
-                    By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.
-                  </div>
-                  <div style={{ display: 'flex', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px 18px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12.5px', marginBottom: '2px' }}>
-                        {proposal.clientSignatoryHeader || 'ACCEPTED FOR: [CLIENT ENTERPRISE]'}
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px dashed #cbd5e1' }}>
-                        {proposal.clientSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div className="sign-line" style={{ marginTop: '12px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Date: {proposal.date || '____________________________'}</div>
-                    </div>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px 18px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12.5px', marginBottom: '2px' }}>
-                        {proposal.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)'}
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px dashed #cbd5e1' }}>
-                        {proposal.providerSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div className="sign-line" style={{ marginTop: '12px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || 'CTO'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Date: {proposal.date || 'August 25, 2026'}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box" style={{ marginTop: '20px', padding: '12px 16px', background: '#f0f7ff', border: '1px solid #dbeafe', borderRadius: '8px', textAlign: 'center' }}>
-                  <div className="corp-name" style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12.5px' }}>{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}</div>
-                  <div className="corp-address" style={{ fontSize: '11px', color: '#475569', margin: '2px 0' }}>{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div style={{ fontSize: '11px', color: '#475569', margin: '2px 0' }}>
-                    {proposal.footerContacts || 'Contact: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com) | Rama Krishna: +91 78420 97496'}
-                  </div>
-                  <div className="corp-links" style={{ fontSize: '11px', color: '#2563eb', fontWeight: '500' }}>{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-                </div>
-              </div>
-
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 5 of 5</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
@@ -1986,15 +1345,13 @@ export function ProposalPreview({ proposal }) {
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper sla-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
                 {proposal.badge || 'SERVICE LEVEL AGREEMENT (SLA)'}
@@ -2028,47 +1385,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'SERVICE LEVEL AGREEMENT (SLA)'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Service Level Agreement (SLA)'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-06-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -2079,7 +1399,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · SLA Matrix & Support</span>
           </div>
           <section className="discovery-content-paper sla-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
@@ -2096,89 +1415,44 @@ export function ProposalPreview({ proposal }) {
                 <h2 className="discovery-section-title">1. SERVICE UPTIME & INFRASTRUCTURE COMMITMENT</h2>
                 <div className="discovery-section-text">
                   {proposal.uptimeCommitment || 'ibunify guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'SERVICE LEVEL AGREEMENT (SLA)'}
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                {/* Section 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">1. SERVICE UPTIME & INFRASTRUCTURE COMMITMENT</h2>
-                  <div className="discovery-section-text">
-                    {proposal.uptimeCommitment || 'iBUNIFY guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
-                  </div>
-                </div>
-
-                {/* Section 2: 4-Column Table */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">2. INCIDENT PRIORITY & TURNAROUND BENCHMARKS</h2>
-                  <table className="discovery-pipeline-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '22%' }}>PRIORITY LEVEL</th>
-                        <th style={{ width: '42%' }}>DEFINITION & IMPACT</th>
-                        <th style={{ width: '18%', textAlign: 'center' }}>RESPONSE SLA</th>
-                        <th style={{ width: '18%', textAlign: 'center' }}>RESOLUTION TARGET</th>
+              {/* Section 2: 4-Column Table */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">2. INCIDENT PRIORITY & TURNAROUND BENCHMARKS</h2>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '22%' }}>PRIORITY LEVEL</th>
+                      <th style={{ width: '42%' }}>DEFINITION & IMPACT</th>
+                      <th style={{ width: '18%', textAlign: 'center' }}>RESPONSE SLA</th>
+                      <th style={{ width: '18%', textAlign: 'center' }}>RESOLUTION TARGET</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {incidentBenchmarks.map((inc, idx) => (
+                      <tr key={inc.id || idx}>
+                        <td style={{ fontWeight: '700', color: '#1e3a8a' }}>{inc.level}</td>
+                        <td>{inc.impact}</td>
+                        <td style={{ textAlign: 'center', fontWeight: '600', color: '#0f766e' }}>{inc.responseSla}</td>
+                        <td style={{ textAlign: 'center', fontWeight: '600', color: '#1e3a8a' }}>{inc.resolutionTarget}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {incidentBenchmarks.map((inc, idx) => (
-                        <tr key={inc.id || idx}>
-                          <td style={{ fontWeight: '700', color: '#1e3a8a' }}>{inc.level}</td>
-                          <td>{inc.impact}</td>
-                          <td style={{ textAlign: 'center', fontWeight: '600', color: '#0f766e' }}>{inc.responseSla}</td>
-                          <td style={{ textAlign: 'center', fontWeight: '600', color: '#1e3a8a' }}>{inc.resolutionTarget}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Section 3: Escalation Matrix */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">3. ESCALATION MATRIX</h2>
-                  <div className="discovery-bullet-list">
-                    {escalationMatrix.map((esc, idx) => (
-                      <div key={idx} className="discovery-bullet-item">• {esc}</div>
                     ))}
-                  </div>
-                </div>
+                  </tbody>
+                </table>
+              </div>
 
-                {/* Signatory / Acknowledgment Box */}
-                <div className="discovery-section-block" style={{ marginTop: '10px' }}>
-                  <div className="discovery-signoff-box nda-signoff-box" style={{ padding: '16px 20px', alignItems: 'center' }}>
-                    <div style={{ fontSize: '13px', color: '#1e293b' }}>
-                      {proposal.clientAcknowledgment || 'Client Acknowledgment: ___________________'}
-                    </div>
-                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#1e3a8a', textAlign: 'right' }}>
-                      {proposal.leadSignatory || 'iBUNIFY Success Lead: Ramyasree'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box" style={{ marginTop: '18px' }}>
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
+              {/* Section 3: Escalation Matrix */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title">3. ESCALATION MATRIX</h2>
+                <div className="discovery-bullet-list">
+                  {escalationMatrix.map((esc, idx) => (
+                    <div key={idx} className="discovery-bullet-item">• {esc}</div>
+                  ))}
                 </div>
               </div>
 
-<<<<<<< Updated upstream
               {/* Signatory / Acknowledgment Box */}
               <div className="discovery-section-block" style={{ marginTop: '10px' }}>
                 <div className="discovery-signoff-box nda-signoff-box" style={{ padding: '16px 20px', alignItems: 'center' }}>
@@ -2196,12 +1470,6 @@ export function ProposalPreview({ proposal }) {
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
-=======
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
->>>>>>> Stashed changes
             </div>
           </section>
         </div>
@@ -2258,15 +1526,13 @@ export function ProposalPreview({ proposal }) {
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper po-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
                 {proposal.badge || 'PURCHASE ORDER (PO TEMPLATE)'}
@@ -2300,47 +1566,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'PURCHASE ORDER (PO TEMPLATE)'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Purchase Order (PO Template)'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-07-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -2351,7 +1580,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · PO Summary & Schedule</span>
           </div>
           <section className="discovery-content-paper po-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
@@ -2474,157 +1702,17 @@ export function ProposalPreview({ proposal }) {
                     </div>
                     <div style={{ color: '#64748b' }}>
                       Date: {proposal.acceptedByDate ? proposal.acceptedByDate : '________________________'}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'PURCHASE ORDER (PO TEMPLATE)'}
-                </div>
-              </div>
-
-              <div className="discovery-p2-body">
-                {/* Section 1: Purchase Order Summary */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">1. PURCHASE ORDER SUMMARY</h2>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '10px 24px',
-                    background: '#f8fafc',
-                    padding: '12px 16px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px'
-                  }}>
-                    <div>
-                      <span style={{ color: '#64748b' }}>PO Number: </span>
-                      <strong style={{ color: '#0f2b6e' }}>{proposal.poNumber || 'PO-IBUNIFY-2026-001'}</strong>
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748b' }}>Payment Terms: </span>
-                      <strong style={{ color: '#0f2b6e' }}>{proposal.paymentTerms || 'NET 30'}</strong>
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748b' }}>PO Date: </span>
-                      <strong style={{ color: '#1e293b' }}>{proposal.poDate || proposal.date || '[Date]'}</strong>
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748b' }}>Currency: </span>
-                      <strong style={{ color: '#1e293b' }}>{proposal.currency || 'INR (₹)'}</strong>
                     </div>
                   </div>
                 </div>
-
-                {/* Section 2: Itemized Order Schedule */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">2. ITEMIZED ORDER SCHEDULE</h2>
-                  <table className="discovery-pipeline-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '42%' }}>ITEM DESCRIPTION</th>
-                        <th style={{ width: '18%', textAlign: 'center' }}>QTY / UNIT</th>
-                        <th style={{ width: '20%', textAlign: 'right' }}>UNIT PRICE (₹)</th>
-                        <th style={{ width: '20%', textAlign: 'right' }}>TOTAL AMOUNT (₹)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orderScheduleItems.map((item, idx) => (
-                        <tr key={item.id || idx}>
-                          <td style={{ fontWeight: '600', color: '#1e293b' }}>{item.description}</td>
-                          <td style={{ textAlign: 'center', color: '#475569' }}>{item.qtyUnit}</td>
-                          <td style={{ textAlign: 'right', color: '#334155' }}>{item.unitPrice}</td>
-                          <td style={{ textAlign: 'right', fontWeight: '700', color: '#0f2b6e' }}>{item.totalAmount}</td>
-                        </tr>
-                      ))}
-                      <tr style={{ background: '#f0f7ff', borderTop: '2px solid #38b6ff' }}>
-                        <td colSpan="3" style={{ fontWeight: '800', color: '#0f2b6e', fontSize: '11.5px' }}>
-                          Total Initial Purchase Order Value (Excl. Taxes)
-                        </td>
-                        <td style={{ textAlign: 'right', fontWeight: '800', color: '#0f2b6e', fontSize: '12px' }}>
-                          {proposal.totalInitialPoValue || '₹75,000 + Users'}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Section 3: Authorization & Approval */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">3. AUTHORIZATION & APPROVAL</h2>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '16px',
-                    background: '#f8fafc',
-                    padding: '14px 18px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px'
-                  }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                        Issued By: {proposal.issuedByClient || '[CLIENT COMPANY NAME]'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Authorized By: {proposal.issuedByAuthorized || '__________________________'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Designation: {proposal.issuedByDesignation || '____________________________'}
-                      </div>
-                      <div style={{ color: '#64748b' }}>
-                        Date: {proposal.issuedByDate || proposal.date || '[Date]'}
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                        Accepted By: {proposal.acceptedByCompany || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Authorized By: {proposal.acceptedByAuthorized || 'Rama Krishna / Sohail'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Designation: {proposal.acceptedByDesignation || 'Enterprise Practice Leads'}
-                      </div>
-                      <div style={{ color: '#64748b' }}>
-                        Date: {proposal.acceptedByDate || proposal.date || '[Date]'}
-                      </div>
->>>>>>> Stashed changes
-                    </div>
-                  </div>
-                </div>
-
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box" style={{ marginTop: '16px' }}>
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-                </div>
               </div>
 
-<<<<<<< Updated upstream
             </div>
 
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
-=======
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
-            </div>
->>>>>>> Stashed changes
           </section>
         </div>
       </div>
@@ -2681,15 +1769,13 @@ export function ProposalPreview({ proposal }) {
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper po-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
                 {proposal.badge || 'PROJECT DELIVERY & HANDOVER SIGN-OFF'}
@@ -2723,47 +1809,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'PROJECT DELIVERY & HANDOVER SIGN-OFF'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Project Delivery & Handover Sign-off'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || proposal.handoverSubtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || proposal.handoverClientOrg || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || proposal.handoverClientLead || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || proposal.handoverRefNo || 'IGC-IBUNIFY-08-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || proposal.handoverDate || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || proposal.handoverProvider || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || (proposal.handoverProviderLead ? `Contacts: ${proposal.handoverProviderLead} | Ramyasree` : 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -2774,7 +1823,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · Handover Checklist & Acceptance</span>
           </div>
           <section className="discovery-content-paper po-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
@@ -2799,111 +1847,65 @@ export function ProposalPreview({ proposal }) {
                   color: '#334155'
                 }}>
                   {proposal.handoverScopeText || proposal.scopeVerificationText || 'This Delivery & Handover Document certifies that the implementation, configuration, user acceptance testing (UAT), and operational enablement of the ibunify CRM Enterprise Suite have been completed in accordance with the agreed Statement of Work (SOW).'}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'PROJECT DELIVERY & HANDOVER SIGN-OFF'}
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                {/* Section 1: Delivery Scope Verification */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">1. DELIVERY SCOPE VERIFICATION</h2>
-                  <div style={{
-                    background: '#f8fafc',
-                    padding: '12px 16px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px',
-                    lineHeight: '1.6',
-                    color: '#334155'
-                  }}>
-                    {proposal.handoverScopeText || proposal.scopeVerificationText || 'This Delivery & Handover Document certifies that the implementation, configuration, user acceptance testing (UAT), and operational enablement of the iBUNIFY CRM Enterprise Suite have been completed in accordance with the agreed Statement of Work (SOW).'}
-                  </div>
-                </div>
-
-                {/* Section 2: Handover Checklist & Verification */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">2. HANDOVER CHECKLIST & VERIFICATION</h2>
-                  <table className="discovery-pipeline-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '28%' }}>COMPONENT</th>
-                        <th style={{ width: '52%' }}>DELIVERED FEATURE</th>
-                        <th style={{ width: '20%', textAlign: 'center' }}>STATUS</th>
+              {/* Section 2: Handover Checklist & Verification */}
+              <div className="discovery-section-block" style={{ marginTop: '14px' }}>
+                <h2 className="discovery-section-title">2. HANDOVER CHECKLIST & VERIFICATION</h2>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '28%' }}>COMPONENT</th>
+                      <th style={{ width: '52%' }}>DELIVERED FEATURE</th>
+                      <th style={{ width: '20%', textAlign: 'center' }}>STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {checklistItems.map((item, idx) => (
+                      <tr key={item.id || idx}>
+                        <td style={{ fontWeight: '700', color: '#0f2b6e', verticalAlign: 'top' }}>
+                          {item.component}
+                        </td>
+                        <td style={{ color: '#334155', verticalAlign: 'top' }}>
+                          {item.deliveredFeature || item.feature}
+                        </td>
+                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                          <span style={{
+                            display: 'inline-block',
+                            background: '#dcfce7',
+                            color: '#15803d',
+                            padding: '3px 8px',
+                            borderRadius: '4px',
+                            fontWeight: '700',
+                            fontSize: '10.5px'
+                          }}>
+                            {item.status || 'Verified & Active'}
+                          </span>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {checklistItems.map((item, idx) => (
-                        <tr key={item.id || idx}>
-                          <td style={{ fontWeight: '700', color: '#0f2b6e', verticalAlign: 'top' }}>
-                            {item.component}
-                          </td>
-                          <td style={{ color: '#334155', verticalAlign: 'top' }}>
-                            {item.deliveredFeature || item.feature}
-                          </td>
-                          <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                            <span style={{
-                              display: 'inline-block',
-                              background: '#dcfce7',
-                              color: '#15803d',
-                              padding: '3px 8px',
-                              borderRadius: '4px',
-                              fontWeight: '700',
-                              fontSize: '10.5px'
-                            }}>
-                              {item.status || 'Verified & Active'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                {/* Section 3: Formal Delivery Acceptance */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">3. FORMAL DELIVERY ACCEPTANCE</h2>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '16px',
-                    background: '#f8fafc',
-                    padding: '14px 18px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px'
-                  }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                        Accepted by (Client Project Manager):
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        <strong>Name:</strong> {proposal.handoverAcceptClientName || proposal.clientAttention || 'Rama Krishna'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        <strong>Designation:</strong> {proposal.handoverAcceptClientTitle || 'Project Manager / Delivery Sponsor'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        <strong>Organization:</strong> {proposal.handoverAcceptClientOrg || proposal.preparedFor || '[Client Company Name]'}
-                      </div>
-                      <div style={{ color: '#64748b' }}>
-                        {proposal.handoverAcceptClientDate || proposal.acceptedDate || 'Date: ________________________'}
-                      </div>
+              {/* Section 3: Formal Delivery Acceptance */}
+              <div className="discovery-section-block" style={{ marginTop: '14px' }}>
+                <h2 className="discovery-section-title">3. FORMAL DELIVERY ACCEPTANCE</h2>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '16px',
+                  background: '#f8fafc',
+                  padding: '14px 18px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '12px'
+                }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
+                      Accepted by (Client Project Manager):
                     </div>
-<<<<<<< Updated upstream
                     <div style={{ color: '#334155' }}>
                       <strong>Name:</strong> {proposal.handoverAcceptClientName || proposal.clientAttention || 'Rama Krishna'}
                     </div>
@@ -2933,51 +1935,17 @@ export function ProposalPreview({ proposal }) {
                     </div>
                     <div style={{ color: '#64748b' }}>
                       Date: {proposal.handoverDeliveredLeadDate ? proposal.handoverDeliveredLeadDate : '________________________'}
-=======
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                        Delivered by (iBUNIFY Lead):
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        <strong>Name:</strong> {proposal.handoverDeliveredLeadName || proposal.deliveredByLead || 'Sohail'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        <strong>Designation:</strong> {proposal.handoverDeliveredLeadTitle || 'Practice Lead — Enterprise Delivery'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        <strong>Organization:</strong> {proposal.handoverDeliveredLeadOrg || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
-                      </div>
-                      <div style={{ color: '#64748b' }}>
-                        {proposal.handoverDeliveredLeadDate || proposal.deliveredDate || 'Date: August 2026'}
-                      </div>
->>>>>>> Stashed changes
                     </div>
                   </div>
                 </div>
-
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box" style={{ marginTop: '16px' }}>
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-                </div>
               </div>
 
-<<<<<<< Updated upstream
             </div>
 
             <div className="discovery-p2-footnote">
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
-=======
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
-            </div>
->>>>>>> Stashed changes
           </section>
         </div>
       </div>
@@ -3002,15 +1970,13 @@ export function ProposalPreview({ proposal }) {
             <span>Page 1 of 2 · Cover Page</span>
           </div>
           <section className="discovery-cover-paper po-cover-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="cover-card-inner">
+            <div className="discovery-cover-top">
+              <div className="discovery-logo-wrap">
+                <span className="ibunify-logo-text">ibunify</span>
+                <span className="ibunify-sub-text">CRM BY IGLOBUS</span>
+              </div>
+            </div>
 
-<<<<<<< Updated upstream
             <div className="discovery-cover-main">
               <div className="discovery-badge-pill">
                 {proposal.badge || 'PROJECT CLOSURE & HYPERCARE TRANSITION'}
@@ -3044,47 +2010,10 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
-=======
 
-                <div className="discovery-cover-main">
-                  <div className="discovery-badge-pill">
-                    {proposal.badge || 'PROJECT CLOSURE & HYPERCARE TRANSITION'}
-                  </div>
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Project Closure & Hypercare Transition'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
-                </div>
-
-                <div className="discovery-cover-bottom-meta">
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-09-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
-                  </div>
->>>>>>> Stashed changes
-
-                  <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
-                  </div>
-                </div>
-
-                <div className="discovery-cover-footer-brand">
-                  <span>ibunify</span>
-                  <small>CRM BY IGLOBUS</small>
-                </div>
-              </div>
+            <div className="discovery-cover-footer-brand">
+              <span>ibunify</span>
+              <small>CRM BY IGLOBUS</small>
             </div>
           </section>
         </div>
@@ -3095,7 +2024,6 @@ export function ProposalPreview({ proposal }) {
             <span>Page 2 of 2 · Closure & Hypercare Details</span>
           </div>
           <section className="discovery-content-paper po-content-paper">
-<<<<<<< Updated upstream
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
                 <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
@@ -3120,147 +2048,64 @@ export function ProposalPreview({ proposal }) {
                   color: '#334155'
                 }}>
                   {proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the ibunify CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
-=======
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <div className="discovery-p2-header">
-                <div className="discovery-p2-header-top">
-                  <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
-                  <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
-                </div>
-                <div className="discovery-p2-sub-bar">
-                  {proposal.badge || 'PROJECT CLOSURE & HYPERCARE TRANSITION'}
->>>>>>> Stashed changes
                 </div>
               </div>
 
-              <div className="discovery-p2-body">
-                {/* Section 1: Formal Project Closure Statement */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">1. FORMAL PROJECT CLOSURE STATEMENT</h2>
-                  <div style={{
-                    background: '#f8fafc',
-                    padding: '12px 16px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px',
-                    lineHeight: '1.6',
-                    color: '#334155'
-                  }}>
-                    {proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the iBUNIFY CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
-                  </div>
-                </div>
-
-                {/* Section 2: Operational Metrics Achieved */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">2. OPERATIONAL METRICS ACHIEVED</h2>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '8px',
-                    background: '#f8fafc',
-                    padding: '16px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    textAlign: 'center'
-                  }}>
-                    {metrics.map((m, idx) => (
-                      <div key={m.id || idx} style={{
-                        borderRight: idx < metrics.length - 1 ? '1px solid #cbd5e1' : 'none',
-                        padding: '0 6px'
-                      }}>
-                        <div style={{ fontSize: '24px', fontWeight: '800', color: '#0284c7', marginBottom: '4px', letterSpacing: '-0.02em' }}>
-                          {m.value}
-                        </div>
-                        <div style={{ fontSize: '10px', fontWeight: '700', color: '#475569', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-                          {m.label}
-                        </div>
+              {/* Section 2: Operational Metrics Achieved */}
+              <div className="discovery-section-block" style={{ marginTop: '14px' }}>
+                <h2 className="discovery-section-title">2. OPERATIONAL METRICS ACHIEVED</h2>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '8px',
+                  background: '#f8fafc',
+                  padding: '16px 10px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  textAlign: 'center'
+                }}>
+                  {metrics.map((m, idx) => (
+                    <div key={m.id || idx} style={{
+                      borderRight: idx < metrics.length - 1 ? '1px solid #cbd5e1' : 'none',
+                      padding: '0 6px'
+                    }}>
+                      <div style={{ fontSize: '24px', fontWeight: '800', color: '#0284c7', marginBottom: '4px', letterSpacing: '-0.02em' }}>
+                        {m.value}
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Section 3: Transition to Ongoing Support & Customer Success */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">3. TRANSITION TO ONGOING SUPPORT & CUSTOMER SUCCESS</h2>
-                  <div style={{
-                    background: '#f8fafc',
-                    padding: '12px 16px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px',
-                    lineHeight: '1.6',
-                    color: '#334155'
-                  }}>
-                    <p style={{ margin: '0 0 8px 0' }}>
-                      {proposal.supportTransitionText || 'The project is transitioned from the Implementation Engineering Team to the Customer Success & Managed Support Practice under the SLA terms.'}
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11.5px', color: '#1e293b' }}>
-                      <div>
-                        • <strong>Support Email:</strong> {proposal.supportEmail || 'support@ibunify.com | Contact@iglobuscc.com'}
-                      </div>
-                      <div>
-                        • <strong>Dedicated Success Manager:</strong> {proposal.dedicatedSuccessManager || 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}
+                      <div style={{ fontSize: '10px', fontWeight: '700', color: '#475569', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                        {m.label}
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
+              </div>
 
-                {/* Section 4: Mutual Final Project Sign-off */}
-                <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                  <h2 className="discovery-section-title">4. MUTUAL FINAL PROJECT SIGN-OFF</h2>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '16px',
-                    background: '#f8fafc',
-                    padding: '14px 18px',
-                    borderRadius: '6px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '12px'
-                  }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                        FOR: {proposal.preparedFor || '[CLIENT COMPANY NAME]'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Signature: __________________________
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Name & Title: {proposal.clientSignatoryName || proposal.clientAttention || '______________________'}
-                      </div>
-                      <div style={{ color: '#64748b' }}>
-                        Date: {proposal.clientSignDate || proposal.date || '[Date]'}
-                      </div>
+              {/* Section 3: Transition to Ongoing Support & Customer Success */}
+              <div className="discovery-section-block" style={{ marginTop: '14px' }}>
+                <h2 className="discovery-section-title">3. TRANSITION TO ONGOING SUPPORT & CUSTOMER SUCCESS</h2>
+                <div style={{
+                  background: '#f8fafc',
+                  padding: '12px 16px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '12px',
+                  lineHeight: '1.6',
+                  color: '#334155'
+                }}>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    {proposal.supportTransitionText || 'The project is transitioned from the Implementation Engineering Team to the Customer Success & Managed Support Practice under the SLA terms.'}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11.5px', color: '#1e293b' }}>
+                    <div>
+                      • <strong>Support Email:</strong> {proposal.supportEmail || 'support@ibunify.com | Contact@iglobuscc.com'}
                     </div>
-<<<<<<< Updated upstream
                     <div>
                       • <strong>Dedicated Success Manager:</strong> {proposal.dedicatedSuccessManager || 'Ramyasree (ramyasree@iglobuscc.com)'}
-=======
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                        FOR: iBUNIFY (iGLOBUS)
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Signature: __________________________
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Name: {proposal.providerSignatoryName || 'Rama Krishna / Sohail'}
-                      </div>
-                      <div style={{ color: '#334155' }}>
-                        Title: {proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
-                      </div>
->>>>>>> Stashed changes
                     </div>
                   </div>
                 </div>
+              </div>
 
-<<<<<<< Updated upstream
               {/* Section 4: Mutual Final Project Sign-off */}
               <div className="discovery-section-block" style={{ marginTop: '14px' }}>
                 <h2 className="discovery-section-title">4. MUTUAL FINAL PROJECT SIGN-OFF</h2>
@@ -3315,21 +2160,6 @@ export function ProposalPreview({ proposal }) {
               <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
-=======
-                {/* Corporate Registered Office Footer Box */}
-                <div className="discovery-corp-footer-box" style={{ marginTop: '16px' }}>
-                  <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                  <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                  <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-                </div>
-              </div>
-
-              <div className="discovery-p2-footnote">
-                <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
-                <span>Page 2 of 2</span>
-              </div>
-            </div>
->>>>>>> Stashed changes
           </section>
         </div>
       </div>

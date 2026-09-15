@@ -22,14 +22,6 @@ export const documentFormats = [
 
 export const sampleProposal = {
   id: 'sample-ibunify-proposal-001',
-<<<<<<< Updated upstream
-  company: 'ibunify',
-  proposalTitle: 'Digital Workspace Transformation Proposal',
-  proposalNumber: 'IBU-SP-2026-001',
-  preparedFor: 'Acme Enterprises Pvt. Ltd.',
-  preparedBy: 'ibunify Sales Team',
-  date: '',
-=======
   documentType: 'commercial_proposal',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
@@ -45,7 +37,6 @@ export const sampleProposal = {
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   productLead: 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)',
   date: new Date().toISOString().slice(0, 10),
->>>>>>> Stashed changes
   validUntil: '',
   currency: 'INR',
   useStructuredCommercials: false,
@@ -60,11 +51,7 @@ export const sampleProposal = {
       id: 'sec-1',
       title: '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION',
       content:
-<<<<<<< Updated upstream
-        'ibunify proposes a secure, scalable, and user-friendly digital workspace solution for Acme Enterprises. The solution will centralize collaboration, automate routine workflows, and improve visibility across teams while reducing operational overhead.'
-=======
         'iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.\n\nDesign Principle: Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.\n\nIntegrated Platform Services Overview:\n• A. Centralized Real Estate CRM: Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.\n• B. Omnichannel Lead Ingestion: Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.\n• C. Closed-Loop Marketing Attribution: Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.\n• D. Executive CDR & Conversion Analytics: Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
->>>>>>> Stashed changes
     },
     {
       id: 'sec-2',
@@ -76,11 +63,7 @@ export const sampleProposal = {
       id: 'sec-3',
       title: '3. CLOUD TELEPHONY SERVICES & COSTING',
       content:
-<<<<<<< Updated upstream
-        'ibunify will configure a modular digital workspace consisting of team spaces, document repositories, automated approval flows, dashboards, notifications, access controls, and onboarding support. The implementation will be tailored to the client’s operating model and branding.'
-=======
         'Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:\n• Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.\n• Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.\n• Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.\n• Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.\n\nCommercial Schedule:\n• Virtual Cloud Telephony Numbers: ₹1,500 / Number / month (with IVR & call recording)\n• Call-to-Lead Auto Ingestion Engine: Included in Setup'
->>>>>>> Stashed changes
     },
     {
       id: 'sec-4',

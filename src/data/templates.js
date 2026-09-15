@@ -347,11 +347,7 @@ export const proposalTemplates = [
         id: 'ctp-sec-2',
         title: '2. AI CALLING SERVICES & COSTING',
         content:
-<<<<<<< Updated upstream
-          'ibunify AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
-=======
           'iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
->>>>>>> Stashed changes
       },
       {
         id: 'ctp-sec-3',

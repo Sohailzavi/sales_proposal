@@ -115,35 +115,6 @@ export function OfficialProposalLibrary({
             </button>
           ))}
         </nav>
-<<<<<<< Updated upstream
-      </aside>
-
-      {activeDocumentFormat === 'all' || activeDocumentFormat === 'pdf' ? (
-        <section className="pdf-workspace panel" aria-label="PDF Document viewer">
-          <div className="workspace-toolbar">
-            <div className="toolbar-left">
-              <span className="file-badge">Official PDF</span>
-              <h3>{OFFICIAL_PROPOSAL.title}</h3>
-            </div>
-            <div className="toolbar-actions">
-              <button
-                type="button"
-                className="secondary sm icon-only-btn"
-                onClick={() => window.open(OFFICIAL_PROPOSAL.filePath, '_blank')}
-                title="Open PDF in new tab"
-                aria-label="Open PDF in new tab"
-              >
-                <IconFullScreen size={16} />
-              </button>
-              <button
-                type="button"
-                className="primary-blue-btn sm"
-                onClick={downloadOfficialPdf}
-              >
-                Download PDF
-              </button>
-=======
-
         <div className="document-list">
           <div className="document-list-label">Deliverables</div>
 
@@ -213,7 +184,6 @@ export function OfficialProposalLibrary({
                 <span className="btn-icon"><IconFullScreen size={14} /></span>
                 <span>Open full screen</span>
               </a>
->>>>>>> Stashed changes
             </div>
           </div>
           <div className="pdf-viewer-wrapper">
