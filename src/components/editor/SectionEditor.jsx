@@ -115,14 +115,6 @@ export function SectionEditor({
                   onChange={(e) => onUpdateField('companyLogoUrl', e.target.value)}
                 />
               </label>
-              <label>
-                <span>Company Phone</span>
-                <input
-                  value={proposal.companyPhone || ''}
-                  placeholder="e.g. 084648 48389"
-                  onChange={(e) => onUpdateField('companyPhone', e.target.value)}
-                />
-              </label>
             </>
           ) : (
             <label>
@@ -447,14 +439,14 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
           <label>
             <span>Document Ref</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-01-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-01-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
             />
           </label>
@@ -484,7 +476,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
@@ -503,10 +495,17 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Key Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
@@ -653,16 +652,32 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>iBUNIFY Lead Signatory</span>
+            <span>Client Sign Date</span>
             <input
-              value={proposal.leadSignatory || 'iBUNIFY Lead: Rama Krishna / Sohail'}
+              value={proposal.clientSignDate || ''}
+              onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
+            <span>ibunify Lead Signatory</span>
+            <input
+              value={proposal.leadSignatory || 'ibunify Lead: Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>ibunify Sign Date</span>
+            <input
+              value={proposal.leadSignDate || ''}
+              onChange={(e) => onUpdateField('leadSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
             <span>Footer Company Name</span>
             <input
-              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              value={proposal.footerCompany || 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
               onChange={(e) => onUpdateField('footerCompany', e.target.value)}
             />
           </label>
@@ -713,23 +728,23 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
           <label>
             <span>Document Ref</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-02-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-02-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
             />
           </label>
           <label>
             <span>Effective Date</span>
             <input
-              value={proposal.effectiveDate || proposal.date || ''}
+              value={proposal.effectiveDate || ''}
               onChange={(e) => onUpdateField('effectiveDate', e.target.value)}
-              placeholder="e.g. 2026-09-11 or [Effective Date]"
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -737,6 +752,7 @@ export function SectionEditor({
             <input
               value={proposal.date || ''}
               onChange={(e) => onUpdateField('date', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -758,7 +774,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
@@ -777,10 +793,17 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Key Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
@@ -871,30 +894,46 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>iBUNIFY Lead Header</span>
+            <span>Client Sign Date</span>
             <input
-              value={proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
+              value={proposal.clientSignDate || ''}
+              onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
+            <span>ibunify Lead Header</span>
+            <input
+              value={proposal.leadSignatory || 'FOR: ibunify (iGLOBUS)'}
               onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
             />
           </label>
           <label>
-            <span>iBUNIFY Signatory Name</span>
+            <span>ibunify Signatory Name</span>
             <input
               value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
           <label>
-            <span>iBUNIFY Signatory Title</span>
+            <span>ibunify Signatory Title</span>
             <input
               value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
               onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
             />
           </label>
           <label>
+            <span>ibunify Sign Date</span>
+            <input
+              value={proposal.leadSignDate || ''}
+              onChange={(e) => onUpdateField('leadSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
             <span>Footer Company Name</span>
             <input
-              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              value={proposal.footerCompany || 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
               onChange={(e) => onUpdateField('footerCompany', e.target.value)}
             />
           </label>
@@ -945,23 +984,23 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
           <label>
             <span>Document Ref</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-04-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-04-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
             />
           </label>
           <label>
             <span>Effective Date</span>
             <input
-              value={proposal.effectiveDate || proposal.date || ''}
+              value={proposal.effectiveDate || ''}
               onChange={(e) => onUpdateField('effectiveDate', e.target.value)}
-              placeholder="e.g. 2026-09-11 or [Effective Date]"
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -969,6 +1008,7 @@ export function SectionEditor({
             <input
               value={proposal.date || ''}
               onChange={(e) => onUpdateField('date', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -990,7 +1030,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
@@ -1009,10 +1049,17 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Key Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
@@ -1103,23 +1150,39 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>iBUNIFY Lead Header</span>
+            <span>Client Sign Date</span>
             <input
-              value={proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
+              value={proposal.clientSignDate || ''}
+              onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
+            <span>ibunify Lead Header</span>
+            <input
+              value={proposal.leadSignatory || 'FOR: ibunify (iGLOBUS)'}
               onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
             />
           </label>
           <label>
-            <span>iBUNIFY Signatory Name</span>
+            <span>ibunify Signatory Name</span>
             <input
               value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
           <label>
+            <span>ibunify Sign Date</span>
+            <input
+              value={proposal.leadSignDate || ''}
+              onChange={(e) => onUpdateField('leadSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
             <span>Footer Company Name</span>
             <input
-              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              value={proposal.footerCompany || 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
               onChange={(e) => onUpdateField('footerCompany', e.target.value)}
             />
           </label>
@@ -1184,38 +1247,54 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Proposal Ref</span>
+            <span>Document Ref</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-PROP-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-05-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
             />
           </label>
           <label>
             <span>SOW Ref</span>
             <input
-              value={proposal.sowNumber || 'IGC-IBUNIFY-SOW-2026'}
+              value={proposal.sowNumber || 'IGC-ibunify-SOW-2026'}
               onChange={(e) => onUpdateField('sowNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Proposal Date</span>
+            <input
+              value={proposal.date || ''}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
+            <span>Effective Date</span>
+            <input
+              value={proposal.effectiveDate || ''}
+              onChange={(e) => onUpdateField('effectiveDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
             <span>Engagement Scope</span>
             <input
-              value={proposal.engagement || 'iBUNIFY CRM & Automation Platform Deployment'}
+              value={proposal.engagement || 'ibunify CRM & Automation Platform Deployment'}
               onChange={(e) => onUpdateField('engagement', e.target.value)}
             />
           </label>
           <label>
             <span>Client Company Name</span>
             <input
-              value={proposal.preparedFor || ''}
+              value={proposal.preparedFor || '[Client Company Name]'}
               onChange={(e) => onUpdateField('preparedFor', e.target.value)}
-              placeholder="e.g. Acme Realty Pvt. Ltd."
+              placeholder="e.g. [Client Company Name]"
             />
           </label>
           <label>
             <span>Client Attention / Sponsor</span>
             <input
-              value={proposal.clientAttention || ''}
+              value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
               placeholder="Attn: [Project Sponsor / Sales Leadership]"
             />
@@ -1223,35 +1302,35 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
           <label>
-            <span>Headquarters</span>
+            <span>Office Location</span>
             <input
-              value={proposal.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+              value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
               onChange={(e) => onUpdateField('companyAddress', e.target.value)}
             />
           </label>
           <label>
-            <span>Digital Portals</span>
+            <span>Portals</span>
             <input
-              value={proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
           <label>
-            <span>Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
           <label>
             <span>Product Lead</span>
             <input
-              value={proposal.productLead || 'Product Lead: Ramyasree (+91 63005 61742)'}
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
               onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
@@ -1325,17 +1404,6 @@ export function SectionEditor({
                   onChange={(e) => {
                     const next = [...serviceBreakdown];
                     next[idx] = { ...next[idx], features: e.target.value };
-                    onUpdateField('serviceBreakdown', next);
-                  }}
-                />
-              </label>
-              <label style={{ marginTop: '8px' }}>
-                <span>Individual Costing</span>
-                <input
-                  value={item.costing}
-                  onChange={(e) => {
-                    const next = [...serviceBreakdown];
-                    next[idx] = { ...next[idx], costing: e.target.value };
                     onUpdateField('serviceBreakdown', next);
                   }}
                 />
@@ -1546,17 +1614,36 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>iBUNIFY Lead Signatory</span>
+            <span>Client Sign Date</span>
+            <input
+              value={proposal.clientSignDate || ''}
+              onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
+            />
+          </label>
+          <label>
+            <span>ibunify Lead Signatory</span>
             <input
               value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
           <label>
-            <span>iBUNIFY Signatory Title</span>
+            <span>ibunify Signatory Title</span>
             <input
               value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
               onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>ibunify Sign Date</span>
+            <input
+              value={proposal.providerSignDate || proposal.leadSignDate || ''}
+              onChange={(e) => {
+                onUpdateField('providerSignDate', e.target.value);
+                onUpdateField('leadSignDate', e.target.value);
+              }}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
         </div>
@@ -1607,22 +1694,23 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
           <label>
             <span>Document Ref</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-06-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-06-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
             />
           </label>
           <label>
             <span>Issue Date</span>
             <input
-              value={proposal.date || '[Date]'}
+              value={proposal.date || ''}
               onChange={(e) => onUpdateField('date', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -1644,7 +1732,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
@@ -1663,10 +1751,17 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
@@ -1690,7 +1785,7 @@ export function SectionEditor({
             <span>Platform Availability Commitment Text</span>
             <textarea
               rows="3"
-              value={proposal.uptimeCommitment || 'iBUNIFY guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
+              value={proposal.uptimeCommitment || 'ibunify guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
               onChange={(e) => onUpdateField('uptimeCommitment', e.target.value)}
             />
           </label>
@@ -1772,14 +1867,14 @@ export function SectionEditor({
           <label>
             <span>Service Provider Signatory</span>
             <input
-              value={proposal.leadSignatory || 'iBUNIFY Success Lead: Ramyasree'}
+              value={proposal.leadSignatory || 'ibunify Success Lead: Ramyasree'}
               onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
             />
           </label>
           <label>
             <span>Footer Company Name</span>
             <input
-              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              value={proposal.footerCompany || 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
               onChange={(e) => onUpdateField('footerCompany', e.target.value)}
             />
           </label>
@@ -1815,7 +1910,7 @@ export function SectionEditor({
       },
       {
         id: 'po-item-2',
-        description: 'iBUNIFY CRM User Licenses (Quarterly)',
+        description: 'ibunify CRM User Licenses (Quarterly)',
         qtyUnit: '[User Count]',
         unitPrice: '₹2,500 / user / mo',
         totalAmount: 'As Per Count'
@@ -1887,15 +1982,23 @@ export function SectionEditor({
           <label>
             <span>Subtitle</span>
             <input
-              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
           <label>
             <span>Document Reference ID</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-07-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-07-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Document Date</span>
+            <input
+              value={proposal.date || ''}
+              onChange={(e) => onUpdateField('date', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -1915,7 +2018,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
@@ -1934,10 +2037,17 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
@@ -1960,18 +2070,16 @@ export function SectionEditor({
           <label>
             <span>PO Number</span>
             <input
-              value={proposal.poNumber || 'PO-IBUNIFY-2026-001'}
+              value={proposal.poNumber || 'PO-ibunify-2026-001'}
               onChange={(e) => onUpdateField('poNumber', e.target.value)}
             />
           </label>
           <label>
             <span>PO Date</span>
             <input
-              value={proposal.poDate || proposal.date || ''}
-              onChange={(e) => {
-                onUpdateField('poDate', e.target.value);
-                onUpdateField('date', e.target.value);
-              }}
+              value={proposal.poDate || ''}
+              onChange={(e) => onUpdateField('poDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -2098,8 +2206,9 @@ export function SectionEditor({
             <label style={{ display: 'block' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
               <input
-                value={proposal.issuedByDate || '[Date]'}
+                value={proposal.issuedByDate || ''}
                 onChange={(e) => onUpdateField('issuedByDate', e.target.value)}
+                placeholder="e.g. 2026-09-15 (leave blank for line)"
               />
             </label>
           </div>
@@ -2130,8 +2239,9 @@ export function SectionEditor({
             <label style={{ display: 'block' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
               <input
-                value={proposal.acceptedByDate || '[Date]'}
+                value={proposal.acceptedByDate || ''}
                 onChange={(e) => onUpdateField('acceptedByDate', e.target.value)}
+                placeholder="e.g. 2026-09-15 (leave blank for line)"
               />
             </label>
           </div>
@@ -2144,7 +2254,7 @@ export function SectionEditor({
           <label>
             <span>Footer Company Name</span>
             <input
-              value={proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
+              value={proposal.footerCompany || 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
               onChange={(e) => onUpdateField('footerCompany', e.target.value)}
             />
           </label>
@@ -2165,7 +2275,7 @@ export function SectionEditor({
           <label>
             <span>Running Page Footnote</span>
             <input
-              value={proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}
+              value={proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}
               onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
             />
           </label>
@@ -2217,22 +2327,23 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.handoverSubtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.handoverSubtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('handoverSubtitle', e.target.value)}
             />
           </label>
           <label>
             <span>Reference Number</span>
             <input
-              value={proposal.handoverRefNo || 'IGC-IBUNIFY-08-2026'}
+              value={proposal.handoverRefNo || 'IGC-ibunify-08-2026'}
               onChange={(e) => onUpdateField('handoverRefNo', e.target.value)}
             />
           </label>
           <label>
-            <span>Delivery Date</span>
+            <span>Document / Delivery Date</span>
             <input
-              value={proposal.handoverDate || 'August 2026'}
+              value={proposal.handoverDate || ''}
               onChange={(e) => onUpdateField('handoverDate', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -2263,6 +2374,20 @@ export function SectionEditor({
               onChange={(e) => onUpdateField('handoverProviderLead', e.target.value)}
             />
           </label>
+          <label>
+            <span>Product Owner</span>
+            <input
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
+            />
+          </label>
         </div>
 
         <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
@@ -2272,7 +2397,7 @@ export function SectionEditor({
           <span style={{ fontSize: '12px', color: '#64748b' }}>Scope Verification Statement</span>
           <textarea
             rows="3"
-            value={proposal.handoverScopeText || 'This Delivery & Handover Document certifies that the implementation of the iBUNIFY CRM Platform has been completed in accordance with the Statement of Work.'}
+            value={proposal.handoverScopeText || 'This Delivery & Handover Document certifies that the implementation of the ibunify CRM Platform has been completed in accordance with the Statement of Work.'}
             onChange={(e) => onUpdateField('handoverScopeText', e.target.value)}
           />
         </label>
@@ -2368,14 +2493,18 @@ export function SectionEditor({
             <label style={{ display: 'block' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
               <input
-                value={proposal.handoverAcceptClientDate || 'Date: ________________________'}
-                onChange={(e) => onUpdateField('handoverAcceptClientDate', e.target.value)}
+                value={proposal.handoverAcceptClientDate || ''}
+                onChange={(e) => {
+                  onUpdateField('handoverAcceptClientDate', e.target.value);
+                  onUpdateField('acceptedDate', e.target.value);
+                }}
+                placeholder="e.g. 2026-09-15 (leave blank for line)"
               />
             </label>
           </div>
 
           <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Delivered by (iBUNIFY Lead)</strong>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Delivered by (ibunify Lead)</strong>
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
               <input
@@ -2400,8 +2529,12 @@ export function SectionEditor({
             <label style={{ display: 'block' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
               <input
-                value={proposal.handoverDeliveredLeadDate || 'Date: August 2026'}
-                onChange={(e) => onUpdateField('handoverDeliveredLeadDate', e.target.value)}
+                value={proposal.handoverDeliveredLeadDate || ''}
+                onChange={(e) => {
+                  onUpdateField('handoverDeliveredLeadDate', e.target.value);
+                  onUpdateField('deliveredDate', e.target.value);
+                }}
+                placeholder="e.g. 2026-09-15 (leave blank for line)"
               />
             </label>
           </div>
@@ -2428,7 +2561,7 @@ export function SectionEditor({
           <label>
             <span>Running Page Footnote</span>
             <input
-              value={proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | Project Delivery Sign-off'}
+              value={proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | Project Delivery Sign-off'}
               onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
             />
           </label>
@@ -2470,7 +2603,7 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+              value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
@@ -2484,15 +2617,16 @@ export function SectionEditor({
           <label>
             <span>Document Ref</span>
             <input
-              value={proposal.proposalNumber || 'IGC-IBUNIFY-09-2026'}
+              value={proposal.proposalNumber || 'IGC-ibunify-09-2026'}
               onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
             />
           </label>
           <label>
             <span>Date</span>
             <input
-              value={proposal.date || '[Date]'}
+              value={proposal.date || ''}
               onChange={(e) => onUpdateField('date', e.target.value)}
+              placeholder="e.g. 2026-09-15 (leave blank for line)"
             />
           </label>
           <label>
@@ -2512,7 +2646,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider</span>
             <input
-              value={proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+              value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
               onChange={(e) => onUpdateField('company', e.target.value)}
             />
           </label>
@@ -2531,10 +2665,17 @@ export function SectionEditor({
             />
           </label>
           <label>
-            <span>Contacts</span>
+            <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}
+              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Product Lead</span>
+            <input
+              value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+              onChange={(e) => onUpdateField('productLead', e.target.value)}
             />
           </label>
           <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
@@ -2557,7 +2698,7 @@ export function SectionEditor({
           <span style={{ fontSize: '12px', color: '#64748b' }}>Closure Confirmation Text</span>
           <textarea
             rows="3"
-            value={proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the iBUNIFY CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
+            value={proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the ibunify CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
             onChange={(e) => onUpdateField('formalClosureStatement', e.target.value)}
           />
         </label>
@@ -2610,7 +2751,7 @@ export function SectionEditor({
           <label>
             <span>Dedicated Success Manager</span>
             <input
-              value={proposal.dedicatedSuccessManager || 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}
+              value={proposal.dedicatedSuccessManager || 'Ramyasree (ramyasree@iglobuscc.com)'}
               onChange={(e) => onUpdateField('dedicatedSuccessManager', e.target.value)}
             />
           </label>
@@ -2639,14 +2780,15 @@ export function SectionEditor({
             <label style={{ display: 'block' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
               <input
-                value={proposal.clientSignDate || proposal.date || '[Date]'}
+                value={proposal.clientSignDate || ''}
                 onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+                placeholder="e.g. 2026-09-15 (leave blank for line)"
               />
             </label>
           </div>
 
           <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>FOR: iBUNIFY (iGLOBUS)</strong>
+            <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>FOR: ibunify (iGLOBUS)</strong>
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
               <input
@@ -2654,11 +2796,19 @@ export function SectionEditor({
                 onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
               />
             </label>
-            <label style={{ display: 'block' }}>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
               <input
                 value={proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
                 onChange={(e) => onUpdateField('providerSignatoryTitle', e.target.value)}
+              />
+            </label>
+            <label style={{ display: 'block' }}>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+              <input
+                value={proposal.providerSignDate || ''}
+                onChange={(e) => onUpdateField('providerSignDate', e.target.value)}
+                placeholder="e.g. 2026-09-15 (leave blank for line)"
               />
             </label>
           </div>
@@ -2685,7 +2835,7 @@ export function SectionEditor({
           <label>
             <span>Running Page Footnote</span>
             <input
-              value={proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}
+              value={proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}
               onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
             />
           </label>

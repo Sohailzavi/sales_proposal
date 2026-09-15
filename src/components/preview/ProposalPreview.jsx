@@ -48,7 +48,7 @@ export function ProposalPreview({ proposal }) {
                   <dt>Invoice no.</dt>
                   <dd>{proposal.proposalNumber || 'INV-2026-0148'}</dd>
                   <dt>Issued</dt>
-                  <dd>{proposal.date || 'Sep 10, 2026'}</dd>
+                  <dd>{proposal.date ? proposal.date : '______________________'}</dd>
                   <dt>Due</dt>
                   <dd>{proposal.validUntil || 'Oct 10, 2026'}</dd>
                   <dt>Terms</dt>
@@ -73,7 +73,6 @@ export function ProposalPreview({ proposal }) {
                   {companyAddressLines.map((line, i) => (
                     <p key={i}>{line}</p>
                   ))}
-                  {proposal.companyPhone && <p>Phone: {proposal.companyPhone}</p>}
                 </address>
               </div>
             </header>
@@ -167,7 +166,7 @@ export function ProposalPreview({ proposal }) {
             <div style={{ textAlign: 'right' }}>
               <div className="compact-doc-title">{proposal.proposalTitle || 'INVOICE'}</div>
               <div className="compact-doc-meta">
-                No. {proposal.proposalNumber} &nbsp;|&nbsp; Issued {proposal.date} &nbsp;|&nbsp; Due {proposal.validUntil}
+                No. {proposal.proposalNumber} &nbsp;|&nbsp; Issued {proposal.date ? proposal.date : '______________________'} &nbsp;|&nbsp; Due {proposal.validUntil || '______________________'}
               </div>
               <span className="compact-status-tag">{proposal.invoiceStatus || 'PENDING'}</span>
             </div>
@@ -266,7 +265,7 @@ export function ProposalPreview({ proposal }) {
     const secObjectives = sections[0] || {
       title: '1. BUSINESS OBJECTIVES & OPERATIONAL SCOPE',
       content:
-        'This Discovery Document establishes the functional and technical requirements for deploying the iBUNIFY platform. It maps existing lead channels, sales team structures, and automation triggers.'
+        'This Discovery Document establishes the functional and technical requirements for deploying the ibunify platform. It maps existing lead channels, sales team structures, and automation triggers.'
     };
     const secIngestion = sections[1] || {
       title: '2. LEAD INGESTION & CHANNEL ARCHITECTURE',
@@ -309,7 +308,7 @@ export function ProposalPreview({ proposal }) {
                 {proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -322,16 +321,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-01-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-01-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -351,7 +351,7 @@ export function ProposalPreview({ proposal }) {
             {/* Page 2 Header */}
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -414,11 +414,11 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-signoff-box">
                   <div className="discovery-signoff-col">
                     <div className="sign-line">{proposal.clientSignatory || 'Client Signatory: ______________________'}</div>
-                    <div className="sign-date">Date: {proposal.date || '[Date]'}</div>
+                    <div className="sign-date">Date: {proposal.clientSignDate ? proposal.clientSignDate : '______________________'}</div>
                   </div>
                   <div className="discovery-signoff-col">
-                    <div className="sign-line"><strong>{proposal.leadSignatory || 'iBUNIFY Lead: Rama Krishna / Sohail'}</strong></div>
-                    <div className="sign-date">Date: {proposal.date || '[Date]'}</div>
+                    <div className="sign-line"><strong>{proposal.leadSignatory || 'ibunify Lead: Rama Krishna / Sohail'}</strong></div>
+                    <div className="sign-date">Date: {proposal.leadSignDate ? proposal.leadSignDate : '______________________'}</div>
                   </div>
                 </div>
               </div>
@@ -431,17 +431,11 @@ export function ProposalPreview({ proposal }) {
                 </div>
               ))}
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box">
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             {/* Page 2 Bottom Footnote */}
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -456,7 +450,7 @@ export function ProposalPreview({ proposal }) {
     const sections = proposal.sections || [];
     const sec1 = sections[0] || {
       title: '1. PURPOSE OF ENGAGEMENT',
-      content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${proposal.effectiveDate || proposal.date || '[Effective Date]'} by and between iGLOBUS Corporate Consulting Private Limited ("iBUNIFY") and ${proposal.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
+      content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${proposal.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
     };
     const sec2 = sections[1] || {
       title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
@@ -504,7 +498,7 @@ export function ProposalPreview({ proposal }) {
                 )}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -517,16 +511,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-02-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-02-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -546,7 +541,7 @@ export function ProposalPreview({ proposal }) {
             {/* Page 2 Header */}
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -590,15 +585,16 @@ export function ProposalPreview({ proposal }) {
                     </div>
                     <div className="sign-line">Signature: __________________________</div>
                     <div className="sign-line">Name & Title: {proposal.clientSignatoryName || '______________________'}</div>
-                    <div className="sign-date">Date: {proposal.date || '[Date]'}</div>
+                    <div className="sign-date">Date: {proposal.clientSignDate ? proposal.clientSignDate : '__________________________'}</div>
                   </div>
                   <div className="discovery-signoff-col">
                     <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
-                      {proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
+                      {proposal.leadSignatory || 'FOR: ibunify (iGLOBUS)'}
                     </div>
                     <div className="sign-line">Signature: __________________________</div>
                     <div className="sign-line">Name: {proposal.leadSignatoryName || 'Rama Krishna / Sohail'}</div>
-                    <div className="sign-date">Title: {proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                    <div className="sign-line">Title: {proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                    <div className="sign-date">Date: {proposal.leadSignDate ? proposal.leadSignDate : '__________________________'}</div>
                   </div>
                 </div>
               </div>
@@ -611,17 +607,11 @@ export function ProposalPreview({ proposal }) {
                 </div>
               ))}
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box">
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             {/* Page 2 Bottom Footnote */}
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -636,17 +626,17 @@ export function ProposalPreview({ proposal }) {
     const sections = proposal.sections || [];
     const sec1 = sections[0] || {
       title: '1. FRAMEWORK AGREEMENT & TERM',
-      content: `This Master Services Agreement ("MSA") is entered into as of ${proposal.effectiveDate || proposal.date || '[Effective Date]'} by and between iGLOBUS Corporate Consulting Private Limited ("iBUNIFY") and ${proposal.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
+      content: `This Master Services Agreement ("MSA") is entered into as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${proposal.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
     };
     const sec2 = sections[1] || {
       title: '2. SCOPE OF PLATFORM SERVICES',
       content:
-        'iBUNIFY agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
+        'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
     };
     const sec3 = sections[2] || {
       title: '3. INTELLECTUAL PROPERTY RIGHTS',
       content:
-        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: iBUNIFY exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
+        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
     };
     const sec4 = sections[3] || {
       title: '4. PAYMENT TERMS & INVOICING',
@@ -684,7 +674,7 @@ export function ProposalPreview({ proposal }) {
                 {proposal.proposalTitle || 'Master Services Agreement (MSA)'}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -696,16 +686,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-04-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-04-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -724,7 +715,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper msa-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -771,13 +762,15 @@ export function ProposalPreview({ proposal }) {
                     </div>
                     <div className="sign-line">Signature: __________________________</div>
                     <div className="sign-line">Name & Title: {proposal.clientSignatoryName || '______________________'}</div>
+                    <div className="sign-date">Date: {proposal.clientSignDate ? proposal.clientSignDate : '__________________________'}</div>
                   </div>
                   <div className="discovery-signoff-col">
                     <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
-                      {proposal.leadSignatory || 'FOR: iBUNIFY (iGLOBUS)'}
+                      {proposal.leadSignatory || 'FOR: ibunify (iGLOBUS)'}
                     </div>
                     <div className="sign-line">Signature: __________________________</div>
                     <div className="sign-line">Name: {proposal.leadSignatoryName || 'Rama Krishna / Sohail'}</div>
+                    <div className="sign-date">Date: {proposal.leadSignDate ? proposal.leadSignDate : '__________________________'}</div>
                   </div>
                 </div>
               </div>
@@ -789,15 +782,10 @@ export function ProposalPreview({ proposal }) {
                 </div>
               ))}
 
-              <div className="discovery-corp-footer-box">
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -856,7 +844,7 @@ export function ProposalPreview({ proposal }) {
       },
       {
         id: 'cs-2',
-        component: 'iBUNIFY CRM User License',
+        component: 'ibunify CRM User License',
         scope: 'Full CRM pipeline, task management, mobile access & dashboards',
         investment: '₹2,500 / user / month'
       },
@@ -896,7 +884,7 @@ export function ProposalPreview({ proposal }) {
 
     const sowDeliverables = proposal.sowDeliverables || [
       'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
-      'Deliverable 2: Fully configured iBUNIFY instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
+      'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
       'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
       'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
     ];
@@ -962,18 +950,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Engagement: {proposal.engagement || 'iBUNIFY CRM & Automation Platform Deployment'}</div>
-                <div className="discovery-meta-sub">Proposal Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-PROP-2026'}</div>
-                <div className="discovery-meta-sub">SOW Ref: {proposal.sowNumber || 'IGC-IBUNIFY-SOW-2026'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-05-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.)'}</div>
-                <div className="discovery-meta-sub">{proposal.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                <div className="discovery-meta-sub">{proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)'}</div>
-                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramyasree (+91 63005 61742)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
+                <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -992,7 +979,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper ctp-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
               </div>
               <div className="ctp-part-banner">
@@ -1005,7 +992,7 @@ export function ProposalPreview({ proposal }) {
               <div className="discovery-section-block">
                 <h2 className="discovery-section-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
                 <div className="discovery-section-text" style={{ marginBottom: '8px', fontSize: '11.5px', lineHeight: '1.45' }}>
-                  iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.
+                  ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.
                 </div>
 
                 <div className="ctp-callout-box">
@@ -1033,9 +1020,6 @@ export function ProposalPreview({ proposal }) {
                       </div>
                       <div className="ctp-breakdown-features">
                         <strong>Core Features:</strong> {item.features}
-                      </div>
-                      <div className="ctp-breakdown-costing">
-                        <strong>Individual Costing:</strong> {item.costing}
                       </div>
                     </div>
                   ))}
@@ -1067,7 +1051,7 @@ export function ProposalPreview({ proposal }) {
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 5</span>
             </div>
           </section>
@@ -1079,10 +1063,10 @@ export function ProposalPreview({ proposal }) {
             <span>Page 3 of 5 · Schedule Continued</span>
           </div>
           <section className="discovery-content-paper ctp-content-paper" style={{ position: 'relative' }}>
-            <div className="ctp-watermark">IBUNIFY CRM</div>
+            <div className="ctp-watermark">ibunify CRM</div>
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
               </div>
             </div>
@@ -1124,7 +1108,7 @@ export function ProposalPreview({ proposal }) {
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 3 of 5</span>
             </div>
           </section>
@@ -1138,7 +1122,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper ctp-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
               </div>
               <div className="ctp-part-banner">
@@ -1148,7 +1132,11 @@ export function ProposalPreview({ proposal }) {
 
             <div className="discovery-p2-body">
               <div className="ctp-sow-preamble">
-                {proposal.sowPreamble || 'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the iBUNIFY platform.'}
+                {proposal.sowPreamble
+                  ? proposal.sowPreamble
+                      .replace('[Effective Date]', proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________')
+                      .replace('[Client Company Name]', proposal.preparedFor || '[Client Company Name]')
+                  : `THIS STATEMENT OF WORK ("SOW") is effective as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'}, by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and ${proposal.preparedFor || '[Client Company Name]'} ("Client"), and defines the delivery terms and execution milestones for the ibunify platform.`}
               </div>
 
               {/* Section 1 */}
@@ -1247,7 +1235,7 @@ export function ProposalPreview({ proposal }) {
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 4 of 5</span>
             </div>
           </section>
@@ -1259,24 +1247,15 @@ export function ProposalPreview({ proposal }) {
             <span>Page 5 of 5 · Authorization & Sign-Off</span>
           </div>
           <section className="discovery-content-paper ctp-content-paper" style={{ position: 'relative' }}>
-            <div className="ctp-watermark">IBUNIFY CRM</div>
+            <div className="ctp-watermark">ibunify CRM</div>
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Standard Master Template'}</span>
               </div>
             </div>
 
             <div className="discovery-p2-body">
-              {/* Section 5 Continued */}
-              <div className="discovery-section-block">
-                <div className="discovery-bullet-list">
-                  {sowAssumptions.slice(1).map((assump, idx) => (
-                    <div key={idx} className="discovery-bullet-item">• {assump}</div>
-                  ))}
-                </div>
-              </div>
-
               {/* Section 6: Authorization & Sign-off */}
               <div className="discovery-section-block" style={{ marginTop: '16px' }}>
                 <h2 className="discovery-section-title">6. AUTHORIZATION & SIGN-OFF</h2>
@@ -1290,35 +1269,26 @@ export function ProposalPreview({ proposal }) {
                     </div>
                     <div className="sign-line" style={{ marginTop: '16px' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
                     <div className="sign-line">Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                    <div className="sign-date">Date: {proposal.date || '____________________________'}</div>
+                    <div className="sign-date">Date: {proposal.clientSignDate ? proposal.clientSignDate : '____________________________'}</div>
                   </div>
                   <div className="discovery-signoff-col">
                     <div style={{ fontWeight: '700', color: '#1e3a8a', marginBottom: '2px' }}>
-                      {proposal.providerSignatoryHeader || 'FOR: iBUNIFY (iGLOBUS)'}
+                      {proposal.providerSignatoryHeader || 'FOR: ibunify (iGLOBUS)'}
                     </div>
                     <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '8px' }}>
                       {proposal.providerSignatorySub || 'Service Provider Signatory'}
                     </div>
                     <div className="sign-line" style={{ marginTop: '16px' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna / Sohail'}</div>
                     <div className="sign-line">Title: {proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
-                    <div className="sign-date">Date: {proposal.date || '____________________________'}</div>
+                    <div className="sign-date">Date: {(proposal.providerSignDate || proposal.leadSignDate) ? (proposal.providerSignDate || proposal.leadSignDate) : '____________________________'}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box" style={{ marginTop: '24px' }}>
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div style={{ fontSize: '11px', color: '#475569', margin: '2px 0' }}>
-                  {proposal.footerContacts || 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390) | Ramyasree (+91 63005 61742)'}
-                </div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 5 of 5</span>
             </div>
           </section>
@@ -1363,8 +1333,8 @@ export function ProposalPreview({ proposal }) {
 
     const escalationMatrix = proposal.escalationMatrix || [
       'Level 1 (Helpdesk): support@ibunify.com | Ticket Portal',
-      'Level 2 (Technical Lead): Sohail (+91 96032 70390 | sohail@iglobus.com)',
-      'Level 3 (Practice Lead): Rama Krishna (+91 78420 97496 | ramakrishna@iglobuscc.com)'
+      'Level 2 (Technical Lead): Sohail (sohail@iglobus.com)',
+      'Level 3 (Practice Lead): Rama Krishna (ramakrishna@iglobuscc.com)'
     ];
 
     return (
@@ -1390,7 +1360,7 @@ export function ProposalPreview({ proposal }) {
                 {proposal.proposalTitle || 'Service Level Agreement (SLA)'}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1402,16 +1372,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-06-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-06-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -1430,7 +1401,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper sla-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -1443,7 +1414,7 @@ export function ProposalPreview({ proposal }) {
               <div className="discovery-section-block">
                 <h2 className="discovery-section-title">1. SERVICE UPTIME & INFRASTRUCTURE COMMITMENT</h2>
                 <div className="discovery-section-text">
-                  {proposal.uptimeCommitment || 'iBUNIFY guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
+                  {proposal.uptimeCommitment || 'ibunify guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.'}
                 </div>
               </div>
 
@@ -1489,21 +1460,15 @@ export function ProposalPreview({ proposal }) {
                     {proposal.clientAcknowledgment || 'Client Acknowledgment: ___________________'}
                   </div>
                   <div style={{ fontSize: '13px', fontWeight: '700', color: '#1e3a8a', textAlign: 'right' }}>
-                    {proposal.leadSignatory || 'iBUNIFY Success Lead: Ramyasree'}
+                    {proposal.leadSignatory || 'ibunify Success Lead: Ramyasree'}
                   </div>
                 </div>
               </div>
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box" style={{ marginTop: '18px' }}>
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -1525,7 +1490,7 @@ export function ProposalPreview({ proposal }) {
       },
       {
         id: 'po-item-2',
-        description: 'iBUNIFY CRM User Licenses (Quarterly)',
+        description: 'ibunify CRM User Licenses (Quarterly)',
         qtyUnit: '[User Count]',
         unitPrice: '₹2,500 / user / mo',
         totalAmount: 'As Per Count'
@@ -1576,7 +1541,7 @@ export function ProposalPreview({ proposal }) {
                 {proposal.proposalTitle || 'Purchase Order (PO Template)'}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1588,16 +1553,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-07-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-07-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -1616,7 +1582,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper po-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -1625,74 +1591,74 @@ export function ProposalPreview({ proposal }) {
             </div>
 
             <div className="discovery-p2-body">
-              {/* Section 1: Purchase Order Summary */}
+              {/* Section 1: Official Order Schedule */}
               <div className="discovery-section-block">
-                <h2 className="discovery-section-title">1. PURCHASE ORDER SUMMARY</h2>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '10px 24px',
-                  background: '#f8fafc',
-                  padding: '12px 16px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '12px'
-                }}>
-                  <div>
-                    <span style={{ color: '#64748b' }}>PO Number: </span>
-                    <strong style={{ color: '#0f2b6e' }}>{proposal.poNumber || 'PO-IBUNIFY-2026-001'}</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>Payment Terms: </span>
-                    <strong style={{ color: '#0f2b6e' }}>{proposal.paymentTerms || 'NET 30'}</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>PO Date: </span>
-                    <strong style={{ color: '#1e293b' }}>{proposal.poDate || proposal.date || '[Date]'}</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>Currency: </span>
-                    <strong style={{ color: '#1e293b' }}>{proposal.currency || 'INR (₹)'}</strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Itemized Order Schedule */}
-              <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                <h2 className="discovery-section-title">2. ITEMIZED ORDER SCHEDULE</h2>
+                <h2 className="discovery-section-title">1. OFFICIAL ORDER SCHEDULE</h2>
                 <table className="discovery-pipeline-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '42%' }}>ITEM DESCRIPTION</th>
-                      <th style={{ width: '18%', textAlign: 'center' }}>QTY / UNIT</th>
-                      <th style={{ width: '20%', textAlign: 'right' }}>UNIT PRICE (₹)</th>
-                      <th style={{ width: '20%', textAlign: 'right' }}>TOTAL AMOUNT (₹)</th>
+                      <th style={{ width: '40%' }}>SERVICE / ITEM DESCRIPTION</th>
+                      <th style={{ width: '20%' }}>QTY / UNIT</th>
+                      <th style={{ width: '20%' }}>UNIT PRICE</th>
+                      <th style={{ width: '20%', textAlign: 'right' }}>TOTAL AMOUNT</th>
                     </tr>
                   </thead>
                   <tbody>
                     {orderScheduleItems.map((item, idx) => (
                       <tr key={item.id || idx}>
-                        <td style={{ fontWeight: '600', color: '#1e293b' }}>{item.description}</td>
-                        <td style={{ textAlign: 'center', color: '#475569' }}>{item.qtyUnit}</td>
-                        <td style={{ textAlign: 'right', color: '#334155' }}>{item.unitPrice}</td>
-                        <td style={{ textAlign: 'right', fontWeight: '700', color: '#0f2b6e' }}>{item.totalAmount}</td>
+                        <td style={{ fontWeight: '600', color: '#0f2b6e' }}>
+                          {item.description}
+                        </td>
+                        <td style={{ color: '#334155' }}>
+                          {item.qtyUnit || item.qty}
+                        </td>
+                        <td style={{ color: '#334155' }}>
+                          {item.unitPrice}
+                        </td>
+                        <td style={{ textAlign: 'right', fontWeight: '700', color: '#0f2b6e' }}>
+                          {item.totalAmount || item.total}
+                        </td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#f0f7ff', borderTop: '2px solid #38b6ff' }}>
-                      <td colSpan="3" style={{ fontWeight: '800', color: '#0f2b6e', fontSize: '11.5px' }}>
-                        Total Initial Purchase Order Value (Excl. Taxes)
-                      </td>
-                      <td style={{ textAlign: 'right', fontWeight: '800', color: '#0f2b6e', fontSize: '12px' }}>
-                        {proposal.totalInitialPoValue || '₹75,000 + Users'}
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
 
-              {/* Section 3: Authorization & Approval */}
-              <div className="discovery-section-block" style={{ marginTop: '14px' }}>
-                <h2 className="discovery-section-title">3. AUTHORIZATION & APPROVAL</h2>
+              {/* Section 2: Purchase Order Summary */}
+              <div className="discovery-section-block" style={{ marginTop: '16px' }}>
+                <h2 className="discovery-section-title">2. PURCHASE ORDER SUMMARY & BILLING TERMS</h2>
+                <div style={{
+                  background: '#f8fafc',
+                  padding: '14px 18px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '12px',
+                  fontSize: '12px'
+                }}>
+                  <div>
+                    <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>PO Reference:</span>
+                    <strong style={{ color: '#0f2b6e' }}>{proposal.poNumber || 'PO-ibunify-2026-001'}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>PO Date:</span>
+                    <strong style={{ color: '#0f2b6e' }}>{proposal.poDate ? proposal.poDate : '________________________'}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Payment Terms:</span>
+                    <strong style={{ color: '#0f2b6e' }}>{proposal.paymentTerms || 'NET 30'}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Currency:</span>
+                    <strong style={{ color: '#0f2b6e' }}>{proposal.currency || 'INR (₹)'}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: Dual Authorization & Acceptance Block */}
+              <div className="discovery-section-block" style={{ marginTop: '20px' }}>
+                <h2 className="discovery-section-title">3. DUAL AUTHORIZATION & ACCEPTANCE</h2>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
@@ -1705,46 +1671,46 @@ export function ProposalPreview({ proposal }) {
                 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                      Issued By: {proposal.issuedByClient || '[CLIENT COMPANY NAME]'}
+                      Issued By (Client Entity):
                     </div>
                     <div style={{ color: '#334155' }}>
-                      Authorized By: {proposal.issuedByAuthorized || '__________________________'}
+                      <strong>Organization:</strong> {proposal.issuedByClient || proposal.preparedFor || '[CLIENT COMPANY NAME]'}
                     </div>
                     <div style={{ color: '#334155' }}>
-                      Designation: {proposal.issuedByDesignation || '____________________________'}
+                      <strong>Authorized Signatory:</strong> {proposal.issuedByAuthorized || '__________________________'}
+                    </div>
+                    <div style={{ color: '#334155' }}>
+                      <strong>Designation:</strong> {proposal.issuedByDesignation || '____________________________'}
                     </div>
                     <div style={{ color: '#64748b' }}>
-                      Date: {proposal.issuedByDate || proposal.date || '[Date]'}
+                      Date: {proposal.issuedByDate ? proposal.issuedByDate : '________________________'}
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                      Accepted By: {proposal.acceptedByCompany || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
+                      Accepted By (ibunify / iGLOBUS):
                     </div>
                     <div style={{ color: '#334155' }}>
-                      Authorized By: {proposal.acceptedByAuthorized || 'Rama Krishna / Sohail'}
+                      <strong>Organization:</strong> {proposal.acceptedByCompany || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
                     </div>
                     <div style={{ color: '#334155' }}>
-                      Designation: {proposal.acceptedByDesignation || 'Enterprise Practice Leads'}
+                      <strong>Authorized Signatory:</strong> {proposal.acceptedByAuthorized || 'Rama Krishna / Sohail'}
+                    </div>
+                    <div style={{ color: '#334155' }}>
+                      <strong>Designation:</strong> {proposal.acceptedByDesignation || 'Enterprise Practice Leads'}
                     </div>
                     <div style={{ color: '#64748b' }}>
-                      Date: {proposal.acceptedByDate || proposal.date || '[Date]'}
+                      Date: {proposal.acceptedByDate ? proposal.acceptedByDate : '________________________'}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box" style={{ marginTop: '16px' }}>
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -1756,7 +1722,44 @@ export function ProposalPreview({ proposal }) {
   const isHandover = proposal.documentType === 'handover';
 
   if (isHandover) {
-    const checklistItems = proposal.handoverChecklistItems || [];
+    const checklistItems = proposal.handoverChecklistItems || [
+      {
+        id: 'ho-item-1',
+        component: 'CRM Pipeline',
+        deliveredFeature: 'Custom stages, multi-project inventory, lead scoring',
+        status: 'Verified & Active'
+      },
+      {
+        id: 'ho-item-2',
+        component: 'Omnichannel Ingestion',
+        deliveredFeature: 'Meta CAPI, Google Ads, portal webhooks integrated',
+        status: 'Verified & Active'
+      },
+      {
+        id: 'ho-item-3',
+        component: 'Cloud Telephony',
+        deliveredFeature: 'Virtual numbers configured, Call-to-Lead auto record enabled',
+        status: 'Verified & Active'
+      },
+      {
+        id: 'ho-item-4',
+        component: 'WhatsApp Business',
+        deliveredFeature: 'Meta API live, brochure triggers, multi-agent inbox setup',
+        status: 'Verified & Active'
+      },
+      {
+        id: 'ho-item-5',
+        component: 'AI Voice Agent',
+        deliveredFeature: 'Outbound dialer configured, budget qualification active',
+        status: 'Verified & Active'
+      },
+      {
+        id: 'ho-item-6',
+        component: 'Documentation',
+        deliveredFeature: 'Admin runbooks and user guides handed over',
+        status: 'Delivered'
+      }
+    ];
 
     return (
       <div className="handover-pages-container po-pages-container">
@@ -1781,7 +1784,7 @@ export function ProposalPreview({ proposal }) {
                 {proposal.proposalTitle || 'Project Delivery & Handover Sign-off'}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || proposal.handoverSubtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || proposal.handoverSubtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1793,16 +1796,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || proposal.handoverClientOrg || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || proposal.handoverClientLead || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || proposal.handoverRefNo || 'IGC-IBUNIFY-08-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || proposal.handoverDate || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || proposal.handoverRefNo || 'IGC-ibunify-08-2026'}</div>
+                <div className="discovery-meta-sub">Date: {(proposal.date || proposal.handoverDate) ? (proposal.date || proposal.handoverDate) : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || proposal.handoverProvider || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || proposal.handoverProvider || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || (proposal.handoverProviderLead ? `Contacts: ${proposal.handoverProviderLead} | Ramyasree` : 'Contacts: Rama Krishna | Sohail | Ramyasree')}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -1821,7 +1825,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper po-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -1842,7 +1846,7 @@ export function ProposalPreview({ proposal }) {
                   lineHeight: '1.6',
                   color: '#334155'
                 }}>
-                  {proposal.handoverScopeText || proposal.scopeVerificationText || 'This Delivery & Handover Document certifies that the implementation, configuration, user acceptance testing (UAT), and operational enablement of the iBUNIFY CRM Enterprise Suite have been completed in accordance with the agreed Statement of Work (SOW).'}
+                  {proposal.handoverScopeText || proposal.scopeVerificationText || 'This Delivery & Handover Document certifies that the implementation, configuration, user acceptance testing (UAT), and operational enablement of the ibunify CRM Enterprise Suite have been completed in accordance with the agreed Statement of Work (SOW).'}
                 </div>
               </div>
 
@@ -1912,13 +1916,13 @@ export function ProposalPreview({ proposal }) {
                       <strong>Organization:</strong> {proposal.handoverAcceptClientOrg || proposal.preparedFor || '[Client Company Name]'}
                     </div>
                     <div style={{ color: '#64748b' }}>
-                      {proposal.handoverAcceptClientDate || proposal.acceptedDate || 'Date: ________________________'}
+                      Date: {proposal.handoverAcceptClientDate ? proposal.handoverAcceptClientDate : '________________________'}
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                      Delivered by (iBUNIFY Lead):
+                      Delivered by (ibunify Lead):
                     </div>
                     <div style={{ color: '#334155' }}>
                       <strong>Name:</strong> {proposal.handoverDeliveredLeadName || proposal.deliveredByLead || 'Sohail'}
@@ -1930,22 +1934,16 @@ export function ProposalPreview({ proposal }) {
                       <strong>Organization:</strong> {proposal.handoverDeliveredLeadOrg || 'iGLOBUS Corporate Consulting Pvt. Ltd.'}
                     </div>
                     <div style={{ color: '#64748b' }}>
-                      {proposal.handoverDeliveredLeadDate || proposal.deliveredDate || 'Date: August 2026'}
+                      Date: {proposal.handoverDeliveredLeadDate ? proposal.handoverDeliveredLeadDate : '________________________'}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box" style={{ marginTop: '16px' }}>
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -1987,7 +1985,7 @@ export function ProposalPreview({ proposal }) {
                 {proposal.proposalTitle || 'Project Closure & Hypercare Transition'}
               </h1>
               <div className="discovery-main-subtitle">
-                {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
               </div>
               <p className="discovery-main-description">
                 {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1999,16 +1997,17 @@ export function ProposalPreview({ proposal }) {
                 <div className="discovery-meta-heading">PREPARED FOR</div>
                 <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                 <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
-                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-09-2026'}</div>
-                <div className="discovery-meta-sub">Date: {proposal.date || '[Date]'}</div>
+                <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-09-2026'}</div>
+                <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
               </div>
 
               <div className="discovery-meta-col">
                 <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                <div className="discovery-meta-value-bold">{proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                 <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                 <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna | Sohail | Ramyasree'}</div>
+                <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
               </div>
             </div>
 
@@ -2027,7 +2026,7 @@ export function ProposalPreview({ proposal }) {
           <section className="discovery-content-paper po-content-paper">
             <div className="discovery-p2-header">
               <div className="discovery-p2-header-top">
-                <span>{proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Enterprise Suite'}</span>
+                <span>{proposal.headerLeft || 'ibunify CRM by iGLOBUS | Enterprise Suite'}</span>
                 <span className="confidential-tag">{proposal.headerRight || 'Confidential Document Template'}</span>
               </div>
               <div className="discovery-p2-sub-bar">
@@ -2048,7 +2047,7 @@ export function ProposalPreview({ proposal }) {
                   lineHeight: '1.6',
                   color: '#334155'
                 }}>
-                  {proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the iBUNIFY CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
+                  {proposal.formalClosureStatement || `This Project Closure Certificate formally confirms that the Phase-I deployment of the ibunify CRM Platform for ${proposal.preparedFor || '[Client Company Name]'} is complete and operational.`}
                 </div>
               </div>
 
@@ -2101,7 +2100,7 @@ export function ProposalPreview({ proposal }) {
                       • <strong>Support Email:</strong> {proposal.supportEmail || 'support@ibunify.com | Contact@iglobuscc.com'}
                     </div>
                     <div>
-                      • <strong>Dedicated Success Manager:</strong> {proposal.dedicatedSuccessManager || 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}
+                      • <strong>Dedicated Success Manager:</strong> {proposal.dedicatedSuccessManager || 'Ramyasree (ramyasree@iglobuscc.com)'}
                     </div>
                   </div>
                 </div>
@@ -2131,13 +2130,13 @@ export function ProposalPreview({ proposal }) {
                       Name & Title: {proposal.clientSignatoryName || proposal.clientAttention || '______________________'}
                     </div>
                     <div style={{ color: '#64748b' }}>
-                      Date: {proposal.clientSignDate || proposal.date || '[Date]'}
+                      Date: {proposal.clientSignDate ? proposal.clientSignDate : '__________________________'}
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ fontWeight: '700', color: '#0f2b6e' }}>
-                      FOR: iBUNIFY (iGLOBUS)
+                      FOR: ibunify (iGLOBUS)
                     </div>
                     <div style={{ color: '#334155' }}>
                       Signature: __________________________
@@ -2148,20 +2147,17 @@ export function ProposalPreview({ proposal }) {
                     <div style={{ color: '#334155' }}>
                       Title: {proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
                     </div>
+                    <div style={{ color: '#64748b' }}>
+                      Date: {proposal.providerSignDate ? proposal.providerSignDate : '__________________________'}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Corporate Registered Office Footer Box */}
-              <div className="discovery-corp-footer-box" style={{ marginTop: '16px' }}>
-                <div className="corp-name">{proposal.footerCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}</div>
-                <div className="corp-address">{proposal.footerAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}</div>
-                <div className="corp-links">{proposal.footerWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}</div>
-              </div>
             </div>
 
             <div className="discovery-p2-footnote">
-              <span>{proposal.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
+              <span>{proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com'}</span>
               <span>Page 2 of 2</span>
             </div>
           </section>
@@ -2194,7 +2190,7 @@ export function ProposalPreview({ proposal }) {
                     <h1>{proposal.proposalTitle}</h1>
                     <div className="proposal-meta">
                       <div><span>Proposal No.</span><strong>{proposal.proposalNumber}</strong></div>
-                      <div><span>Date</span><strong>{proposal.date}</strong></div>
+                      <div><span>Date</span><strong>{proposal.date ? proposal.date : '______________________'}</strong></div>
                       <div><span>Prepared for</span><strong>{proposal.preparedFor}</strong></div>
                       <div><span>Prepared by</span><strong>{proposal.preparedBy}</strong></div>
                       <div><span>Valid until</span><strong>{proposal.validUntil || '30 days from issue'}</strong></div>

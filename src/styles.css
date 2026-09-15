@@ -1451,16 +1451,17 @@ html::-webkit-scrollbar,
   border-color: #a7f3d0;
 }
 
-/* Page 1: Deep Navy Blue Gradient Cover Paper */
+/* Page 1: Crisp White Cover Paper with Enterprise Navy/Blue Typography */
 .discovery-cover-paper {
   box-sizing: border-box;
   width: 794px;
   min-height: 1120px;
   padding: 56px 48px 48px;
-  background: linear-gradient(180deg, #0b1f4d 0%, #102e70 45%, #18449c 100%);
-  color: #ffffff;
+  background: #ffffff;
+  color: #1e293b;
   border-radius: 8px;
-  box-shadow: 0 12px 30px rgba(11, 31, 77, 0.35);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1483,7 +1484,7 @@ html::-webkit-scrollbar,
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: #0b1f4d;
   line-height: 1;
 }
 
@@ -1492,7 +1493,7 @@ html::-webkit-scrollbar,
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: #2563eb;
   margin-top: 5px;
 }
 
@@ -1504,14 +1505,14 @@ html::-webkit-scrollbar,
 .discovery-badge-pill {
   display: inline-block;
   padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #e0e7ff;
+  color: #1d4ed8;
   margin-bottom: 20px;
 }
 
@@ -1519,7 +1520,7 @@ html::-webkit-scrollbar,
   font-size: 34px;
   font-weight: 800;
   line-height: 1.25;
-  color: #ffffff;
+  color: #0b1f4d;
   margin: 0 0 12px 0;
   letter-spacing: -0.02em;
 }
@@ -1527,14 +1528,14 @@ html::-webkit-scrollbar,
 .discovery-main-subtitle {
   font-size: 18px;
   font-weight: 600;
-  color: #93c5fd;
+  color: #2563eb;
   margin-bottom: 18px;
 }
 
 .discovery-main-description {
   font-size: 14.5px;
   line-height: 1.6;
-  color: #e0e7ff;
+  color: #475569;
   max-width: 90%;
   margin: 0;
 }
@@ -1544,10 +1545,9 @@ html::-webkit-scrollbar,
   grid-template-columns: 1fr 1fr;
   gap: 28px;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
-  backdrop-filter: blur(8px);
   margin-top: 40px;
   margin-bottom: 24px;
 }
@@ -1563,20 +1563,20 @@ html::-webkit-scrollbar,
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: #2563eb;
   margin-bottom: 4px;
 }
 
 .discovery-meta-value-bold {
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: #0b1f4d;
   margin-bottom: 2px;
 }
 
 .discovery-meta-sub {
   font-size: 12.5px;
-  color: #e0e7ff;
+  color: #475569;
   line-height: 1.45;
 }
 
@@ -1584,18 +1584,21 @@ html::-webkit-scrollbar,
   display: flex;
   align-items: baseline;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.45);
+  color: #94a3b8;
   font-size: 13px;
   padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
 }
 
 .discovery-cover-footer-brand span {
   font-weight: 700;
+  color: #0b1f4d;
 }
 
 .discovery-cover-footer-brand small {
   font-size: 9px;
   letter-spacing: 0.1em;
+  color: #2563eb;
 }
 
 /* Page 2: Crisp White Structured Content Paper */

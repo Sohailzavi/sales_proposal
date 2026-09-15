@@ -379,7 +379,7 @@ function App() {
       ...template,
       id: `doc-${Date.now()}`,
       proposalNumber: template.proposalNumber || `INV-2026-0001`,
-      date: new Date().toISOString().slice(0, 10),
+      date: '',
       sections: Array.isArray(template.sections)
         ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
         : []
@@ -405,7 +405,7 @@ function App() {
         ...template,
         id: `inv-${Date.now()}`,
         proposalNumber: template.proposalNumber || 'INV-2026-0148',
-        date: new Date().toISOString().slice(0, 10),
+        date: '',
         sections: []
       };
       delete target.name;
@@ -425,8 +425,8 @@ function App() {
       target = {
         ...template,
         id: `disc-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-01-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-01-2026',
+        date: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -448,8 +448,9 @@ function App() {
       target = {
         ...template,
         id: `nda-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-02-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-02-2026',
+        date: '',
+        effectiveDate: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -471,8 +472,9 @@ function App() {
       target = {
         ...template,
         id: `msa-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-04-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-04-2026',
+        date: '',
+        effectiveDate: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -494,8 +496,9 @@ function App() {
       target = {
         ...template,
         id: `ctp-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-PROP-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-05-2026',
+        date: '',
+        effectiveDate: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -517,8 +520,8 @@ function App() {
       target = {
         ...template,
         id: `sla-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-06-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-06-2026',
+        date: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -540,8 +543,9 @@ function App() {
       target = {
         ...template,
         id: `po-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-07-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-07-2026',
+        date: '',
+        poDate: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -563,8 +567,9 @@ function App() {
       target = {
         ...template,
         id: `ho-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-08-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-08-2026',
+        date: '',
+        handoverDate: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []
@@ -586,8 +591,8 @@ function App() {
       target = {
         ...template,
         id: `cls-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'IGC-IBUNIFY-09-2026',
-        date: new Date().toISOString().slice(0, 10),
+        proposalNumber: template.proposalNumber || 'IGC-ibunify-09-2026',
+        date: '',
         sections: Array.isArray(template.sections)
           ? template.sections.map((sec) => ({ ...sec, id: crypto.randomUUID() }))
           : []

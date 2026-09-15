@@ -8,7 +8,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
 
   const defaultCompany = proposal.company || proposal.proposalTitle || 'Client';
   const defaultSubject = `Proposal – ${defaultCompany}`;
-  const defaultMessage = `Dear Client,\n\nPlease find our proposal attached for your consideration.\n\nRegards,\niBunify Sales Team`;
+  const defaultMessage = `Dear Client,\n\nPlease find our proposal attached for your consideration.\n\nRegards,\nibunify Sales Team`;
   const attachmentFileName = `${proposal.proposalNumber || proposal.proposalTitle || 'Proposal'}.pdf`;
 
   const [toEmail, setToEmail] = useState('');

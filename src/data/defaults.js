@@ -22,12 +22,12 @@ export const documentFormats = [
 
 export const sampleProposal = {
   id: 'sample-ibunify-proposal-001',
-  company: 'iBunify',
+  company: 'ibunify',
   proposalTitle: 'Digital Workspace Transformation Proposal',
   proposalNumber: 'IBU-SP-2026-001',
   preparedFor: 'Acme Enterprises Pvt. Ltd.',
-  preparedBy: 'iBunify Sales Team',
-  date: new Date().toISOString().slice(0, 10),
+  preparedBy: 'ibunify Sales Team',
+  date: '',
   validUntil: '',
   currency: 'INR',
   useStructuredCommercials: false,
@@ -43,7 +43,7 @@ export const sampleProposal = {
       id: 'sec-1',
       title: 'Executive Summary',
       content:
-        'iBunify proposes a secure, scalable, and user-friendly digital workspace solution for Acme Enterprises. The solution will centralize collaboration, automate routine workflows, and improve visibility across teams while reducing operational overhead.'
+        'ibunify proposes a secure, scalable, and user-friendly digital workspace solution for Acme Enterprises. The solution will centralize collaboration, automate routine workflows, and improve visibility across teams while reducing operational overhead.'
     },
     {
       id: 'sec-2',
@@ -55,7 +55,7 @@ export const sampleProposal = {
       id: 'sec-3',
       title: 'Proposed Solution',
       content:
-        'iBunify will configure a modular digital workspace consisting of team spaces, document repositories, automated approval flows, dashboards, notifications, access controls, and onboarding support. The implementation will be tailored to the client’s operating model and branding.'
+        'ibunify will configure a modular digital workspace consisting of team spaces, document repositories, automated approval flows, dashboards, notifications, access controls, and onboarding support. The implementation will be tailored to the client’s operating model and branding.'
     },
     {
       id: 'sec-4',
@@ -95,24 +95,25 @@ export const sampleDiscoveryDoc = {
   documentType: 'discovery',
   badge: 'DISCOVERY — REQUIREMENT GATHERING & SCOPING',
   proposalTitle: 'Discovery — Requirement Gathering & Scoping',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   description: 'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
-  proposalNumber: 'IGC-IBUNIFY-01-2026',
-  date: new Date().toISOString().slice(0, 10),
+  proposalNumber: 'IGC-ibunify-01-2026',
+  date: '',
   preparedFor: 'Client Company Name',
   clientAttention: 'Attn: Project Sponsor / Sales Leadership',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   clientSignatory: 'Client Signatory: ______________________',
-  leadSignatory: 'iBUNIFY Lead: Rama Krishna / Sohail',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  leadSignatory: 'ibunify Lead: Rama Krishna / Sohail',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   useStructuredTable: true,
   pipelineStages: [
     {
@@ -145,7 +146,7 @@ export const sampleDiscoveryDoc = {
       id: 'disc-sec-1',
       title: '1. BUSINESS OBJECTIVES & OPERATIONAL SCOPE',
       content:
-        'This Discovery Document establishes the functional and technical requirements for deploying the iBUNIFY platform. It maps existing lead channels, sales team structures, and automation triggers.'
+        'This Discovery Document establishes the functional and technical requirements for deploying the ibunify platform. It maps existing lead channels, sales team structures, and automation triggers.'
     },
     {
       id: 'disc-sec-2',
@@ -173,34 +174,35 @@ export const sampleNdaDoc = {
   documentType: 'nda',
   badge: 'MUTUAL NON-DISCLOSURE AGREEMENT (NDA)',
   proposalTitle: 'Mutual Non-Disclosure Agreement',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   description: 'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
-  proposalNumber: 'IGC-IBUNIFY-02-2026',
-  date: new Date().toISOString().slice(0, 10),
-  effectiveDate: new Date().toISOString().slice(0, 10),
+  proposalNumber: 'IGC-ibunify-02-2026',
+  date: '',
+  effectiveDate: '',
   preparedFor: 'Client Company Name',
   clientAttention: 'Attn: Project Sponsor / Sales Leadership',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   clientSignatory: 'FOR: [CLIENT COMPANY NAME]',
   clientSignatoryName: '',
-  leadSignatory: 'FOR: iBUNIFY (iGLOBUS)',
+  leadSignatory: 'FOR: ibunify (iGLOBUS)',
   leadSignatoryName: 'Rama Krishna / Sohail',
   leadSignatoryTitle: 'Enterprise Practice Leads',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   sections: [
     {
       id: 'nda-sec-1',
       title: '1. PURPOSE OF ENGAGEMENT',
       content:
-        'This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of [Effective Date] by and between iGLOBUS Corporate Consulting Private Limited ("iBUNIFY") and [Client Company Name] ("Client") to protect proprietary technical, commercial, and customer information.'
+        'This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of [Effective Date] by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and [Client Company Name] ("Client") to protect proprietary technical, commercial, and customer information.'
     },
     {
       id: 'nda-sec-2',
@@ -228,45 +230,46 @@ export const sampleMsaDoc = {
   documentType: 'msa',
   badge: 'MASTER SERVICES AGREEMENT (MSA)',
   proposalTitle: 'Master Services Agreement (MSA)',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   description: 'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
-  proposalNumber: 'IGC-IBUNIFY-04-2026',
-  date: new Date().toISOString().slice(0, 10),
-  effectiveDate: new Date().toISOString().slice(0, 10),
+  proposalNumber: 'IGC-ibunify-04-2026',
+  date: '',
+  effectiveDate: '',
   preparedFor: 'Client Company Name',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   clientSignatory: 'FOR: [CLIENT COMPANY NAME]',
   clientSignatoryName: '',
-  leadSignatory: 'FOR: iBUNIFY (iGLOBUS)',
+  leadSignatory: 'FOR: ibunify (iGLOBUS)',
   leadSignatoryName: 'Rama Krishna / Sohail',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   sections: [
     {
       id: 'msa-sec-1',
       title: '1. FRAMEWORK AGREEMENT & TERM',
       content:
-        'This Master Services Agreement ("MSA") is entered into as of [Effective Date] by and between iGLOBUS Corporate Consulting Private Limited ("iBUNIFY") and [Client Company Name] ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.'
+        'This Master Services Agreement ("MSA") is entered into as of [Effective Date] by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and [Client Company Name] ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.'
     },
     {
       id: 'msa-sec-2',
       title: '2. SCOPE OF PLATFORM SERVICES',
       content:
-        'iBUNIFY agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
+        'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
     },
     {
       id: 'msa-sec-3',
       title: '3. INTELLECTUAL PROPERTY RIGHTS',
       content:
-        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: iBUNIFY exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
+        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
     },
     {
       id: 'msa-sec-4',
@@ -291,25 +294,25 @@ export const sampleCommercialProposalDoc = {
   subtitle: 'Built for High-Velocity Real Estate & Sales Enterprises',
   description:
     'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW',
+  headerLeft: 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW',
   headerRight: 'Standard Master Template',
-  proposalNumber: 'IGC-IBUNIFY-PROP-2026',
-  sowNumber: 'IGC-IBUNIFY-SOW-2026',
-  date: new Date().toISOString().slice(0, 10),
-  effectiveDate: '[Effective Date]',
+  proposalNumber: 'IGC-ibunify-05-2026',
+  sowNumber: 'IGC-ibunify-SOW-2026',
+  date: '',
+  effectiveDate: '',
   preparedFor: '[Client Company Name]',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
-  engagement: 'iBUNIFY CRM & Automation Platform Deployment',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.)',
-  companyAddress: 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad',
-  portals: 'Digital Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)',
-  productLead: 'Product Lead: Ramyasree (+91 63005 61742)',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  engagement: 'ibunify CRM & Automation Platform Deployment',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
+  companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+  portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+  footerContacts: 'Product Owner: Rama Krishna | CTO',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
-  footerContacts: 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390) | Ramyasree (+91 63005 61742)',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   metrics: [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },
@@ -355,7 +358,7 @@ export const sampleCommercialProposalDoc = {
     },
     {
       id: 'cs-2',
-      component: 'iBUNIFY CRM User License',
+      component: 'ibunify CRM User License',
       scope: 'Full CRM pipeline, task management, mobile access & dashboards',
       investment: '₹2,500 / user / month'
     },
@@ -386,7 +389,7 @@ export const sampleCommercialProposalDoc = {
   ],
   basePackageTotal: '₹75,000 + Wallet / Lic.',
   sowPreamble:
-    'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the iBUNIFY platform.',
+    'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the ibunify platform.',
   sowScopeActivities: [
     'Requirement Discovery & Pipeline Architecture: Define project inventory structures, custom pipeline stages, lead scoring benchmarks, and sales role authorization tiers.',
     'Omnichannel Campaign Ingestion: Connect Meta Ads (CAPI API), Google Offline Conversion tracking, website webhooks, and portal lead connectors.',
@@ -396,7 +399,7 @@ export const sampleCommercialProposalDoc = {
   ],
   sowDeliverables: [
     'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
-    'Deliverable 2: Fully configured iBUNIFY instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
+    'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
     'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
     'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
   ],
@@ -428,7 +431,7 @@ export const sampleCommercialProposalDoc = {
   clientSignatorySub: 'Client Authorized Signatory',
   clientSignatoryName: '',
   clientSignatoryTitle: '',
-  providerSignatoryHeader: 'FOR: iBUNIFY (iGLOBUS)',
+  providerSignatoryHeader: 'FOR: ibunify (iGLOBUS)',
   providerSignatorySub: 'Service Provider Signatory',
   providerSignatoryName: 'Rama Krishna / Sohail',
   providerSignatoryTitle: 'Enterprise Practice Leads',
@@ -440,21 +443,22 @@ export const sampleSlaDoc = {
   documentType: 'sla',
   badge: 'SERVICE LEVEL AGREEMENT (SLA)',
   proposalTitle: 'Service Level Agreement (SLA)',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   description:
     'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
-  proposalNumber: 'IGC-IBUNIFY-06-2026',
-  date: '[Date]',
+  proposalNumber: 'IGC-ibunify-06-2026',
+  date: '',
   preparedFor: '[Client Company Name]',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   uptimeCommitment:
-    'iBUNIFY guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.',
+    'ibunify guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.',
   incidentBenchmarks: [
     {
       id: 'inc-1',
@@ -487,40 +491,41 @@ export const sampleSlaDoc = {
   ],
   escalationMatrix: [
     'Level 1 (Helpdesk): support@ibunify.com | Ticket Portal',
-    'Level 2 (Technical Lead): Sohail (+91 96032 70390 | sohail@iglobus.com)',
-    'Level 3 (Practice Lead): Rama Krishna (+91 78420 97496 | ramakrishna@iglobuscc.com)'
+    'Level 2 (Technical Lead): Sohail (sohail@iglobus.com)',
+    'Level 3 (Practice Lead): Rama Krishna (ramakrishna@iglobuscc.com)'
   ],
   clientAcknowledgment: 'Client Acknowledgment: ___________________',
-  leadSignatory: 'iBUNIFY Success Lead: Ramyasree',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  leadSignatory: 'ibunify Success Lead: Ramyasree',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   sections: []
 };
 
 export const samplePoDoc = {
   id: 'sample-po-001',
   documentType: 'po',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Purchase Order (PO Template)',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   badge: 'PURCHASE ORDER (PO TEMPLATE)',
   description:
     'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
   preparedFor: '[Client Company Name]',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
-  proposalNumber: 'IGC-IBUNIFY-07-2026',
-  poNumber: 'PO-IBUNIFY-2026-001',
-  date: new Date().toISOString().slice(0, 10),
-  poDate: new Date().toISOString().slice(0, 10),
+  proposalNumber: 'IGC-ibunify-07-2026',
+  poNumber: 'PO-ibunify-2026-001',
+  date: '',
+  poDate: '',
   paymentTerms: 'NET 30',
   currency: 'INR (₹)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   orderScheduleItems: [
     {
       id: 'po-item-1',
@@ -531,7 +536,7 @@ export const samplePoDoc = {
     },
     {
       id: 'po-item-2',
-      description: 'iBUNIFY CRM User Licenses (Quarterly)',
+      description: 'ibunify CRM User Licenses (Quarterly)',
       qtyUnit: '[User Count]',
       unitPrice: '₹2,500 / user / mo',
       totalAmount: 'As Per Count'
@@ -562,38 +567,40 @@ export const samplePoDoc = {
   issuedByClient: '[CLIENT COMPANY NAME]',
   issuedByAuthorized: '__________________________',
   issuedByDesignation: '____________________________',
-  issuedByDate: '[Date]',
+  issuedByDate: '',
   acceptedByCompany: 'iGLOBUS Corporate Consulting Pvt. Ltd.',
   acceptedByAuthorized: 'Rama Krishna / Sohail',
   acceptedByDesignation: 'Enterprise Practice Leads',
-  acceptedByDate: '[Date]',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  acceptedByDate: '',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   sections: []
 };
 
 export const sampleHandoverDoc = {
   id: 'sample-handover-001',
   documentType: 'handover',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Project Delivery & Handover Sign-off',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   badge: 'PROJECT DELIVERY & HANDOVER SIGN-OFF',
   description:
     'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
   preparedFor: '[Client Company Name]',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
-  proposalNumber: 'IGC-IBUNIFY-08-2026',
-  date: new Date().toISOString().slice(0, 10),
+  proposalNumber: 'IGC-ibunify-08-2026',
+  date: '',
+  handoverDate: '',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   scopeVerificationText:
-    'This Delivery & Handover Document certifies that the implementation of the iBUNIFY CRM Platform has been completed in accordance with the Statement of Work.',
+    'This Delivery & Handover Document certifies that the implementation of the ibunify CRM Platform has been completed in accordance with the Statement of Work.',
   handoverChecklistItems: [
     {
       id: 'ho-item-1',
@@ -633,36 +640,37 @@ export const sampleHandoverDoc = {
     }
   ],
   acceptedByClientPm: '___________________',
-  acceptedDate: '[Date]',
+  acceptedDate: '',
   deliveredByLead: 'Rama Krishna / Sohail',
-  deliveredDate: '[Date]',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  deliveredDate: '',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   sections: []
 };
 
 export const sampleClosureDoc = {
   id: 'sample-closure-001',
   documentType: 'closure',
-  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Project Closure & Hypercare Transition',
-  subtitle: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  subtitle: 'ibunify CRM by iGLOBUS Corporate Consulting',
   badge: 'PROJECT CLOSURE & HYPERCARE TRANSITION',
   description:
     'Official enterprise documentation for platform deployment, legal governance, and operational handover.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Enterprise Suite',
+  headerLeft: 'ibunify CRM by iGLOBUS | Enterprise Suite',
   headerRight: 'Confidential Document Template',
   preparedFor: '[Client Company Name]',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
-  proposalNumber: 'IGC-IBUNIFY-09-2026',
-  date: new Date().toISOString().slice(0, 10),
+  proposalNumber: 'IGC-ibunify-09-2026',
+  date: '',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
   formalClosureStatement:
-    'This Project Closure Certificate formally confirms that the Phase-I deployment of the iBUNIFY CRM Platform for [Client Company Name] is complete and operational.',
+    'This Project Closure Certificate formally confirms that the Phase-I deployment of the ibunify CRM Platform for [Client Company Name] is complete and operational.',
   operationalMetrics: [
     { id: 'metric-1', value: '100%', label: 'REQUIREMENTS DELIVERED' },
     { id: 'metric-2', value: '100%', label: 'UAT SIGN-OFF' },
@@ -672,16 +680,16 @@ export const sampleClosureDoc = {
   supportTransitionText:
     'The project is transitioned from the Implementation Engineering Team to the Customer Success & Managed Support Practice under the SLA terms.',
   supportEmail: 'support@ibunify.com | Contact@iglobuscc.com',
-  dedicatedSuccessManager: 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)',
+  dedicatedSuccessManager: 'Ramyasree (ramyasree@iglobuscc.com)',
   clientSignatoryName: '______________________',
   clientSignatoryTitle: '______________________',
-  clientSignDate: '[Date]',
+  clientSignDate: '',
   providerSignatoryName: 'Rama Krishna / Sohail',
   providerSignatoryTitle: 'Enterprise Practice Leads',
-  footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
-  pageFootnote: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
   sections: []
 };
 
