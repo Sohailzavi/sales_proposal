@@ -527,18 +527,50 @@ article h2 { color: #2e2a76; font-size: 21px; border-bottom: 1px solid #e1e3eb; 
   body { background: #ffffff !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .topbar, .sidebar, .editor, .proposal-selector-bar, .preview-page-card-header, .document-sidebar, .locked-header-footer-box { display: none !important; }
   .workspace, .workspace.preview-only, .workspace.official-library { display: block !important; padding: 0 !important; max-width: none !important; margin: 0 !important; }
-  .proposal-pages-container { gap: 0 !important; display: block !important; }
-  .proposal-page-card-wrapper { max-width: none !important; width: 100% !important; margin: 0 !important; page-break-after: always !important; }
-  .proposal-page-card-wrapper:last-child { page-break-after: auto !important; }
-  .sample-letterhead-paper {
+  .proposal-pages-container, .discovery-pages-container, .nda-pages-container, .msa-pages-container, .commercial-proposal-pages-container, .sla-pages-container, .po-pages-container, .handover-pages-container, .closure-pages-container, .invoice-pages-container { gap: 0 !important; display: block !important; }
+  .proposal-page-card-wrapper, .preview-page-card { max-width: none !important; width: 100% !important; margin: 0 !important; page-break-after: always !important; break-after: page !important; }
+  .proposal-page-card-wrapper:last-child, .preview-page-card:last-child { page-break-after: auto !important; break-after: auto !important; }
+  .sample-letterhead-paper,
+  .standard-invoice-paper,
+  .compact-invoice-paper,
+  .discovery-cover-paper,
+  .discovery-content-paper,
+  .nda-cover-paper,
+  .nda-content-paper,
+  .msa-cover-paper,
+  .msa-content-paper,
+  .ctp-cover-paper,
+  .ctp-content-paper,
+  .sla-cover-paper,
+  .sla-content-paper,
+  .po-cover-paper,
+  .po-content-paper,
+  .handover-cover-paper,
+  .handover-content-paper,
+  .closure-cover-paper,
+  .closure-content-paper {
     width: 210mm !important;
     height: 297mm !important;
     max-width: none !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
+    page-break-after: always !important;
+    break-after: page !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+  .preview-section-block,
+  .discovery-section-block,
+  .commercial-preview-block,
+  .discovery-pipeline-table,
+  .ctp-gantt-table,
+  .discovery-signoff-box,
+  .nda-signoff-box,
+  .ctp-callout-box,
+  .ctp-breakdown-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 }
 
@@ -1451,10 +1483,6 @@ html::-webkit-scrollbar,
   border-color: #a7f3d0;
 }
 
-<<<<<<< Updated upstream
-/* Page 1: Crisp White Cover Paper with Enterprise Navy/Blue Typography */
-.discovery-cover-paper {
-=======
 /* Page 1: Universal Letterhead Cover Paper */
 .discovery-cover-paper,
 .nda-cover-paper,
@@ -1474,19 +1502,10 @@ html::-webkit-scrollbar,
 .po-content-paper,
 .handover-content-paper,
 .closure-content-paper {
->>>>>>> Stashed changes
   box-sizing: border-box;
   width: 794px;
   height: 1120px;
   min-height: 1120px;
-<<<<<<< Updated upstream
-  padding: 56px 48px 48px;
-  background: #ffffff;
-  color: #1e293b;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-=======
   background-color: #ffffff;
   color: #1e293b;
   border-radius: 6px;
@@ -1531,7 +1550,6 @@ html::-webkit-scrollbar,
   width: 100%;
   height: 100%;
   flex: 1;
->>>>>>> Stashed changes
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1552,11 +1570,7 @@ html::-webkit-scrollbar,
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.03em;
-<<<<<<< Updated upstream
-  color: #0b1f4d;
-=======
   color: #0f2b6e;
->>>>>>> Stashed changes
   line-height: 1;
 }
 
@@ -1577,22 +1591,14 @@ html::-webkit-scrollbar,
 .discovery-badge-pill {
   display: inline-block;
   padding: 6px 14px;
-<<<<<<< Updated upstream
-  background: #eff6ff;
-=======
   background: #f0f7ff;
->>>>>>> Stashed changes
   border: 1px solid #bfdbfe;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-<<<<<<< Updated upstream
-  color: #1d4ed8;
-=======
   color: #1e3a8a;
->>>>>>> Stashed changes
   margin-bottom: 20px;
 }
 
@@ -1600,11 +1606,7 @@ html::-webkit-scrollbar,
   font-size: 34px;
   font-weight: 800;
   line-height: 1.25;
-<<<<<<< Updated upstream
-  color: #0b1f4d;
-=======
   color: #0f2b6e;
->>>>>>> Stashed changes
   margin: 0 0 12px 0;
   letter-spacing: -0.02em;
 }
@@ -1619,11 +1621,7 @@ html::-webkit-scrollbar,
 .discovery-main-description {
   font-size: 14.5px;
   line-height: 1.6;
-<<<<<<< Updated upstream
-  color: #475569;
-=======
   color: #334155;
->>>>>>> Stashed changes
   max-width: 90%;
   margin: 0;
 }
@@ -1634,17 +1632,10 @@ html::-webkit-scrollbar,
   gap: 28px;
   padding: 24px;
   background: #f8fafc;
-<<<<<<< Updated upstream
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  margin-top: 40px;
-  margin-bottom: 24px;
-=======
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   margin-top: auto;
   margin-bottom: 0;
->>>>>>> Stashed changes
 }
 
 .discovery-meta-col {
@@ -1665,11 +1656,7 @@ html::-webkit-scrollbar,
 .discovery-meta-value-bold {
   font-size: 15px;
   font-weight: 700;
-<<<<<<< Updated upstream
-  color: #0b1f4d;
-=======
   color: #0f2b6e;
->>>>>>> Stashed changes
   margin-bottom: 2px;
 }
 
@@ -1680,17 +1667,7 @@ html::-webkit-scrollbar,
 }
 
 .discovery-cover-footer-brand {
-<<<<<<< Updated upstream
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  color: #94a3b8;
-  font-size: 13px;
-  padding-top: 12px;
-  border-top: 1px solid #e2e8f0;
-=======
   display: none;
->>>>>>> Stashed changes
 }
 
 .discovery-cover-footer-brand span {
@@ -1953,8 +1930,6 @@ html::-webkit-scrollbar,
   margin-top: 2px;
 }
 
-<<<<<<< Updated upstream
-=======
 .ctp-pillars-list {
   display: flex;
   flex-direction: column;
@@ -1962,7 +1937,6 @@ html::-webkit-scrollbar,
   margin: 8px 0;
 }
 
->>>>>>> Stashed changes
 .send-email-action-btn {
   gap: 6px;
   font-weight: 600;
@@ -2051,10 +2025,7 @@ html::-webkit-scrollbar,
   flex-direction: column;
   gap: 6px;
 }
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 .ctp-pillar-item {
   font-size: 11.5px;
   line-height: 1.4;
@@ -2320,12 +2291,93 @@ html::-webkit-scrollbar,
   line-height: 1.5;
 }
 
+/* Page-Aligned Editor Block Styles */
+.editor-page-block {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+}
 
-<<<<<<< Updated upstream
+.editor-page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0f7ff;
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #bfdbfe;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
+.editor-sub-heading {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f2b6e;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.editor-dual-sign-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
 
+/* 4-Page Custom Proposal Paper Styles */
+.custom-proposal-page-paper {
+  box-sizing: border-box;
+  width: 794px;
+  height: 1120px;
+  min-height: 1120px;
+  background-color: #ffffff;
+  color: #1e293b;
+  border-radius: 6px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 34px 44px 28px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
+.custom-proposal-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 78px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: rgba(15, 43, 110, 0.032);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+  user-select: none;
+}
 
-=======
->>>>>>> Stashed changes
+.custom-proposal-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+

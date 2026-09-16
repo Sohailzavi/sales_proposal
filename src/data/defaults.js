@@ -6,81 +6,215 @@ export const LOGIN_PASSWORD = 'Sales@2026';
 export const OFFICIAL_PROPOSAL_FILE = '/iBunify-Overall-Proposal.pdf';
 
 export const documentFormats = [
-  { id: 'all', label: 'All Assets', extension: 'ALL', count: 11 },
-  { id: 'pdf', label: 'Corporate Deck', extension: 'PDF', count: 1 },
-  { id: 'discovery', label: 'Discovery & Scoping', extension: 'DISC', count: 1 },
-  { id: 'nda', label: 'Mutual NDA', extension: 'NDA', count: 1 },
-  { id: 'msa', label: 'Master Services Agreement', extension: 'MSA', count: 1 },
-  { id: 'commercial_proposal', label: 'Statement of Work (SOW)', extension: 'SOW', count: 1 },
-  { id: 'sla', label: 'Service Level Agreement', extension: 'SLA', count: 1 },
-  { id: 'po', label: 'Purchase Order', extension: 'PO', count: 1 },
-  { id: 'handover', label: 'Delivery', extension: 'DEL', count: 1 },
-  { id: 'closure', label: 'Closure', extension: 'CLS', count: 1 },
-  { id: 'proposal', label: 'Custom Proposal', extension: 'PROP', count: 1 },
-  { id: 'invoice', label: 'Invoices', extension: 'INV', count: 1 }
+  { id: 'all', label: 'All Assets', extension: 'ALL' },
+  { id: 'pdf', label: 'Corporate Deck', extension: 'PDF' },
+  { id: 'discovery', label: 'Discovery & Scoping', extension: 'DISC' },
+  { id: 'nda', label: 'Mutual NDA', extension: 'NDA' },
+  { id: 'msa', label: 'Master Services Agreement', extension: 'MSA' },
+  { id: 'commercial_proposal', label: 'Statement of Work (SOW)', extension: 'SOW' },
+  { id: 'sla', label: 'Service Level Agreement', extension: 'SLA' },
+  { id: 'po', label: 'Purchase Order', extension: 'PO' },
+  { id: 'handover', label: 'Delivery', extension: 'DEL' },
+  { id: 'closure', label: 'Closure', extension: 'CLS' },
+  { id: 'proposal', label: 'Custom Proposal', extension: 'PROP' },
+  { id: 'invoice', label: 'Invoices', extension: 'INV' }
 ];
 
 export const sampleProposal = {
-  id: 'sample-ibunify-proposal-001',
-<<<<<<< Updated upstream
-  company: 'ibunify',
-  proposalTitle: 'Digital Workspace Transformation Proposal',
-  proposalNumber: 'IBU-SP-2026-001',
-  preparedFor: 'Acme Enterprises Pvt. Ltd.',
-  preparedBy: 'ibunify Sales Team',
-  date: '',
-=======
-  documentType: 'commercial_proposal',
+  id: 'sample-custom-proposal-001',
+  documentType: 'proposal',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
+  badge: 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
   subtitle: 'Built for High-Velocity Real Estate & Sales Enterprises',
-  badge: 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL',
-  description: 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive pipeline.',
+  description:
+    'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive pipeline.',
+  headerLeft: 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal',
+  headerRight: 'www.ibunify.com',
+  pageFootnote: 'Confidential - iBUNIFY (iGLOBUS Corporate Consulting)',
   proposalNumber: 'IGC-IBUNIFY-2026-088',
   preparedFor: '[Client Enterprise / Jayabheri Group]',
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
   engagement: 'iBUNIFY Platform & Integrated Services Deployment',
   preparedBy: 'iBUNIFY (iGLOBUS Corporate Consulting)',
-  companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
-  portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  productLead: 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)',
-  date: new Date().toISOString().slice(0, 10),
->>>>>>> Stashed changes
+  companyAddress: 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+  portals: 'Digital Portals: www.ibunify.com | www.iglobuscc.com',
+  productLead: 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)',
+  date: 'August 25, 2026',
   validUntil: '',
   currency: 'INR',
   useStructuredCommercials: false,
-  commercialItems: [
-    { id: 'item-1', name: 'One-Time Setup & Onboarding', qty: 1, unitPrice: 50000 },
-    { id: 'item-2', name: 'WhatsApp Business Platform (6 Months)', qty: 1, unitPrice: 15000 },
-    { id: 'item-3', name: 'WhatsApp Message Wallet (Prepaid)', qty: 1, unitPrice: 10000 }
+  metrics: [
+    { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
+    { value: '100%', label: 'LEAD ATTRIBUTION' },
+    { value: '3x', label: 'FOLLOW-UP VELOCITY' },
+    { value: '24/7', label: 'AI VOICE & CHAT' }
   ],
-  taxRate: 18,
+  servicesOverview: [
+    {
+      key: 'A',
+      title: 'Centralized Real Estate CRM',
+      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
+    },
+    {
+      key: 'B',
+      title: 'Omnichannel Lead Ingestion',
+      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
+    },
+    {
+      key: 'C',
+      title: 'Closed-Loop Marketing Attribution',
+      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
+    },
+    {
+      key: 'D',
+      title: 'Executive CDR & Conversion Analytics',
+      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
+    }
+  ],
+  aiCallingBullets: [
+    'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
+    'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
+    '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
+  ],
+  aiCallingItems: [
+    {
+      id: 'ai-1',
+      component: 'AI Voice Agent Engine',
+      scope: 'Natural conversational voice agent, intent detection & CRM transcript sync',
+      investment: 'Included in Setup'
+    },
+    {
+      id: 'ai-2',
+      component: 'AI Calling Usage',
+      scope: 'Per completed incoming or outgoing conversational call',
+      investment: '₹7 / call'
+    }
+  ],
+  cloudTelephonyBullets: [
+    'Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.',
+    'Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.',
+    'Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.',
+    'Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.'
+  ],
+  cloudTelephonyItems: [
+    {
+      id: 'ct-1',
+      component: 'Virtual Cloud Telephony Numbers',
+      scope: 'Dedicated inbound/outbound virtual number with IVR and call recording',
+      investment: '₹1,500 / Number / month'
+    },
+    {
+      id: 'ct-2',
+      component: 'Call-to-Lead Auto Ingestion Engine',
+      scope: 'Real-time automatic lead record creation upon call connection',
+      investment: 'Included in Setup'
+    }
+  ],
+  whatsappBullets: [
+    'Instant Brochure & Price Sheet Dispatch: Automatically triggers WhatsApp brochures when leads submit inquiry forms.',
+    'Automated Nurture Sequences: Triggers site-visit reminders, location pins, video walkthroughs, and payment milestone alerts.',
+    'Unified Multi-Agent Inbox: Enables sales teams to chat with prospects from a single verified business number with full audit logs.',
+    'Interactive Chatbot & Quick Replies: Pre-configured menus for instant responses to common buyer FAQs and project details.'
+  ],
+  whatsappItems: [
+    {
+      id: 'wa-1',
+      component: 'WhatsApp Business Platform (API Engine)',
+      scope: 'Official Meta Business API setup, template approvals & workflow engine',
+      investment: '₹15,000 for 6 Months'
+    },
+    {
+      id: 'wa-2',
+      component: 'WhatsApp Message Wallet (Prepaid)',
+      scope: 'Utility Message: ₹0.18 / message\nMarketing Message: ₹0.87 / message',
+      investment: '₹10,000 Prepaid\n(Usage-based)'
+    }
+  ],
+  commercialScheduleItems: [
+    {
+      id: 'cs-1',
+      component: 'One-Time Setup & Onboarding',
+      scope: 'System config, Meta CAPI, Google Ads, telephony & team training',
+      investment: '₹50,000 (One-Time)'
+    },
+    {
+      id: 'cs-2',
+      component: 'iBUNIFY CRM User License',
+      scope: 'Full CRM pipeline, task management, mobile access & dashboards',
+      investment: '₹2,500 / user / month'
+    },
+    {
+      id: 'cs-3',
+      component: 'WhatsApp Business Platform',
+      scope: 'Official Meta API integration & workflow routing (6 Months)',
+      investment: '₹15,000 for 6 Months'
+    },
+    {
+      id: 'cs-4',
+      component: 'WhatsApp Message Wallet',
+      scope: 'Prepaid consumption (Utility: ₹0.18 | Marketing: ₹0.87)',
+      investment: '₹10,000 Prepaid'
+    },
+    {
+      id: 'cs-5',
+      component: 'Cloud Telephony Virtual Numbers',
+      scope: 'Per dedicated virtual number with recording & CDR logging',
+      investment: '₹1,500 / Number'
+    },
+    {
+      id: 'cs-6',
+      component: 'AI Agent Calling',
+      scope: 'Per connected conversational AI qualification call',
+      investment: '₹7 / call'
+    }
+  ],
+  baseActivationPackageTotal: '₹75,000 + Wallet / Lic.',
+  roadmapBullets: [
+    'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
+    'Week 2 (Telephony & WhatsApp): Virtual numbers provisioning, WhatsApp Business API templates, and routing logic.',
+    'Week 3 (AI Agent & Testing): AI conversational script configuration, call-to-lead testing, and sandbox validation.',
+    'Week 4 (Training & Go-Live): Sales team enablement, admin runbooks, UAT sign-off, and live production rollout.',
+    'Support & SLA Commitment: Priority 1 (Critical) incidents resolved in < 30 minutes; dedicated Customer Success Lead.'
+  ],
+  termsBullets: [
+    'All prices are exclusive of applicable statutory GST / taxes (18%).',
+    'Third-party usage (telephony minutes, WhatsApp message costs, AI calling) billed against actual wallet consumption.',
+    'Invoices are payable within 30 days from date of submission (NET 30).'
+  ],
+  clientSignatoryHeader: 'ACCEPTED FOR: [CLIENT ENTERPRISE]',
+  clientSignatorySub: 'Authorized Signatory',
+  clientSignatoryName: '___________________________',
+  clientSignatoryTitle: '____________________________',
+  clientSignDate: '____________________________',
+  providerSignatoryHeader: 'ACCEPTED FOR: iBUNIFY (iGLOBUS)',
+  providerSignatorySub: 'Authorized Signatory',
+  providerSignatoryName: 'Ramyasree / Rama Krishna',
+  providerSignatoryTitle: 'Product Lead & Enterprise Practice',
+  providerSignDate: 'August 25, 2026',
+  corporateFooterCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
+  corporateFooterAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
+  corporateFooterContact: 'Contact: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com) | Rama Krishna: +91 78420 97496',
+  corporateFooterWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
   sections: [
     {
       id: 'sec-1',
       title: '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION',
       content:
-<<<<<<< Updated upstream
-        'ibunify proposes a secure, scalable, and user-friendly digital workspace solution for Acme Enterprises. The solution will centralize collaboration, automate routine workflows, and improve visibility across teams while reducing operational overhead.'
-=======
         'iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.\n\nDesign Principle: Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.\n\nIntegrated Platform Services Overview:\n• A. Centralized Real Estate CRM: Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.\n• B. Omnichannel Lead Ingestion: Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.\n• C. Closed-Loop Marketing Attribution: Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.\n• D. Executive CDR & Conversion Analytics: Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
->>>>>>> Stashed changes
     },
     {
       id: 'sec-2',
       title: '2. AI CALLING SERVICES & COSTING',
       content:
-        'iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.\n\nCommercial Schedule:\n• AI Voice Agent Engine: Included in Setup\n• AI Calling Usage: ₹7 / completed incoming or outgoing conversational call'
+        'iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.\n\nCommercial Schedule:\n• AI Voice Agent Engine: Included in Setup\n• AI Calling Usage: ₹7 / completed incoming or outgoing conversational call'
     },
     {
       id: 'sec-3',
       title: '3. CLOUD TELEPHONY SERVICES & COSTING',
       content:
-<<<<<<< Updated upstream
-        'ibunify will configure a modular digital workspace consisting of team spaces, document repositories, automated approval flows, dashboards, notifications, access controls, and onboarding support. The implementation will be tailored to the client’s operating model and branding.'
-=======
         'Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:\n• Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.\n• Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.\n• Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.\n• Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.\n\nCommercial Schedule:\n• Virtual Cloud Telephony Numbers: ₹1,500 / Number / month (with IVR & call recording)\n• Call-to-Lead Auto Ingestion Engine: Included in Setup'
->>>>>>> Stashed changes
     },
     {
       id: 'sec-4',
@@ -110,7 +244,7 @@ export const sampleProposal = {
       id: 'sec-8',
       title: '8. PROPOSAL ACCEPTANCE & SIGN-OFF',
       content:
-        'By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.\n\nACCEPTED FOR: [CLIENT ENTERPRISE]\nName: ___________________________\nTitle: ____________________________\nDate: ____________________________\n\nACCEPTED FOR: iBUNIFY (iGLOBUS)\nName: Rama Krishna\nTitle: CTO\nDate: August 25, 2026'
+        'By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.\n\nACCEPTED FOR: [CLIENT ENTERPRISE]\nName: ___________________________\nTitle: ____________________________\nDate: ____________________________\n\nACCEPTED FOR: iBUNIFY (iGLOBUS)\nName: Ramyasree / Rama Krishna\nTitle: Product Lead & Enterprise Practice\nDate: August 25, 2026'
     }
   ]
 };
@@ -132,9 +266,10 @@ export const sampleDiscoveryDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   clientSignatory: 'Client Signatory: ______________________',
-  leadSignatory: 'ibunify Lead: Rama Krishna / Sohail',
+  leadSignatory: 'ibunify Lead: Rama Krishna',
+  leadSignatoryTitle: 'Enterprise Practice Leads',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
@@ -177,7 +312,7 @@ export const sampleDiscoveryDoc = {
       id: 'disc-sec-2',
       title: '2. LEAD INGESTION & CHANNEL ARCHITECTURE',
       content:
-        '• Digital Channels: Meta Ads (Facebook/Instagram), Google Search & Display Ads, Website Landing Page forms.\n• Real Estate Portals: Automated webhook ingestion from 99acres, MagicBricks, Housing.com, and CommonFloor.\n• Inbound & Offline: Dedicated Cloud Telephony virtual numbers, QR code campaign scans, and property walk-in entries.'
+        '• Digital Channels: Meta Ads (Facebook/Instagram), Google Search & Display Ads, Website Landing Page forms.\n• Portals: Automated webhook ingestion from 99acres, MagicBricks, Housing.com, and CommonFloor.\n• Inbound & Offline: Dedicated Cloud Telephony virtual numbers, QR code campaign scans, and property walk-in entries.'
     },
     {
       id: 'disc-sec-3',
@@ -212,11 +347,11 @@ export const sampleNdaDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   clientSignatory: 'FOR: [CLIENT COMPANY NAME]',
   clientSignatoryName: '',
   leadSignatory: 'FOR: ibunify (iGLOBUS)',
-  leadSignatoryName: 'Rama Krishna / Sohail',
+  leadSignatoryName: 'Rama Krishna',
   leadSignatoryTitle: 'Enterprise Practice Leads',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
@@ -268,11 +403,12 @@ export const sampleMsaDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   clientSignatory: 'FOR: [CLIENT COMPANY NAME]',
   clientSignatoryName: '',
   leadSignatory: 'FOR: ibunify (iGLOBUS)',
-  leadSignatoryName: 'Rama Krishna / Sohail',
+  leadSignatoryName: 'Rama Krishna',
+  leadSignatoryTitle: 'Enterprise Practice Leads',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
@@ -316,7 +452,7 @@ export const sampleCommercialProposalDoc = {
   documentType: 'commercial_proposal',
   badge: 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
-  subtitle: 'Built for High-Velocity Real Estate & Sales Enterprises',
+  subtitle: '',
   description:
     'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.',
   headerLeft: 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW',
@@ -332,7 +468,7 @@ export const sampleCommercialProposalDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   footerContacts: 'Product Owner: Rama Krishna | CTO',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
@@ -347,7 +483,7 @@ export const sampleCommercialProposalDoc = {
   serviceBreakdown: [
     {
       key: 'A',
-      title: 'Centralized Real Estate CRM & Pipeline Platform',
+      title: 'Centralized CRM & Pipeline Platform',
       features:
         '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
       costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
@@ -458,7 +594,7 @@ export const sampleCommercialProposalDoc = {
   clientSignatoryTitle: '',
   providerSignatoryHeader: 'FOR: ibunify (iGLOBUS)',
   providerSignatorySub: 'Service Provider Signatory',
-  providerSignatoryName: 'Rama Krishna / Sohail',
+  providerSignatoryName: 'Rama Krishna',
   providerSignatoryTitle: 'Enterprise Practice Leads',
   sections: []
 };
@@ -481,7 +617,7 @@ export const sampleSlaDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   uptimeCommitment:
     'ibunify guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.',
   incidentBenchmarks: [
@@ -516,7 +652,7 @@ export const sampleSlaDoc = {
   ],
   escalationMatrix: [
     'Level 1 (Helpdesk): support@ibunify.com | Ticket Portal',
-    'Level 2 (Technical Lead): Sohail (sohail@iglobus.com)',
+    'Level 2 (Technical Lead): Rama Krishna (ramakrishna@iglobus.com)',
     'Level 3 (Practice Lead): Rama Krishna (ramakrishna@iglobuscc.com)'
   ],
   clientAcknowledgment: 'Client Acknowledgment: ___________________',
@@ -550,7 +686,7 @@ export const samplePoDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   orderScheduleItems: [
     {
       id: 'po-item-1',
@@ -594,7 +730,7 @@ export const samplePoDoc = {
   issuedByDesignation: '____________________________',
   issuedByDate: '',
   acceptedByCompany: 'iGLOBUS Corporate Consulting Pvt. Ltd.',
-  acceptedByAuthorized: 'Rama Krishna / Sohail',
+  acceptedByAuthorized: 'Rama Krishna',
   acceptedByDesignation: 'Enterprise Practice Leads',
   acceptedByDate: '',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
@@ -623,7 +759,7 @@ export const sampleHandoverDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   scopeVerificationText:
     'This Delivery & Handover Document certifies that the implementation of the ibunify CRM Platform has been completed in accordance with the Statement of Work.',
   handoverChecklistItems: [
@@ -666,7 +802,7 @@ export const sampleHandoverDoc = {
   ],
   acceptedByClientPm: '___________________',
   acceptedDate: '',
-  deliveredByLead: 'Rama Krishna / Sohail',
+  deliveredByLead: 'Rama Krishna',
   deliveredDate: '',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
@@ -693,7 +829,7 @@ export const sampleClosureDoc = {
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
+  productLead: 'Product Lead: Rama Krishna',
   formalClosureStatement:
     'This Project Closure Certificate formally confirms that the Phase-I deployment of the ibunify CRM Platform for [Client Company Name] is complete and operational.',
   operationalMetrics: [
@@ -709,7 +845,7 @@ export const sampleClosureDoc = {
   clientSignatoryName: '______________________',
   clientSignatoryTitle: '______________________',
   clientSignDate: '',
-  providerSignatoryName: 'Rama Krishna / Sohail',
+  providerSignatoryName: 'Rama Krishna',
   providerSignatoryTitle: 'Enterprise Practice Leads',
   footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',

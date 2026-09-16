@@ -667,6 +667,16 @@ export function SectionEditor({
             />
           </label>
           <label>
+            <span>ibunify Signatory Title</span>
+            <input
+              value={proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
+              onChange={(e) => {
+                onUpdateField('leadSignatoryTitle', e.target.value);
+                onUpdateField('providerSignatoryTitle', e.target.value);
+              }}
+            />
+          </label>
+          <label>
             <span>ibunify Sign Date</span>
             <input
               value={proposal.leadSignDate || ''}
@@ -1169,6 +1179,13 @@ export function SectionEditor({
             <input
               value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>ibunify Signatory Title</span>
+            <input
+              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
             />
           </label>
           <label>
@@ -1872,6 +1889,13 @@ export function SectionEditor({
             />
           </label>
           <label>
+            <span>Service Provider Signatory Title</span>
+            <input
+              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
+            />
+          </label>
+          <label>
             <span>Footer Company Name</span>
             <input
               value={proposal.footerCompany || 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.'}
@@ -2515,7 +2539,7 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Designation / Title</span>
               <input
-                value={proposal.handoverDeliveredLeadTitle || 'Practice Lead — Enterprise Delivery'}
+                value={proposal.handoverDeliveredLeadTitle || 'Enterprise Practice Leads'}
                 onChange={(e) => onUpdateField('handoverDeliveredLeadTitle', e.target.value)}
               />
             </label>
@@ -2844,159 +2868,688 @@ export function SectionEditor({
     );
   }
 
-  // Regular Proposal Editor
-  const commercialItems = proposal.commercialItems || [];
-  const useStructuredCommercials = Boolean(proposal.useStructuredCommercials);
-  const { subtotal, taxAmount, grandTotal } = calculateCommercialTotals(commercialItems, proposal.taxRate);
+  // 3-Page Custom Proposal Editor
+  const metrics = proposal.metrics || [
+    { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
+    { value: '100%', label: 'LEAD ATTRIBUTION' },
+    { value: '3x', label: 'FOLLOW-UP VELOCITY' },
+    { value: '24/7', label: 'AI VOICE & CHAT' }
+  ];
 
-  const handleAddItem = () => {
-    const newItem = {
-      id: `item-${Date.now()}`,
-      name: 'New Commercial Line Item',
-      qty: 1,
-      unitPrice: 10000
-    };
-    onUpdateCommercials({
-      commercialItems: [...commercialItems, newItem]
-    });
-  };
+  const servicesOverview = proposal.servicesOverview || [
+    {
+      key: 'A',
+      title: 'Centralized Real Estate CRM',
+      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
+    },
+    {
+      key: 'B',
+      title: 'Omnichannel Lead Ingestion',
+      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
+    },
+    {
+      key: 'C',
+      title: 'Closed-Loop Marketing Attribution',
+      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
+    },
+    {
+      key: 'D',
+      title: 'Executive CDR & Conversion Analytics',
+      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
+    }
+  ];
 
-  const handleUpdateItem = (itemId, patch) => {
-    const updated = commercialItems.map((item) =>
-      item.id === itemId ? { ...item, ...patch } : item
-    );
-    onUpdateCommercials({ commercialItems: updated });
-  };
+  const aiCallingBullets = proposal.aiCallingBullets || [
+    'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
+    'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
+    '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
+  ];
 
-  const handleDeleteItem = (itemId) => {
-    const updated = commercialItems.filter((item) => item.id !== itemId);
-    onUpdateCommercials({ commercialItems: updated });
-  };
+  const aiCallingItems = proposal.aiCallingItems || [
+    {
+      id: 'ai-1',
+      component: 'AI Voice Agent Engine',
+      scope: 'Natural conversational voice agent, intent detection & CRM transcript sync',
+      investment: 'Included in Setup'
+    },
+    {
+      id: 'ai-2',
+      component: 'AI Calling Usage',
+      scope: 'Per completed incoming or outgoing conversational call',
+      investment: '₹7 / call'
+    }
+  ];
+
+  const cloudTelephonyBullets = proposal.cloudTelephonyBullets || [
+    'Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.',
+    'Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.',
+    'Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.',
+    'Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.'
+  ];
+
+  const cloudTelephonyItems = proposal.cloudTelephonyItems || [
+    {
+      id: 'ct-1',
+      component: 'Virtual Cloud Telephony Numbers',
+      scope: 'Dedicated inbound/outbound virtual number with IVR and call recording',
+      investment: '₹1,500 / Number / month'
+    },
+    {
+      id: 'ct-2',
+      component: 'Call-to-Lead Auto Ingestion Engine',
+      scope: 'Real-time automatic lead record creation upon call connection',
+      investment: 'Included in Setup'
+    }
+  ];
+
+  const whatsappBullets = proposal.whatsappBullets || [
+    'Instant Brochure & Price Sheet Dispatch: Automatically triggers WhatsApp brochures when leads submit inquiry forms.',
+    'Automated Nurture Sequences: Triggers site-visit reminders, location pins, video walkthroughs, and payment milestone alerts.',
+    'Unified Multi-Agent Inbox: Enables sales teams to chat with prospects from a single verified business number with full audit logs.',
+    'Interactive Chatbot & Quick Replies: Pre-configured menus for instant responses to common buyer FAQs and project details.'
+  ];
+
+  const whatsappItems = proposal.whatsappItems || [
+    {
+      id: 'wa-1',
+      component: 'WhatsApp Business Platform (API Engine)',
+      scope: 'Official Meta Business API setup, template approvals & workflow engine',
+      investment: '₹15,000 for 6 Months'
+    },
+    {
+      id: 'wa-2',
+      component: 'WhatsApp Message Wallet (Prepaid)',
+      scope: 'Utility Message: ₹0.18 / message\nMarketing Message: ₹0.87 / message',
+      investment: '₹10,000 Prepaid\n(Usage-based)'
+    }
+  ];
+
+  const commercialScheduleItems = proposal.commercialScheduleItems || [
+    {
+      id: 'cs-1',
+      component: 'One-Time Setup & Onboarding',
+      scope: 'System config, Meta CAPI, Google Ads, telephony & team training',
+      investment: '₹50,000 (One-Time)'
+    },
+    {
+      id: 'cs-2',
+      component: 'iBUNIFY CRM User License',
+      scope: 'Full CRM pipeline, task management, mobile access & dashboards',
+      investment: '₹2,500 / user / month'
+    },
+    {
+      id: 'cs-3',
+      component: 'WhatsApp Business Platform',
+      scope: 'Official Meta API integration & workflow routing (6 Months)',
+      investment: '₹15,000 for 6 Months'
+    },
+    {
+      id: 'cs-4',
+      component: 'WhatsApp Message Wallet',
+      scope: 'Prepaid consumption (Utility: ₹0.18 | Marketing: ₹0.87)',
+      investment: '₹10,000 Prepaid'
+    },
+    {
+      id: 'cs-5',
+      component: 'Cloud Telephony Virtual Numbers',
+      scope: 'Per dedicated virtual number with recording & CDR logging',
+      investment: '₹1,500 / Number'
+    },
+    {
+      id: 'cs-6',
+      component: 'AI Agent Calling',
+      scope: 'Per connected conversational AI qualification call',
+      investment: '₹7 / call'
+    }
+  ];
+
+  const roadmapBullets = proposal.roadmapBullets || [
+    'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
+    'Week 2 (Telephony & WhatsApp): Virtual numbers provisioning, WhatsApp Business API templates, and routing logic.',
+    'Week 3 (AI Agent & Testing): AI conversational script configuration, call-to-lead testing, and sandbox validation.',
+    'Week 4 (Training & Go-Live): Sales team enablement, admin runbooks, UAT sign-off, and live production rollout.',
+    'Support & SLA Commitment: Priority 1 (Critical) incidents resolved in < 30 minutes; dedicated Customer Success Lead.'
+  ];
+
+  const termsBullets = proposal.termsBullets || [
+    'All prices are exclusive of applicable statutory GST / taxes (18%).',
+    'Third-party usage (telephony minutes, WhatsApp message costs, AI calling) billed against actual wallet consumption.',
+    'Invoices are payable within 30 days from date of submission (NET 30).'
+  ];
 
   return (
     <section className="editor panel">
-      <h2>Proposal details</h2>
+      <h2>Custom Proposal Details & Settings</h2>
 
+      {/* Cover Page Metadata */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '16px', marginBottom: '12px' }}>
+        Cover Page & Metadata (Page 1)
+      </h3>
       <div className="form-grid">
-        {[
-          ['proposalTitle', 'Proposal title'],
-          ['proposalNumber', 'Proposal number'],
-          ['preparedFor', 'Prepared for'],
-          ['preparedBy', 'Prepared by'],
-          ['date', 'Date'],
-          ['validUntil', 'Valid until'],
-          ['currency', 'Currency']
-        ].map(([field, label]) => (
-          <label key={field}>
-            <span>{label}</span>
-            <input
-              type={field === 'date' || field === 'validUntil' ? 'date' : 'text'}
-              value={proposal[field] || ''}
-              onChange={(e) => onUpdateField(field, e.target.value)}
-            />
-          </label>
-        ))}
-      </div>
-
-      <div className="commercial-toggle-container">
-        <label className="checkbox-label">
+        <label>
+          <span>Pill Badge</span>
           <input
-            type="checkbox"
-            checked={useStructuredCommercials}
-            onChange={(e) => onUpdateCommercials({ useStructuredCommercials: e.target.checked })}
+            value={proposal.badge || 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL'}
+            onChange={(e) => onUpdateField('badge', e.target.value)}
           />
-          <span>Enable Structured Commercial Line-Items Table</span>
+        </label>
+        <label>
+          <span>Proposal Title</span>
+          <input
+            value={proposal.proposalTitle || 'Unified CRM, Communication & AI Sales Automation'}
+            onChange={(e) => onUpdateField('proposalTitle', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Proposal Subtitle</span>
+          <input
+            value={proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
+            onChange={(e) => onUpdateField('subtitle', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Proposal Reference Number</span>
+          <input
+            value={proposal.proposalNumber || 'IGC-IBUNIFY-2026-088'}
+            onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Client Organization (Prepared For)</span>
+          <input
+            value={proposal.preparedFor || '[Client Enterprise / Jayabheri Group]'}
+            onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Client Attention / Sponsor</span>
+          <input
+            value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+            onChange={(e) => onUpdateField('clientAttention', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Engagement Scope</span>
+          <input
+            value={proposal.engagement || 'iBUNIFY Platform & Integrated Services Deployment'}
+            onChange={(e) => onUpdateField('engagement', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Proposal Date</span>
+          <input
+            value={proposal.date || ''}
+            onChange={(e) => onUpdateField('date', e.target.value)}
+            placeholder="e.g. August 25, 2026"
+          />
+        </label>
+        <label>
+          <span>Service Provider Name</span>
+          <input
+            value={proposal.preparedBy || proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+            onChange={(e) => {
+              onUpdateField('preparedBy', e.target.value);
+              onUpdateField('company', e.target.value);
+            }}
+          />
+        </label>
+        <label>
+          <span>Headquarters Address</span>
+          <input
+            value={proposal.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+            onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Digital Portals</span>
+          <input
+            value={proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}
+            onChange={(e) => onUpdateField('portals', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Product Lead Contact</span>
+          <input
+            value={proposal.productLead || 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}
+            onChange={(e) => onUpdateField('productLead', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Additional Contact</span>
+          <input
+            value={proposal.contacts || 'Rama Krishna: +91 78420 97496'}
+            onChange={(e) => onUpdateField('contacts', e.target.value)}
+          />
+        </label>
+        <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+          <span>Overview & Philosophy Statement</span>
+          <textarea
+            rows="2"
+            value={proposal.description || proposal.descriptionText || ''}
+            onChange={(e) => {
+              onUpdateField('description', e.target.value);
+              onUpdateField('descriptionText', e.target.value);
+            }}
+          />
         </label>
       </div>
 
-      {useStructuredCommercials && (
-        <div className="structured-commercials-editor">
-          <div className="commercials-editor-head">
-            <h3>Commercial Line Items</h3>
-            <button type="button" className="secondary sm" onClick={handleAddItem}>＋ Add Item</button>
-          </div>
+      {/* Running Header & Footer Controls */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Running Header & Footer Bar (Pages 2–5)
+      </h3>
+      <div className="form-grid">
+        <label>
+          <span>Running Header (Left)</span>
+          <input
+            value={proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal'}
+            onChange={(e) => onUpdateField('headerLeft', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Running Header (Right)</span>
+          <input
+            value={proposal.headerRight || 'www.ibunify.com'}
+            onChange={(e) => onUpdateField('headerRight', e.target.value)}
+          />
+        </label>
+        <label style={{ gridColumn: '1 / -1' }}>
+          <span>Running Page Footnote (Left)</span>
+          <input
+            value={proposal.pageFootnote || 'Confidential - iBUNIFY (iGLOBUS Corporate Consulting)'}
+            onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
+          />
+        </label>
+      </div>
 
-          <table className="commercial-editor-table">
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th style={{ width: '80px' }}>Qty</th>
-                <th style={{ width: '130px' }}>Unit Price</th>
-                <th style={{ width: '130px' }}>Total</th>
-                <th style={{ width: '40px' }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {commercialItems.map((item) => (
-                <tr key={item.id}>
-                  <td>
-                    <input
-                      type="text"
-                      value={item.name}
-                      onChange={(e) => handleUpdateItem(item.id, { name: e.target.value })}
-                      placeholder="Item description"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={item.qty}
-                      onChange={(e) => handleUpdateItem(item.id, { qty: Number(e.target.value) })}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="0"
-                      value={item.unitPrice}
-                      onChange={(e) => handleUpdateItem(item.id, { unitPrice: Number(e.target.value) })}
-                    />
-                  </td>
-                  <td className="item-total-cell">
-                    {currencySymbol}{(item.qty * item.unitPrice).toLocaleString()}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className="danger icon-sm"
-                      onClick={() => handleDeleteItem(item.id)}
-                      title="Remove line item"
-                    >
-                      ×
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="commercial-summary-bar">
-            <label className="tax-label">
-              <span>Tax Rate (%)</span>
+      {/* Key Metrics */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Key Operational Metrics (Page 2)
+      </h3>
+      <div className="form-grid">
+        {metrics.map((m, mIdx) => (
+          <div key={mIdx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <label>
+              <span style={{ fontSize: '11px' }}>Metric Value</span>
               <input
-                type="number"
-                min="0"
-                max="100"
-                value={proposal.taxRate || 0}
-                onChange={(e) => onUpdateCommercials({ taxRate: Number(e.target.value) })}
+                value={m.value}
+                onChange={(e) => {
+                  const next = [...metrics];
+                  next[mIdx] = { ...next[mIdx], value: e.target.value };
+                  onUpdateField('metrics', next);
+                }}
               />
             </label>
-            <div className="totals-display">
-              <div>Subtotal: <strong>{currencySymbol}{subtotal.toLocaleString()}</strong></div>
-              {proposal.taxRate > 0 && (
-                <div>Tax ({proposal.taxRate}%): <strong>{currencySymbol}{taxAmount.toLocaleString()}</strong></div>
-              )}
-              <div className="grand-total-text">Grand Total: <strong>{currencySymbol}{grandTotal.toLocaleString()}</strong></div>
-            </div>
+            <label style={{ marginTop: '6px' }}>
+              <span style={{ fontSize: '11px' }}>Metric Label</span>
+              <input
+                value={m.label}
+                onChange={(e) => {
+                  const next = [...metrics];
+                  next[mIdx] = { ...next[mIdx], label: e.target.value };
+                  onUpdateField('metrics', next);
+                }}
+              />
+            </label>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {selectedSection ? (
-        <div className="section-editor">
+      {/* Services Overview Pillars */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Integrated Platform Services Pillars (Page 2)
+      </h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {servicesOverview.map((item, idx) => (
+          <div key={item.key || idx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <label>
+              <span>{item.key}. Service Pillar Title</span>
+              <input
+                value={item.title}
+                onChange={(e) => {
+                  const next = [...servicesOverview];
+                  next[idx] = { ...next[idx], title: e.target.value };
+                  onUpdateField('servicesOverview', next);
+                }}
+              />
+            </label>
+            <label style={{ marginTop: '6px' }}>
+              <span>Pillar Description</span>
+              <textarea
+                rows="2"
+                value={item.desc}
+                onChange={(e) => {
+                  const next = [...servicesOverview];
+                  next[idx] = { ...next[idx], desc: e.target.value };
+                  onUpdateField('servicesOverview', next);
+                }}
+              />
+            </label>
+          </div>
+        ))}
+      </div>
+
+      {/* AI Calling Section */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Section 2: AI Calling Services & Costing (Page 2)
+      </h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <label>
+          <span>AI Calling Feature Bullets (one per line)</span>
+          <textarea
+            rows="4"
+            value={aiCallingBullets.join('\n')}
+            onChange={(e) => onUpdateField('aiCallingBullets', e.target.value.split('\n'))}
+          />
+        </label>
+        {aiCallingItems.map((item, idx) => (
+          <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <input
+              value={item.component}
+              placeholder="Component"
+              onChange={(e) => {
+                const next = [...aiCallingItems];
+                next[idx] = { ...next[idx], component: e.target.value };
+                onUpdateField('aiCallingItems', next);
+              }}
+            />
+            <input
+              value={item.scope}
+              placeholder="Scope"
+              onChange={(e) => {
+                const next = [...aiCallingItems];
+                next[idx] = { ...next[idx], scope: e.target.value };
+                onUpdateField('aiCallingItems', next);
+              }}
+            />
+            <input
+              value={item.investment}
+              placeholder="Investment"
+              onChange={(e) => {
+                const next = [...aiCallingItems];
+                next[idx] = { ...next[idx], investment: e.target.value };
+                onUpdateField('aiCallingItems', next);
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Cloud Telephony Section */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Section 3: Cloud Telephony Services & Costing (Page 3)
+      </h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <label>
+          <span>Cloud Telephony Feature Bullets (one per line)</span>
+          <textarea
+            rows="4"
+            value={cloudTelephonyBullets.join('\n')}
+            onChange={(e) => onUpdateField('cloudTelephonyBullets', e.target.value.split('\n'))}
+          />
+        </label>
+        {cloudTelephonyItems.map((item, idx) => (
+          <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <input
+              value={item.component}
+              placeholder="Component"
+              onChange={(e) => {
+                const next = [...cloudTelephonyItems];
+                next[idx] = { ...next[idx], component: e.target.value };
+                onUpdateField('cloudTelephonyItems', next);
+              }}
+            />
+            <input
+              value={item.scope}
+              placeholder="Scope"
+              onChange={(e) => {
+                const next = [...cloudTelephonyItems];
+                next[idx] = { ...next[idx], scope: e.target.value };
+                onUpdateField('cloudTelephonyItems', next);
+              }}
+            />
+            <input
+              value={item.investment}
+              placeholder="Investment"
+              onChange={(e) => {
+                const next = [...cloudTelephonyItems];
+                next[idx] = { ...next[idx], investment: e.target.value };
+                onUpdateField('cloudTelephonyItems', next);
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* WhatsApp Automation Section */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Section 4: WhatsApp Automation Services & Costing (Page 3)
+      </h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <label>
+          <span>WhatsApp Feature Bullets (one per line)</span>
+          <textarea
+            rows="4"
+            value={whatsappBullets.join('\n')}
+            onChange={(e) => onUpdateField('whatsappBullets', e.target.value.split('\n'))}
+          />
+        </label>
+        {whatsappItems.map((item, idx) => (
+          <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <input
+              value={item.component}
+              placeholder="Component"
+              onChange={(e) => {
+                const next = [...whatsappItems];
+                next[idx] = { ...next[idx], component: e.target.value };
+                onUpdateField('whatsappItems', next);
+              }}
+            />
+            <input
+              value={item.scope}
+              placeholder="Scope"
+              onChange={(e) => {
+                const next = [...whatsappItems];
+                next[idx] = { ...next[idx], scope: e.target.value };
+                onUpdateField('whatsappItems', next);
+              }}
+            />
+            <input
+              value={item.investment}
+              placeholder="Investment"
+              onChange={(e) => {
+                const next = [...whatsappItems];
+                next[idx] = { ...next[idx], investment: e.target.value };
+                onUpdateField('whatsappItems', next);
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Commercial Investment Schedule */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Section 5: Overall Commercial Investment Schedule (Page 3)
+      </h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {commercialScheduleItems.map((item, idx) => (
+          <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <input
+              value={item.component}
+              placeholder="Component"
+              onChange={(e) => {
+                const next = [...commercialScheduleItems];
+                next[idx] = { ...next[idx], component: e.target.value };
+                onUpdateField('commercialScheduleItems', next);
+              }}
+            />
+            <input
+              value={item.scope}
+              placeholder="Scope"
+              onChange={(e) => {
+                const next = [...commercialScheduleItems];
+                next[idx] = { ...next[idx], scope: e.target.value };
+                onUpdateField('commercialScheduleItems', next);
+              }}
+            />
+            <input
+              value={item.investment}
+              placeholder="Investment"
+              onChange={(e) => {
+                const next = [...commercialScheduleItems];
+                next[idx] = { ...next[idx], investment: e.target.value };
+                onUpdateField('commercialScheduleItems', next);
+              }}
+            />
+          </div>
+        ))}
+        <label style={{ marginTop: '8px' }}>
+          <span>Base Activation Package Total (Excl. Consumption & Lic.)</span>
+          <input
+            value={proposal.baseActivationPackageTotal || proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
+            onChange={(e) => {
+              onUpdateField('baseActivationPackageTotal', e.target.value);
+              onUpdateField('basePackageTotal', e.target.value);
+            }}
+          />
+        </label>
+      </div>
+
+      {/* Roadmap & Terms */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Roadmap & Terms (Page 3)
+      </h3>
+      <div className="form-grid">
+        <label style={{ gridColumn: '1 / -1' }}>
+          <span>Section 6: Implementation Roadmap & Support SLA (one per line)</span>
+          <textarea
+            rows="5"
+            value={roadmapBullets.join('\n')}
+            onChange={(e) => onUpdateField('roadmapBullets', e.target.value.split('\n'))}
+          />
+        </label>
+        <label style={{ gridColumn: '1 / -1' }}>
+          <span>Section 7: Terms and Conditions (one per line)</span>
+          <textarea
+            rows="3"
+            value={termsBullets.join('\n')}
+            onChange={(e) => onUpdateField('termsBullets', e.target.value.split('\n'))}
+          />
+        </label>
+      </div>
+
+      {/* Signatories & Acceptance */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Section 8: Proposal Acceptance & Signatures (Page 3)
+      </h3>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Client Signatory</strong>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Header</span>
+            <input
+              value={proposal.clientSignatoryHeader || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
+              onChange={(e) => onUpdateField('clientSignatoryHeader', e.target.value)}
+            />
+          </label>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
+            <input
+              value={proposal.clientSignatoryName || '___________________________'}
+              onChange={(e) => onUpdateField('clientSignatoryName', e.target.value)}
+            />
+          </label>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
+            <input
+              value={proposal.clientSignatoryTitle || '____________________________'}
+              onChange={(e) => onUpdateField('clientSignatoryTitle', e.target.value)}
+            />
+          </label>
+          <label style={{ display: 'block' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+            <input
+              value={proposal.clientSignDate || ''}
+              onChange={(e) => onUpdateField('clientSignDate', e.target.value)}
+              placeholder="e.g. August 25, 2026"
+            />
+          </label>
+        </div>
+
+        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <strong style={{ color: '#0f2b6e', display: 'block', marginBottom: '8px' }}>Service Provider Signatory</strong>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Header</span>
+            <input
+              value={proposal.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)'}
+              onChange={(e) => onUpdateField('providerSignatoryHeader', e.target.value)}
+            />
+          </label>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
+            <input
+              value={proposal.providerSignatoryName || 'Ramyasree / Rama Krishna'}
+              onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
+            />
+          </label>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
+            <input
+              value={proposal.providerSignatoryTitle || 'Product Lead & Enterprise Practice'}
+              onChange={(e) => onUpdateField('providerSignatoryTitle', e.target.value)}
+            />
+          </label>
+          <label style={{ display: 'block' }}>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>Date</span>
+            <input
+              value={proposal.providerSignDate || 'August 25, 2026'}
+              onChange={(e) => onUpdateField('providerSignDate', e.target.value)}
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Corporate Footer Box */}
+      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+        Corporate Footer Box (Page 3)
+      </h3>
+      <div className="form-grid">
+        <label>
+          <span>Company Name</span>
+          <input
+            value={proposal.corporateFooterCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+            onChange={(e) => onUpdateField('corporateFooterCompany', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Registered Address</span>
+          <input
+            value={proposal.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'}
+            onChange={(e) => onUpdateField('corporateFooterAddress', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Contact Details</span>
+          <input
+            value={proposal.corporateFooterContact || 'Contact: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com) | Rama Krishna: +91 78420 97496'}
+            onChange={(e) => onUpdateField('corporateFooterContact', e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Websites</span>
+          <input
+            value={proposal.corporateFooterWebsites || 'Websites: www.ibunify.com | www.iglobuscc.com'}
+            onChange={(e) => onUpdateField('corporateFooterWebsites', e.target.value)}
+          />
+        </label>
+      </div>
+
+      {/* Additional Custom Sections if selected */}
+      {selectedSection && (
+        <div className="section-editor" style={{ marginTop: '24px' }}>
           <div className="section-editor-head">
-            <h2>Edit section</h2>
+            <h2>Edit Custom Section</h2>
             <div className="small-actions">
               <button type="button" className="ghost" onClick={() => onMoveSection(selectedSection.id, 'up')}>↑</button>
               <button type="button" className="ghost" onClick={() => onMoveSection(selectedSection.id, 'down')}>↓</button>
@@ -3005,23 +3558,21 @@ export function SectionEditor({
             </div>
           </div>
           <label>
-            <span>Section title</span>
+            <span>Section Title</span>
             <input
               value={selectedSection.title}
               onChange={(e) => onUpdateSection(selectedSection.id, { title: e.target.value })}
             />
           </label>
           <label>
-            <span>Section content</span>
+            <span>Section Content</span>
             <textarea
-              rows="14"
+              rows="10"
               value={selectedSection.content}
               onChange={(e) => onUpdateSection(selectedSection.id, { content: e.target.value })}
             />
           </label>
         </div>
-      ) : (
-        <div className="empty-state">Add a section to begin editing.</div>
       )}
     </section>
   );
