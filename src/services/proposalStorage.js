@@ -1,24 +1,6 @@
 import { STORAGE_KEY_V1, STORAGE_KEY_V2, sampleProposal } from '../data/defaults.js';
 import { proposalTemplates } from '../data/templates.js';
 
-function sanitizeProposalData(data) {
-  if (typeof data === 'string') {
-    return data
-      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'iBUNIFY');
-  }
-  if (Array.isArray(data)) {
-    return data.map(sanitizeProposalData);
-  }
-  if (data && typeof data === 'object') {
-    const res = {};
-    for (const key of Object.keys(data)) {
-      res[key] = sanitizeProposalData(data[key]);
-    }
-    return res;
-  }
-  return data;
-}
-
 export function loadProposalsFromStorage() {
   const standardInvoiceTemplate = proposalTemplates.find((t) => t.id === 'template-invoice-standard') || proposalTemplates[0];
 
@@ -27,104 +9,14 @@ export function loadProposalsFromStorage() {
     if (v2Raw) {
       const parsed = JSON.parse(v2Raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Filter out legacy compact invoices, ensure INR currency with GST, and normalize ibunify
+        // Filter out legacy compact invoices and ensure INR currency with GST
         const withoutCompact = parsed.filter((p) => p.invoiceStyle !== 'compact');
-        const cleanDateField = (val) => {
-          if (!val || typeof val !== 'string') return '';
-          const trimmed = val.trim();
-          if (
-            trimmed === '[Date]' ||
-            trimmed === '[Effective Date]' ||
-            trimmed === 'August 2026' ||
-            trimmed === '2026-09-10' ||
-            trimmed === '2026-09-11' ||
-            trimmed === '2026-09-12' ||
-            trimmed === '2026-09-13' ||
-            trimmed === '2026-09-14' ||
-            trimmed === '2026-09-15'
-          ) {
-            return '';
-          }
-          return trimmed;
-        };
-        const cleanContactsField = (c) => {
-          if (!c || c.includes('Contacts: Rama Krishna') || c === 'Rama Krishna | Sohail' || c === 'Rama Krishna | Sohail | Ramyasree') {
-            return 'Product Owner: Rama Krishna | CTO';
-          }
-          return c;
-        };
-        const cleanProductLeadField = (pl) => {
-          if (!pl || pl === 'Rama Krishna' || pl === 'Product Lead: Rama Krishna' || pl === 'Rama Krishna | CTO' || pl.includes('Ramyasree') || pl === 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)') {
-            return 'Product Lead: Ramya | Sohail';
-          }
-          return pl;
-        };
-        const cleanSignatoryTitle = (st) => {
-          if (!st || st.includes('Practice Leads') || st.includes('Enterprise Lead')) {
-            return 'Enterprise Practice Leads';
-          }
-          return st;
-        };
-        const cleanAddress = (addr) => {
-          if (!addr || addr.includes('Madhapur') || addr.includes('Hyderabad')) {
-            return 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad';
-          }
-          return addr;
-        };
-        const cleanPortalsField = (portals) => {
-          if (!portals || portals.includes('ibunify.com') || portals.includes('iglobuscc.com')) {
-            return 'Portals: www.ibunify.com | www.iglobuscc.com';
-          }
-          return portals;
-        };
-        const cleanProposalNumber = (num, docType) => {
-          if (docType === 'commercial_proposal' && (!num || num === 'IGC-ibunify-PROP-2026')) {
-            return 'IGC-ibunify-05-2026';
-          }
-          return num;
-        };
-        const cleanPreparedFor = (pf) => {
-          if (!pf || pf === 'Client Company Name') {
-            return '[Client Company Name]';
-          }
-          return pf;
-        };
-        const cleaned = sanitizeProposalData(withoutCompact).map((p) => {
-          let company = (p.company === 'I-Globus Corporate Consulting' || p.company === 'iGlobus Corporate Consulting') ? 'iGLOBUS Corporate Consulting' : p.company;
-          if (company === 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)' || company === 'ibunify (iGLOBUS Corporate Consulting)') {
-            company = 'ibunify (iGLOBUS Corporate Consulting)';
-          }
-          const sanitizedProposal = {
-            ...p,
-            proposalNumber: cleanProposalNumber(p.proposalNumber, p.documentType),
-            preparedFor: cleanPreparedFor(p.preparedFor),
-            companyAddress: cleanAddress(p.companyAddress),
-            portals: cleanPortalsField(p.portals),
-            contacts: cleanContactsField(p.contacts),
-            productLead: cleanProductLeadField(p.productLead),
-            leadSignatoryTitle: cleanSignatoryTitle(p.leadSignatoryTitle),
-            providerSignatoryTitle: cleanSignatoryTitle(p.providerSignatoryTitle),
-            acceptedByDesignation: cleanSignatoryTitle(p.acceptedByDesignation),
-            footerContacts: p.footerContacts ? cleanContactsField(p.footerContacts) : p.footerContacts,
-            date: cleanDateField(p.date),
-            effectiveDate: cleanDateField(p.effectiveDate),
-            executionDate: cleanDateField(p.executionDate),
-            poDate: cleanDateField(p.poDate),
-            handoverDate: cleanDateField(p.handoverDate),
-            clientSignDate: cleanDateField(p.clientSignDate),
-            leadSignDate: cleanDateField(p.leadSignDate),
-            providerSignDate: cleanDateField(p.providerSignDate),
-            issuedByDate: cleanDateField(p.issuedByDate),
-            acceptedByDate: cleanDateField(p.acceptedByDate),
-            acceptedDate: cleanDateField(p.acceptedDate),
-            deliveredDate: cleanDateField(p.deliveredDate),
-            handoverAcceptClientDate: cleanDateField(p.handoverAcceptClientDate),
-            handoverDeliveredLeadDate: cleanDateField(p.handoverDeliveredLeadDate),
-          };
+        const cleaned = withoutCompact.map((p) => {
+          const company = p.company === 'I-Globus Corporate Consulting' ? 'iGlobus Corporate Consulting' : p.company;
           if (p.documentType === 'invoice') {
             return {
-              ...sanitizedProposal,
-              company: company || 'iGLOBUS Corporate Consulting',
+              ...p,
+              company: company || 'iGlobus Corporate Consulting',
               currency: 'INR',
               cgstPct: typeof p.cgstPct === 'number' ? p.cgstPct : 9,
               sgstPct: typeof p.sgstPct === 'number' ? p.sgstPct : 9,
@@ -132,14 +24,13 @@ export function loadProposalsFromStorage() {
               invoiceStyle: 'standard'
             };
           }
-          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || p.documentType === 'proposal') {
+          if (p.id === 'sample-ibunify-proposal-001' || p.proposalTitle === 'Digital Workspace Transformation Proposal') {
             return {
               ...sampleProposal,
-              id: p.id || 'sample-ibunify-proposal-001',
-              documentType: 'proposal'
+              id: 'sample-ibunify-proposal-001'
             };
           }
-          return { ...sanitizedProposal, company };
+          return { ...p, company };
         });
 
         // Deduplicate proposals based on type, title and preparedFor
@@ -176,7 +67,7 @@ export function loadProposalsFromStorage() {
       const v1Parsed = JSON.parse(v1Raw);
       if (v1Parsed && typeof v1Parsed === 'object') {
         const migratedProposal = {
-          ...sanitizeProposalData(v1Parsed),
+          ...v1Parsed,
           id: v1Parsed.id || `migrated-${Date.now()}`
         };
         const initialList = [migratedProposal];
@@ -205,7 +96,7 @@ export function loadProposalsFromStorage() {
 
 export function saveProposalsToStorage(proposals) {
   try {
-    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(sanitizeProposalData(proposals)));
+    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(proposals));
   } catch (err) {
     console.error('Failed to save proposals to storage:', err);
   }
