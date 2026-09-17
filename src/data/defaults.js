@@ -21,183 +21,31 @@ export const documentFormats = [
 ];
 
 export const sampleProposal = {
-  id: 'sample-custom-proposal-001',
+  id: 'sample-ibunify-proposal-001',
   documentType: 'proposal',
-  company: 'ibunify (iGLOBUS Corporate Consulting)',
-  badge: 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL',
+  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
   subtitle: 'Built for High-Velocity Real Estate & Sales Enterprises',
-  description:
-    'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive pipeline.',
-  headerLeft: 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal',
-  headerRight: 'www.ibunify.com',
-  pageFootnote: 'Confidential - iBUNIFY (iGLOBUS Corporate Consulting)',
-  proposalNumber: 'IGC-ibunify-02-2026',
-  preparedFor: '[Client Company Name]',
-  clientAttention: 'Attn: Project Sponsor / Sales Leadership',
+  badge: 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL',
+  description: 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive pipeline.',
+  proposalNumber: 'IGC-IBUNIFY-2026-088',
+  preparedFor: '[Client Enterprise / Jayabheri Group]',
+  clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
   engagement: 'iBUNIFY Platform & Integrated Services Deployment',
-  preparedBy: 'ibunify (iGLOBUS Corporate Consulting)',
+  preparedBy: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
-  contacts: 'Product Owner: Rama Krishna | CTO',
-  productLead: 'Product Lead: Ramya | Sohail',
-  date: 'August 25, 2026',
+  productLead: 'Rama Krishna | CTO',
+  date: new Date().toISOString().slice(0, 10),
   validUntil: '',
   currency: 'INR',
   useStructuredCommercials: false,
-  metrics: [
-    { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
-    { value: '100%', label: 'LEAD ATTRIBUTION' },
-    { value: '3x', label: 'FOLLOW-UP VELOCITY' },
-    { value: '24/7', label: 'AI VOICE & CHAT' }
+  commercialItems: [
+    { id: 'item-1', name: 'One-Time Setup & Onboarding', qty: 1, unitPrice: 50000 },
+    { id: 'item-2', name: 'WhatsApp Business Platform (6 Months)', qty: 1, unitPrice: 15000 },
+    { id: 'item-3', name: 'WhatsApp Message Wallet (Prepaid)', qty: 1, unitPrice: 10000 }
   ],
-  servicesOverview: [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM',
-      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
-    },
-    {
-      key: 'B',
-      title: 'Omnichannel Lead Ingestion',
-      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
-    },
-    {
-      key: 'C',
-      title: 'Closed-Loop Marketing Attribution',
-      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
-    },
-    {
-      key: 'D',
-      title: 'Executive CDR & Conversion Analytics',
-      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
-    }
-  ],
-  aiCallingBullets: [
-    'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
-    'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
-    '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
-  ],
-  aiCallingItems: [
-    {
-      id: 'ai-1',
-      component: 'AI Voice Agent Engine',
-      scope: 'Natural conversational voice agent, intent detection & CRM transcript sync',
-      investment: 'Included in Setup'
-    },
-    {
-      id: 'ai-2',
-      component: 'AI Calling Usage',
-      scope: 'Per completed incoming or outgoing conversational call',
-      investment: '₹7 / call'
-    }
-  ],
-  cloudTelephonyBullets: [
-    'Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.',
-    'Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.',
-    'Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.',
-    'Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.'
-  ],
-  cloudTelephonyItems: [
-    {
-      id: 'ct-1',
-      component: 'Virtual Cloud Telephony Numbers',
-      scope: 'Dedicated inbound/outbound virtual number with IVR and call recording',
-      investment: '₹1,500 / Number / month'
-    },
-    {
-      id: 'ct-2',
-      component: 'Call-to-Lead Auto Ingestion Engine',
-      scope: 'Real-time automatic lead record creation upon call connection',
-      investment: 'Included in Setup'
-    }
-  ],
-  whatsappBullets: [
-    'Instant Brochure & Price Sheet Dispatch: Automatically triggers WhatsApp brochures when leads submit inquiry forms.',
-    'Automated Nurture Sequences: Triggers site-visit reminders, location pins, video walkthroughs, and payment milestone alerts.',
-    'Unified Multi-Agent Inbox: Enables sales teams to chat with prospects from a single verified business number with full audit logs.',
-    'Interactive Chatbot & Quick Replies: Pre-configured menus for instant responses to common buyer FAQs and project details.'
-  ],
-  whatsappItems: [
-    {
-      id: 'wa-1',
-      component: 'WhatsApp Business Platform (API Engine)',
-      scope: 'Official Meta Business API setup, template approvals & workflow engine',
-      investment: '₹15,000 for 6 Months'
-    },
-    {
-      id: 'wa-2',
-      component: 'WhatsApp Message Wallet (Prepaid)',
-      scope: 'Utility Message: ₹0.18 / message\nMarketing Message: ₹0.87 / message',
-      investment: '₹10,000 Prepaid\n(Usage-based)'
-    }
-  ],
-  commercialScheduleItems: [
-    {
-      id: 'cs-1',
-      component: 'One-Time Setup & Onboarding',
-      scope: 'System config, Meta CAPI, Google Ads, telephony & team training',
-      investment: '₹50,000 (One-Time)'
-    },
-    {
-      id: 'cs-2',
-      component: 'iBUNIFY CRM User License',
-      scope: 'Full CRM pipeline, task management, mobile access & dashboards',
-      investment: '₹2,500 / user / month'
-    },
-    {
-      id: 'cs-3',
-      component: 'WhatsApp Business Platform',
-      scope: 'Official Meta API integration & workflow routing (6 Months)',
-      investment: '₹15,000 for 6 Months'
-    },
-    {
-      id: 'cs-4',
-      component: 'WhatsApp Message Wallet',
-      scope: 'Prepaid consumption (Utility: ₹0.18 | Marketing: ₹0.87)',
-      investment: '₹10,000 Prepaid'
-    },
-    {
-      id: 'cs-5',
-      component: 'Cloud Telephony Virtual Numbers',
-      scope: 'Per dedicated virtual number with recording & CDR logging',
-      investment: '₹1,500 / Number'
-    },
-    {
-      id: 'cs-6',
-      component: 'AI Agent Calling',
-      scope: 'Per connected conversational AI qualification call',
-      investment: '₹7 / call'
-    }
-  ],
-  baseActivationPackageTotal: '₹75,000 + Wallet / Lic.',
-  roadmapBullets: [
-    'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
-    'Week 2 (Telephony & WhatsApp): Virtual numbers provisioning, WhatsApp Business API templates, and routing logic.',
-    'Week 3 (AI Agent & Testing): AI conversational script configuration, call-to-lead testing, and sandbox validation.',
-    'Week 4 (Training & Go-Live): Sales team enablement, admin runbooks, UAT sign-off, and live production rollout.',
-    'Support & SLA Commitment: Priority 1 (Critical) incidents resolved in < 30 minutes; dedicated Customer Success Lead.'
-  ],
-  termsBullets: [
-    'All prices are exclusive of applicable statutory GST / taxes (18%).',
-    'Third-party usage (telephony minutes, WhatsApp message costs, AI calling) billed against actual wallet consumption.',
-    'Invoices are payable within 30 days from date of submission (NET 30).'
-  ],
-  clientSignatoryHeader: 'ACCEPTED FOR: [CLIENT ENTERPRISE]',
-  clientSignatorySub: 'Authorized Signatory',
-  clientSignatoryName: '___________________________',
-  clientSignatoryTitle: '____________________________',
-  clientSignDate: '____________________________',
-  providerSignatoryHeader: 'ACCEPTED FOR: iBUNIFY (iGLOBUS)',
-  providerSignatorySub: 'Authorized Signatory',
-  providerSignatoryName: 'Ramyasree / Rama Krishna',
-  providerSignatoryTitle: 'Product Lead & Enterprise Practice',
-  providerSignDate: 'August 25, 2026',
-  corporateFooterCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
-  corporateFooterAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
-  corporateFooterContact: 'Contact: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com) | Rama Krishna: +91 78420 97496',
-  corporateFooterWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
+  taxRate: 18,
   sections: [
     {
       id: 'sec-1',
