@@ -21,15 +21,6 @@ function sanitizeProposalData(data) {
   return data;
 }
 
-const formatPortalsText = (val) => {
-  if (!val) return 'Website: www.ibunify.com | www.iglobuscc.com';
-  const lower = val.toLowerCase();
-  if (lower.includes('ibunify.com') || lower.includes('iglobuscc.com') || lower.startsWith('portals:') || lower.startsWith('digital portals:')) {
-    return 'Website: www.ibunify.com | www.iglobuscc.com';
-  }
-  return val.replace(/^(Portals|Digital Portals):\s*/i, 'Website: ');
-};
-
 export function ProposalPreview({ proposal: rawProposal }) {
   const proposal = sanitizeProposalData(rawProposal) || {};
   const currencySymbol = proposal.currency === 'USD' ? '$' : '₹';
@@ -2127,7 +2118,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
     );
   }
 
-  // 5-Page Custom Proposal Renderer
+  // 3-Page Custom Proposal Renderer
   const metrics = proposal.metrics || [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },
@@ -2160,7 +2151,6 @@ export function ProposalPreview({ proposal: rawProposal }) {
 
   const aiCallingBullets = proposal.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
@@ -2345,10 +2335,10 @@ export function ProposalPreview({ proposal: rawProposal }) {
         </section>
       </div>
 
-      {/* PAGE 2: ABOUT PRODUCT, AI CALLING, TELEPHONY & WHATSAPP */}
+      {/* PAGE 2: SCOPE & COSTING */}
       <div className="preview-page-card">
         <div className="preview-page-card-header">
-          <span>Page 2 of 3 · Services & Platform Costing</span>
+          <span>Page 2 of 3 · Scope & Costing</span>
         </div>
         <section className="custom-proposal-page-paper">
           <img
@@ -2377,8 +2367,6 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       <div className="ctp-metric-val" style={{ fontSize: '15px' }}>{m.value}</div>
                       <div className="ctp-metric-lbl" style={{ fontSize: '9px' }}>{m.label}</div>
                     </div>
-                  ))}
-                </div>
 
                 <div style={{ fontWeight: '700', fontSize: '11.5px', color: '#0f2b6e', margin: '4px 0 2px 0' }}>
                   Integrated Platform Services Overview:
@@ -2394,9 +2382,6 @@ export function ProposalPreview({ proposal: rawProposal }) {
                         {item.desc}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Section 2 */}
               <div className="discovery-section-block" style={{ marginTop: '2px' }}>
@@ -2606,3 +2591,4 @@ export function ProposalPreview({ proposal: rawProposal }) {
     </div>
   );
 }
+

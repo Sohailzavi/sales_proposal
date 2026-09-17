@@ -2504,7 +2504,7 @@ html::-webkit-scrollbar,
   padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .custom-proposal-watermark {
@@ -2527,7 +2527,7 @@ html::-webkit-scrollbar,
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 100%;
 }
 

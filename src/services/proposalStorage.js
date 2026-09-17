@@ -78,12 +78,10 @@ export function loadProposalsFromStorage() {
           return addr;
         };
         const cleanPortalsField = (portals) => {
-          if (!portals) return 'Website: www.ibunify.com | www.iglobuscc.com';
-          const lower = portals.toLowerCase();
-          if (lower.includes('ibunify.com') || lower.includes('iglobuscc.com') || lower.startsWith('portals:') || lower.startsWith('digital portals:')) {
-            return 'Website: www.ibunify.com | www.iglobuscc.com';
+          if (!portals || portals.includes('ibunify.com') || portals.includes('iglobuscc.com')) {
+            return 'Portals: www.ibunify.com | www.iglobuscc.com';
           }
-          return portals.replace(/^(Portals|Digital Portals):\s*/i, 'Website: ');
+          return portals;
         };
         const cleanProposalNumber = (num, docType) => {
           if (docType === 'commercial_proposal' && (!num || num === 'IGC-ibunify-PROP-2026')) {
@@ -162,10 +160,11 @@ export function loadProposalsFromStorage() {
               invoiceStyle: 'standard'
             };
           }
-          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || (p.documentType === 'proposal' && p.proposalTitle && (p.proposalTitle.includes('Digital Workspace') || p.proposalTitle.includes('Unified CRM')))) {
+          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || p.documentType === 'proposal') {
             return {
               ...sampleProposal,
-              id: p.id || 'sample-custom-proposal-001'
+              id: p.id || 'sample-ibunify-proposal-001',
+              documentType: 'proposal'
             };
           }
           return { ...sanitizedProposal, company };

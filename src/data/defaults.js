@@ -25,15 +25,14 @@ export const documentFormats = [
   { id: 'po', label: 'Purchase Order', extension: 'PO' },
   { id: 'handover', label: 'Delivery', extension: 'DEL' },
   { id: 'closure', label: 'Closure', extension: 'CLS' },
-  { id: 'proposal', label: 'Proposal', extension: 'PROP' },
+  { id: 'proposal', label: 'Custom Proposal', extension: 'PROP' },
   { id: 'invoice', label: 'Invoices', extension: 'INV' }
 ];
 
 export const sampleProposal = {
-  id: 'sample-custom-proposal-001',
+  id: 'sample-ibunify-proposal-001',
   documentType: 'proposal',
-  company: 'ibunify (iGLOBUS Corporate Consulting)',
-  badge: 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL',
+  company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
   subtitle: '',
   description:
@@ -54,59 +53,10 @@ export const sampleProposal = {
   validUntil: '',
   currency: 'INR',
   useStructuredCommercials: false,
-  metrics: [
-    { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
-    { value: '100%', label: 'LEAD ATTRIBUTION' },
-    { value: '3x', label: 'FOLLOW-UP VELOCITY' },
-    { value: '24/7', label: 'AI VOICE & CHAT' }
-  ],
-  servicesOverview: [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM',
-      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
-    },
-    {
-      key: 'B',
-      title: 'Omnichannel Lead Ingestion',
-      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
-    },
-    {
-      key: 'C',
-      title: 'Closed-Loop Marketing Attribution',
-      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
-    },
-    {
-      key: 'D',
-      title: 'Executive CDR & Conversion Analytics',
-      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
-    }
-  ],
-  aiCallingBullets: [
-    'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
-    'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
-    '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
-  ],
-  aiCallingItems: [
-    {
-      id: 'ai-1',
-      component: 'AI Voice Agent Engine',
-      scope: 'Natural conversational voice agent, intent detection & CRM transcript sync',
-      investment: 'Included in Setup'
-    },
-    {
-      id: 'ai-2',
-      component: 'AI Calling Usage',
-      scope: 'Per completed incoming or outgoing conversational call',
-      investment: '₹7 / call'
-    }
-  ],
-  cloudTelephonyBullets: [
-    'Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.',
-    'Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.',
-    'Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.',
-    'Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.'
+  commercialItems: [
+    { id: 'item-1', name: 'One-Time Setup & Onboarding', qty: 1, unitPrice: 50000 },
+    { id: 'item-2', name: 'WhatsApp Business Platform (6 Months)', qty: 1, unitPrice: 15000 },
+    { id: 'item-3', name: 'WhatsApp Message Wallet (Prepaid)', qty: 1, unitPrice: 10000 }
   ],
   cloudTelephonyItems: [
     {

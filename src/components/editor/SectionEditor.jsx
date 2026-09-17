@@ -490,7 +490,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -798,7 +798,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -1054,7 +1054,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -1259,7 +1259,7 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || ''}
+              value={proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
@@ -1333,7 +1333,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -1763,7 +1763,7 @@ export function SectionEditor({
           <label>
             <span>Digital Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -2056,7 +2056,7 @@ export function SectionEditor({
           <label>
             <span>Digital Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -2684,7 +2684,7 @@ export function SectionEditor({
           <label>
             <span>Digital Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -2901,7 +2901,7 @@ export function SectionEditor({
 
   const aiCallingBullets = proposal.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
@@ -3020,7 +3020,7 @@ export function SectionEditor({
 
   return (
     <section className="editor panel">
-      <h2>Proposal Details & Settings</h2>
+      <h2>Custom Proposal Details & Settings</h2>
 
       {/* Cover Page Metadata */}
       <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '16px', marginBottom: '12px' }}>
@@ -3044,7 +3044,7 @@ export function SectionEditor({
         <label>
           <span>Proposal Subtitle</span>
           <input
-            value={proposal.subtitle || ''}
+            value={proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
             onChange={(e) => onUpdateField('subtitle', e.target.value)}
           />
         </label>
@@ -3104,7 +3104,7 @@ export function SectionEditor({
         <label>
           <span>Digital Portals</span>
           <input
-            value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+            value={proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}
             onChange={(e) => onUpdateField('portals', e.target.value)}
           />
         </label>

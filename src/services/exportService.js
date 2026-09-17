@@ -25,15 +25,6 @@ export function escapeHtml(value = '') {
     .replaceAll("'", '&#039;');
 }
 
-export function formatPortalsText(val) {
-  if (!val) return 'Website: www.ibunify.com | www.iglobuscc.com';
-  const lower = String(val).toLowerCase();
-  if (lower.includes('ibunify.com') || lower.includes('iglobuscc.com') || lower.startsWith('portals:') || lower.startsWith('digital portals:')) {
-    return 'Website: www.ibunify.com | www.iglobuscc.com';
-  }
-  return String(val).replace(/^(Portals|Digital Portals):\s*/i, 'Website: ');
-}
-
 export function calculateCommercialTotals(items = [], taxRate = 0) {
   const subtotal = (items || []).reduce(
     (sum, item) => sum + (Number(item.qty) || 0) * (Number(item.unitPrice) || 0),
@@ -1939,7 +1930,7 @@ export function customProposalToHtml(doc, forWord = false) {
 
   const aiCallingBullets = doc.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
@@ -2088,7 +2079,7 @@ export function customProposalToHtml(doc, forWord = false) {
     .paper-page:last-child { page-break-after: auto; break-after: auto; }
     .paper-page .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
     .paper-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 84px; font-weight: 900; color: rgba(15, 23, 42, 0.032); pointer-events: none; white-space: nowrap; z-index: 0; text-transform: uppercase; letter-spacing: 0.08em; }
-    .paper-inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .paper-inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: flex-start; height: 100%; box-sizing: border-box; }
     
     .p-top { display: flex; justify-content: space-between; font-size: 11px; color: #334155; padding-bottom: 6px; border-bottom: 1px solid #cbd5e1; margin-bottom: 12px; }
     .p-footnote { margin-top: auto; padding-top: 8px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 10.5px; color: #64748b; }
@@ -2157,6 +2148,7 @@ export function customProposalToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           </div>
         </div>
       </div>
@@ -2177,14 +2169,14 @@ export function customProposalToHtml(doc, forWord = false) {
               <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
             </div>
 
-            <div class="metrics-grid">
-              ${metrics.map((m) => `
-                <div class="metric-card">
-                  <div class="metric-val">${escapeHtml(m.value)}</div>
-                  <div class="metric-lbl">${escapeHtml(m.label)}</div>
-                </div>
-              `).join('')}
-            </div>
+              <div class="metrics-grid" style="margin:5px 0;gap:6px;">
+                ${metrics.map((m) => `
+                  <div class="metric-card" style="padding:5px 4px;">
+                    <div class="metric-val" style="font-size:13.5px;">${escapeHtml(m.value)}</div>
+                    <div class="metric-lbl" style="font-size:8px;">${escapeHtml(m.label)}</div>
+                  </div>
+                `).join('')}
+              </div>
 
             <div style="font-weight:700;font-size:12.5px;color:#0f2b6e;margin:6px 0 3px 0;">
               Integrated Platform Services Overview:
@@ -2198,7 +2190,6 @@ export function customProposalToHtml(doc, forWord = false) {
                 </div>
               `).join('')}
             </div>
-          </div>
 
           <!-- Section 2 -->
           <div style="margin-top:4px;">
@@ -2311,7 +2302,6 @@ export function customProposalToHtml(doc, forWord = false) {
             <div>
               ${roadmapBullets.map((b) => `<div class="bullet-item" style="font-size:11px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
-          </div>
 
           <!-- Section 7: Terms & Conditions -->
           <div style="margin-top:2px;">
@@ -2319,7 +2309,6 @@ export function customProposalToHtml(doc, forWord = false) {
             <div>
               ${termsBullets.map((b) => `<div class="bullet-item" style="font-size:11px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
-          </div>
 
           <!-- Section 8: Acceptance & Sign-off -->
           <div style="margin-top:1px;">
