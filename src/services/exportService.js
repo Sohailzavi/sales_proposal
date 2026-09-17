@@ -1480,7 +1480,7 @@ export function customProposalToHtml(doc, forWord = false) {
 
   const aiCallingBullets = doc.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
@@ -1710,6 +1710,7 @@ export function customProposalToHtml(doc, forWord = false) {
       </div>
     </div>
 
+<<<<<<< HEAD
     <!-- PAGE 2: SCOPE & COSTING -->
     <div class="page-2">
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
@@ -1736,6 +1737,114 @@ export function customProposalToHtml(doc, forWord = false) {
                     <div class="metric-val" style="font-size:13.5px;">${escapeHtml(m.value)}</div>
                     <div class="metric-lbl" style="font-size:8px;">${escapeHtml(m.label)}</div>
                   </div>
+=======
+    <!-- PAGE 2: ABOUT PRODUCTS, AI CALLING, TELEPHONY & WHATSAPP -->
+    <div class="paper-page">
+      <div class="paper-watermark">iBUNIFY CRM</div>
+      <div class="paper-inner">
+        <div class="p-top">
+          <span>${escapeHtml(headerLeft)}</span>
+          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <!-- Section 1 -->
+          <div>
+            <div class="sec-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</div>
+            <div class="sec-text">iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.</div>
+            
+            <div class="callout-box">
+              <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+            </div>
+
+            <div class="metrics-grid">
+              ${metrics.map((m) => `
+                <div class="metric-card">
+                  <div class="metric-val">${escapeHtml(m.value)}</div>
+                  <div class="metric-lbl">${escapeHtml(m.label)}</div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div style="font-weight:700;font-size:11.5px;color:#0f2b6e;margin:6px 0 3px 0;">
+              Integrated Platform Services Overview:
+            </div>
+
+            <div class="breakdown-grid">
+              ${servicesOverview.map((s) => `
+                <div class="breakdown-card">
+                  <div class="breakdown-title">${escapeHtml(s.key)}. ${escapeHtml(s.title)}</div>
+                  <div style="color:#334155;font-size:10px;line-height:1.35;">${escapeHtml(s.desc)}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Section 2 -->
+          <div style="margin-top:4px;">
+            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">2. AI CALLING SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:</div>
+            <div>
+              ${aiCallingBullets.map((b) => `<div class="bullet-item" style="font-size:9.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
+            </div>
+            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
+              <thead>
+                <tr><th style="width:32%;padding:3px 6px;font-size:9.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+              </thead>
+              <tbody>
+                ${aiCallingItems.map((item) => `
+                  <tr>
+                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:9.5px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 3 -->
+          <div style="margin-top:4px;">
+            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">3. CLOUD TELEPHONY SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:</div>
+            <div>
+              ${cloudTelephonyBullets.map((b) => `<div class="bullet-item" style="font-size:9.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
+            </div>
+            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
+              <thead>
+                <tr><th style="width:32%;padding:3px 6px;font-size:9.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+              </thead>
+              <tbody>
+                ${cloudTelephonyItems.map((item) => `
+                  <tr>
+                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:9.5px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 4 -->
+          <div style="margin-top:4px;">
+            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">4. WHATSAPP AUTOMATION SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:</div>
+            <div>
+              ${whatsappBullets.map((b) => `<div class="bullet-item" style="font-size:9.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
+            </div>
+            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
+              <thead>
+                <tr><th style="width:32%;padding:3px 6px;font-size:9.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+              </thead>
+              <tbody>
+                ${whatsappItems.map((item) => `
+                  <tr>
+                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:9.5px;color:#475569;white-space:pre-line;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;white-space:pre-line;">${escapeHtml(item.investment)}</td>
+                  </tr>
+>>>>>>> 9b6c7b6ee0cd5589eb4a6bfd81818ccb9e4b6ea5
                 `).join('')}
               </div>
 
@@ -1831,6 +1940,7 @@ export function customProposalToHtml(doc, forWord = false) {
       </div>
     </div>
 
+<<<<<<< HEAD
     <!-- PAGE 3: COMMERCIAL INVESTMENT, TERMS & ACCEPTANCE -->
     <div class="page-3">
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
@@ -1875,10 +1985,58 @@ export function customProposalToHtml(doc, forWord = false) {
               <div>
                 ${roadmapBullets.map((b) => `<div class="bullet-item">• ${escapeHtml(b)}</div>`).join('')}
               </div>
-            </div>
+=======
+    <!-- PAGE 3: COMMERCIAL SCHEDULE, ROADMAP, TERMS & SIGN-OFF -->
+    <div class="paper-page">
+      <div class="paper-watermark">iBUNIFY CRM</div>
+      <div class="paper-inner">
+        <div class="p-top" style="padding-bottom:4px;margin-bottom:8px;">
+          <span>${escapeHtml(headerLeft)}</span>
+          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
+        </div>
 
-            <!-- Section 7 -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <!-- Section 5 -->
+          <div>
+            <div class="sec-title" style="font-size:11px;margin:2px 0 3px;">5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</div>
+            <table class="pipe-table" style="font-size:10px;margin-top:2px;margin-bottom:3px;">
+              <thead>
+                <tr><th style="width:34%;padding:4px 6px;font-size:10px;">INVESTMENT COMPONENT</th><th style="width:42%;padding:4px 6px;font-size:10px;">COMMERCIAL MODEL & INCLUSIONS</th><th style="width:24%;padding:4px 6px;font-size:10px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+              </thead>
+              <tbody>
+                ${commercialScheduleItems.map((item) => `
+                  <tr>
+                    <td style="padding:4px 6px;font-size:10px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:4px 6px;font-size:10px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:4px 6px;font-size:10px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                  </tr>
+                `).join('')}
+                <tr style="background:#f0f7ff;border-top:2px solid #2563eb;">
+                  <td colspan="2" style="font-weight:800;color:#1e3a8a;padding:5px 6px;font-size:10.5px;">
+                    Base Activation Package Total (Excl. Consumption & Lic.)
+                  </td>
+                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:5px 6px;font-size:11px;">
+                    ${escapeHtml(doc.baseActivationPackageTotal || doc.basePackageTotal || '₹75,000 + Wallet / Lic.')}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 6: Implementation Roadmap & SLA -->
+          <div style="margin-top:2px;">
+            <div class="sec-title" style="font-size:11px;margin:2px 0 3px;">6. IMPLEMENTATION ROADMAP & SLA</div>
             <div>
+              ${roadmapBullets.map((b) => `<div class="bullet-item" style="font-size:10px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
+>>>>>>> 9b6c7b6ee0cd5589eb4a6bfd81818ccb9e4b6ea5
+            </div>
+          </div>
+
+          <!-- Section 7: Terms & Conditions -->
+          <div style="margin-top:2px;">
+            <div class="sec-title" style="font-size:11px;margin:2px 0 3px;">7. TERMS & CONDITIONS</div>
+            <div>
+<<<<<<< HEAD
               <div class="sec-title">7. TERMS & CONDITIONS</div>
               <div>
                 ${termsBullets.map((b) => `<div class="bullet-item">• ${escapeHtml(b)}</div>`).join('')}
@@ -1914,6 +2072,34 @@ export function customProposalToHtml(doc, forWord = false) {
                 <div>${escapeHtml(doc.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081')} | Contact: Rama Krishna | CTO (+91 78420 97496)</div>
               </div>
             </div>
+=======
+              ${termsBullets.map((b) => `<div class="bullet-item" style="font-size:10px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Section 8: Acceptance & Sign-off -->
+          <div style="margin-top:2px;">
+            <div class="sec-title" style="font-size:11px;margin:2px 0 6px;border-bottom:2px solid #0f2b6e;padding-bottom:2px;display:inline-block;">8. AUTHORIZATION & SIGN-OFF</div>
+            
+            <div class="sign-box" style="gap:12px;margin-top:4px;">
+              <div class="sign-col" style="padding:10px 12px;font-size:10px;border-radius:6px;">
+                <div class="sign-head" style="font-size:11px;margin-bottom:1px;color:#0f2b6e;font-weight:700;">${escapeHtml(doc.clientSignatoryHeader || `FOR: [${doc.preparedFor || 'CLIENT COMPANY NAME'}]`)}</div>
+                <div class="sign-sub" style="font-size:9.5px;margin-bottom:2px;color:#64748b;">${escapeHtml(doc.clientSignatorySub || 'Client Authorized Signatory')}</div>
+                <div class="sign-line" style="margin:14px 0 4px;border-bottom:1px dashed #cbd5e1;"></div>
+                <div>Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+                <div style="margin-top:2px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
+                <div style="margin-top:2px;color:#64748b;font-size:9.5px;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+              </div>
+              <div class="sign-col" style="padding:10px 12px;font-size:10px;border-radius:6px;">
+                <div class="sign-head" style="font-size:11px;margin-bottom:1px;color:#0f2b6e;font-weight:700;">${escapeHtml(doc.providerSignatoryHeader || 'FOR: iBUNIFY (iGLOBUS)')}</div>
+                <div class="sign-sub" style="font-size:9.5px;margin-bottom:2px;color:#64748b;">${escapeHtml(doc.providerSignatorySub || 'Service Provider Signatory')}</div>
+                <div class="sign-line" style="margin:14px 0 4px;border-bottom:1px dashed #cbd5e1;"></div>
+                <div>Name: ${escapeHtml(doc.providerSignatoryName || doc.leadSignatoryName || 'Rama Krishna')}</div>
+                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || doc.leadSignatoryTitle || 'Enterprise Practice Leads')}</div>
+                <div style="margin-top:2px;color:#64748b;font-size:9.5px;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+              </div>
+            </div>
+>>>>>>> 9b6c7b6ee0cd5589eb4a6bfd81818ccb9e4b6ea5
           </div>
         </div>
 
