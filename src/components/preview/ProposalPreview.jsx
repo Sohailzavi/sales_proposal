@@ -1877,51 +1877,51 @@ export function ProposalPreview({ proposal: rawProposal }) {
         </section>
       </div>
 
-      {/* PAGE 2: ABOUT PRODUCT & SERVICES + AI CALLING */}
+      {/* PROPOSAL DETAILS, SCOPE, COSTING & TERMS (NATURAL MS WORD CONTINUOUS FLOW) */}
       <div className="preview-page-card">
         <div className="preview-page-card-header">
-          <span>Page 2 of 3 · About Product & Services</span>
+          <span>Commercial & Technical Proposal · Scope, Costing, Terms & Acceptance</span>
         </div>
-        <section className="custom-proposal-page-paper">
+        <section className="custom-proposal-page-paper" style={{ height: 'auto', minHeight: '1120px' }}>
           <div className="custom-proposal-watermark">iBUNIFY CRM</div>
-          <div className="custom-proposal-inner">
-            <div className="discovery-p2-header-top" style={{ paddingBottom: '6px', borderBottom: '1px solid #cbd5e1', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="custom-proposal-inner" style={{ height: 'auto' }}>
+            <div className="discovery-p2-header-top" style={{ paddingBottom: '6px', borderBottom: '1px solid #cbd5e1', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '11px', color: '#334155', fontWeight: '500' }}>{headerLeft}</span>
               <span style={{ fontSize: '11px', color: '#2563eb', fontWeight: '600' }}>{headerRight}</span>
             </div>
 
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {/* Section 1 */}
-              <div className="discovery-section-block">
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
-                <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '9.5px', lineHeight: '1.35' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '6px', fontSize: '10px', lineHeight: '1.4' }}>
                   iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.
                 </div>
 
-                <div className="ctp-callout-box" style={{ margin: '4px 0', padding: '4px 8px', fontSize: '9.5px' }}>
+                <div className="ctp-callout-box" style={{ margin: '6px 0', padding: '6px 10px', fontSize: '10px' }}>
                   <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
                 </div>
 
-                <div className="ctp-metrics-grid" style={{ margin: '4px 0', gap: '5px' }}>
+                <div className="ctp-metrics-grid" style={{ margin: '6px 0', gap: '6px' }}>
                   {metrics.map((m, idx) => (
-                    <div key={idx} className="ctp-metric-card" style={{ padding: '4px 2px' }}>
-                      <div className="ctp-metric-val" style={{ fontSize: '13px' }}>{m.value}</div>
-                      <div className="ctp-metric-lbl" style={{ fontSize: '7.5px' }}>{m.label}</div>
+                    <div key={idx} className="ctp-metric-card" style={{ padding: '6px 4px' }}>
+                      <div className="ctp-metric-val" style={{ fontSize: '14px' }}>{m.value}</div>
+                      <div className="ctp-metric-lbl" style={{ fontSize: '8px' }}>{m.label}</div>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ fontWeight: '700', fontSize: '10px', color: '#0f2b6e', margin: '4px 0 2px 0' }}>
+                <div style={{ fontWeight: '700', fontSize: '10.5px', color: '#0f2b6e', margin: '6px 0 3px 0' }}>
                   Integrated Platform Services Overview:
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                   {servicesOverview.map((item) => (
-                    <div key={item.key} className="ctp-breakdown-card" style={{ padding: '4px 6px', margin: 0 }}>
-                      <div className="ctp-breakdown-title" style={{ fontSize: '9.5px' }}>
+                    <div key={item.key} className="ctp-breakdown-card" style={{ padding: '5px 8px', margin: 0 }}>
+                      <div className="ctp-breakdown-title" style={{ fontSize: '10px' }}>
                         {item.key}. {item.title}
                       </div>
-                      <div className="ctp-breakdown-features" style={{ fontSize: '8.5px', lineHeight: '1.25' }}>
+                      <div className="ctp-breakdown-features" style={{ fontSize: '9px', lineHeight: '1.3' }}>
                         {item.desc}
                       </div>
                     </div>
@@ -1930,30 +1930,30 @@ export function ProposalPreview({ proposal: rawProposal }) {
               </div>
 
               {/* Section 2 */}
-              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>2. AI CALLING SERVICES & COSTING</h2>
-                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '9px' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>2. AI CALLING SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '9.5px' }}>
                   iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:
                 </div>
-                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1px' }}>
+                <div className="discovery-bullet-list" style={{ marginBottom: '5px', gap: '2px' }}>
                   {aiCallingBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.25' }}>• {b}</div>
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.3' }}>• {b}</div>
                   ))}
                 </div>
                 <table className="discovery-pipeline-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '32%', padding: '2.5px 5px', fontSize: '9px' }}>SERVICE COMPONENT</th>
-                      <th style={{ width: '44%', padding: '2.5px 5px', fontSize: '9px' }}>SCOPE & DELIVERABLES</th>
-                      <th style={{ width: '24%', padding: '2.5px 5px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                      <th style={{ width: '32%', padding: '4px 6px', fontSize: '9.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '4px 6px', fontSize: '9.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '4px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {aiCallingItems.map((item) => (
                       <tr key={item.id}>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', color: '#475569' }}>{item.scope}</td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1961,85 +1961,61 @@ export function ProposalPreview({ proposal: rawProposal }) {
               </div>
 
               {/* Section 3 */}
-              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>3. CLOUD TELEPHONY SERVICES & COSTING</h2>
-                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '9px' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>3. CLOUD TELEPHONY SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '9.5px' }}>
                   Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:
                 </div>
-                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1px' }}>
+                <div className="discovery-bullet-list" style={{ marginBottom: '5px', gap: '2px' }}>
                   {cloudTelephonyBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.25' }}>• {b}</div>
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.3' }}>• {b}</div>
                   ))}
                 </div>
                 <table className="discovery-pipeline-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '32%', padding: '2.5px 5px', fontSize: '9px' }}>SERVICE COMPONENT</th>
-                      <th style={{ width: '44%', padding: '2.5px 5px', fontSize: '9px' }}>SCOPE & DELIVERABLES</th>
-                      <th style={{ width: '24%', padding: '2.5px 5px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                      <th style={{ width: '32%', padding: '4px 6px', fontSize: '9.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '4px 6px', fontSize: '9.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '4px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {cloudTelephonyItems.map((item) => (
                       <tr key={item.id}>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', color: '#475569' }}>{item.scope}</td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            <div className="discovery-p2-footnote" style={{ marginTop: 'auto', paddingTop: '6px', borderTop: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b' }}>
-              <span>{pageFootnote}</span>
-              <span style={{ fontWeight: '600', color: '#334155' }}>Page 2 of 3</span>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      {/* PAGE 3: COMMERCIAL SCHEDULE, ROADMAP, TERMS & SIGN-OFF */}
-      <div className="preview-page-card">
-        <div className="preview-page-card-header">
-          <span>Page 3 of 3 · Commercials, Terms & Acceptance</span>
-        </div>
-        <section className="custom-proposal-page-paper">
-          <div className="custom-proposal-watermark">iBUNIFY CRM</div>
-          <div className="custom-proposal-inner">
-            <div className="discovery-p2-header-top" style={{ paddingBottom: '4px', borderBottom: '1px solid #cbd5e1', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '10.5px', color: '#334155', fontWeight: '500' }}>{headerLeft}</span>
-              <span style={{ fontSize: '10.5px', color: '#2563eb', fontWeight: '600' }}>{headerRight}</span>
-            </div>
-
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
               {/* Section 4 */}
-              <div className="discovery-section-block">
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>4. WHATSAPP AUTOMATION SERVICES & COSTING</h2>
-                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '9px' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>4. WHATSAPP AUTOMATION SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '9.5px' }}>
                   Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:
                 </div>
-                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1px' }}>
+                <div className="discovery-bullet-list" style={{ marginBottom: '5px', gap: '2px' }}>
                   {whatsappBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.25' }}>• {b}</div>
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.3' }}>• {b}</div>
                   ))}
                 </div>
                 <table className="discovery-pipeline-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '32%', padding: '2.5px 5px', fontSize: '9px' }}>SERVICE COMPONENT</th>
-                      <th style={{ width: '44%', padding: '2.5px 5px', fontSize: '9px' }}>SCOPE & DELIVERABLES</th>
-                      <th style={{ width: '24%', padding: '2.5px 5px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                      <th style={{ width: '32%', padding: '4px 6px', fontSize: '9.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '4px 6px', fontSize: '9.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '4px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {whatsappItems.map((item) => (
                       <tr key={item.id}>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', color: '#475569', whiteSpace: 'pre-line' }}>{item.scope}</td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a', whiteSpace: 'pre-line' }}>{item.investment}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', color: '#475569', whiteSpace: 'pre-line' }}>{item.scope}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a', whiteSpace: 'pre-line' }}>{item.investment}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2047,29 +2023,29 @@ export function ProposalPreview({ proposal: rawProposal }) {
               </div>
 
               {/* Section 5: Overall Commercial Investment Schedule */}
-              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</h2>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</h2>
                 <table className="discovery-pipeline-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '34%', padding: '2.5px 5px', fontSize: '9px' }}>INVESTMENT COMPONENT</th>
-                      <th style={{ width: '42%', padding: '2.5px 5px', fontSize: '9px' }}>COMMERCIAL MODEL & INCLUSIONS</th>
-                      <th style={{ width: '24%', padding: '2.5px 5px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                      <th style={{ width: '34%', padding: '4px 6px', fontSize: '9.5px' }}>INVESTMENT COMPONENT</th>
+                      <th style={{ width: '42%', padding: '4px 6px', fontSize: '9.5px' }}>COMMERCIAL MODEL & INCLUSIONS</th>
+                      <th style={{ width: '24%', padding: '4px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {commercialScheduleItems.map((item) => (
                       <tr key={item.id}>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', color: '#475569' }}>{item.scope}</td>
-                        <td style={{ padding: '2.5px 5px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '4px 6px', fontSize: '9px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
                       </tr>
                     ))}
                     <tr style={{ background: '#f0f7ff', borderTop: '2px solid #2563eb' }}>
-                      <td colSpan="2" style={{ fontWeight: '800', color: '#1e3a8a', padding: '3px 5px', fontSize: '9px' }}>
+                      <td colSpan="2" style={{ fontWeight: '800', color: '#1e3a8a', padding: '4px 6px', fontSize: '10px' }}>
                         Base Activation Package Total (Excl. Consumption & Lic.)
                       </td>
-                      <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '3px 5px', fontSize: '9.5px' }}>
+                      <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '4px 6px', fontSize: '10.5px' }}>
                         {proposal.baseActivationPackageTotal || proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
                       </td>
                     </tr>
@@ -2078,72 +2054,72 @@ export function ProposalPreview({ proposal: rawProposal }) {
               </div>
 
               {/* Section 6 */}
-              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>6. IMPLEMENTATION ROADMAP & SLA</h2>
-                <div className="discovery-bullet-list" style={{ gap: '1.5px' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>6. IMPLEMENTATION ROADMAP & SLA</h2>
+                <div className="discovery-bullet-list" style={{ gap: '2px' }}>
                   {roadmapBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.25' }}>• {b}</div>
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.35' }}>• {b}</div>
                   ))}
                 </div>
               </div>
 
               {/* Section 7 */}
-              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>7. TERMS & CONDITIONS</h2>
-                <div className="discovery-bullet-list" style={{ gap: '1.5px' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>7. TERMS & CONDITIONS</h2>
+                <div className="discovery-bullet-list" style={{ gap: '2px' }}>
                   {termsBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.25' }}>• {b}</div>
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.35' }}>• {b}</div>
                   ))}
                 </div>
               </div>
 
               {/* Section 8: Acceptance & Signatures */}
-              <div className="discovery-section-block" style={{ marginTop: '4px' }}>
-                <h2 className="discovery-section-title" style={{ fontSize: '10px', marginBottom: '2px' }}>8. PROPOSAL ACCEPTANCE & SIGN-OFF</h2>
-                <div className="discovery-section-text" style={{ marginBottom: '3px', fontSize: '8.5px', color: '#334155' }}>
+              <div className="discovery-section-block" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '4px' }}>8. PROPOSAL ACCEPTANCE & SIGN-OFF</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '6px', fontSize: '9px', color: '#334155' }}>
                   Authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth:
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
-                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '5px', padding: '4px 8px', boxSizing: 'border-box' }}>
-                    <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '9.5px', marginBottom: '1px' }}>
+                <div style={{ display: 'flex', gap: '10px', width: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '6px 10px', boxSizing: 'border-box' }}>
+                    <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '10px', marginBottom: '1px' }}>
                       {proposal.clientSignatoryHeader || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
                     </div>
-                    <div style={{ fontSize: '8px', color: '#64748b', marginBottom: '1px' }}>
+                    <div style={{ fontSize: '8.5px', color: '#64748b', marginBottom: '2px' }}>
                       {proposal.clientSignatorySub || 'Authorized Signatory'}
                     </div>
-                    <div style={{ height: '18px' }}></div>
-                    <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '2px' }}></div>
-                    <div style={{ fontSize: '8.5px' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                    <div style={{ fontSize: '8.5px', marginTop: '1px' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                    <div style={{ fontSize: '8px', color: '#64748b', marginTop: '1px' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                    <div style={{ height: '22px' }}></div>
+                    <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
+                    <div>Name: {proposal.clientSignatoryName || '___________________________'}</div>
+                    <div style={{ marginTop: '2px' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
+                    <div style={{ marginTop: '2px', color: '#64748b', fontSize: '8.5px' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
                   </div>
 
-                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '5px', padding: '4px 8px', boxSizing: 'border-box' }}>
-                    <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '9.5px', marginBottom: '1px' }}>
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '6px 10px', boxSizing: 'border-box' }}>
+                    <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '10px', marginBottom: '1px' }}>
                       {proposal.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)'}
                     </div>
-                    <div style={{ fontSize: '8px', color: '#64748b', marginBottom: '1px' }}>
+                    <div style={{ fontSize: '8.5px', color: '#64748b', marginBottom: '2px' }}>
                       {proposal.providerSignatorySub || 'Authorized Signatory'}
                     </div>
-                    <div style={{ height: '18px' }}></div>
-                    <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '2px' }}></div>
-                    <div style={{ fontSize: '8.5px' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                    <div style={{ fontSize: '8.5px', marginTop: '1px' }}>Title: {proposal.providerSignatoryTitle || 'CTO'}</div>
-                    <div style={{ fontSize: '8px', color: '#64748b', marginTop: '1px' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                    <div style={{ height: '22px' }}></div>
+                    <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
+                    <div>Name: {proposal.providerSignatoryName || 'Rama Krishna'}</div>
+                    <div style={{ marginTop: '2px' }}>Title: {proposal.providerSignatoryTitle || 'CTO'}</div>
+                    <div style={{ marginTop: '2px', color: '#64748b', fontSize: '8.5px' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
                   </div>
                 </div>
 
-                <div className="discovery-corp-box" style={{ marginTop: '4px', padding: '3px 6px', fontSize: '8px', lineHeight: '1.25', background: '#f0f7ff', border: '1px solid #bfdbfe', borderRadius: '4px' }}>
+                <div className="discovery-corp-box" style={{ marginTop: '6px', padding: '4px 8px', fontSize: '8.5px', lineHeight: '1.3', background: '#f0f7ff', border: '1px solid #bfdbfe', borderRadius: '4px' }}>
                   <div style={{ fontWeight: '700', color: '#0f2b6e' }}>{proposal.corporateFooterCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}</div>
-                  <div style={{ color: '#475569' }}>{proposal.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'} | Contact: Rama Krishna | CTO (+91 78420 97496)</div>
+                  <div>{proposal.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'} | Contact: Rama Krishna | CTO (+91 78420 97496)</div>
                 </div>
               </div>
             </div>
 
-            <div className="discovery-p2-footnote" style={{ marginTop: 'auto', paddingTop: '6px', borderTop: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b' }}>
+            <div className="discovery-p2-footnote" style={{ marginTop: '20px', paddingTop: '8px', borderTop: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', color: '#64748b' }}>
               <span>{pageFootnote}</span>
-              <span style={{ fontWeight: '600', color: '#334155' }}>Page 3 of 3</span>
+              <span style={{ fontWeight: '600', color: '#334155' }}>End of Proposal</span>
             </div>
           </div>
         </section>
