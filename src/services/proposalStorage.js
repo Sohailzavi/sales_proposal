@@ -72,10 +72,12 @@ export function loadProposalsFromStorage() {
           return addr;
         };
         const cleanPortalsField = (portals) => {
-          if (!portals || portals.includes('ibunify.com') || portals.includes('iglobuscc.com')) {
-            return 'Portals: www.ibunify.com | www.iglobuscc.com';
+          if (!portals) return 'Website: www.ibunify.com | www.iglobuscc.com';
+          const lower = portals.toLowerCase();
+          if (lower.includes('ibunify.com') || lower.includes('iglobuscc.com') || lower.startsWith('portals:') || lower.startsWith('digital portals:')) {
+            return 'Website: www.ibunify.com | www.iglobuscc.com';
           }
-          return portals;
+          return portals.replace(/^(Portals|Digital Portals):\s*/i, 'Website: ');
         };
         const cleanProposalNumber = (num, docType) => {
           if (docType === 'commercial_proposal' && (!num || num === 'IGC-ibunify-PROP-2026')) {

@@ -144,7 +144,7 @@ export function OfficialProposalLibrary({
           <div className="empty-file-icon">
             <IconCustomProposal size={34} />
           </div>
-          <h2>Custom Proposal Studio</h2>
+          <h2>Proposal Studio</h2>
           <p>Create, customize, and export interactive business proposals tailored to your client's needs.</p>
           <div className="invoice-action-buttons">
             <button type="button" className="primary-blue-btn" onClick={onOpenBuilder}>
