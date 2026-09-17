@@ -2076,31 +2076,28 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 </table>
               </div>
 
-              {/* Sections 6 & 7 (2-Column Layout) */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: '8px', marginTop: '2px' }}>
-                {/* Section 6 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>6. IMPLEMENTATION ROADMAP & SLA</h2>
-                  <div className="discovery-bullet-list" style={{ gap: '1.5px' }}>
-                    {roadmapBullets.map((b, idx) => (
-                      <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.3' }}>• {b}</div>
-                    ))}
-                  </div>
+              {/* Section 6 */}
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '3px' }}>6. IMPLEMENTATION ROADMAP & SLA</h2>
+                <div className="discovery-bullet-list" style={{ gap: '2px' }}>
+                  {roadmapBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.35' }}>• {b}</div>
+                  ))}
                 </div>
+              </div>
 
-                {/* Section 7 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>7. TERMS & CONDITIONS</h2>
-                  <div className="discovery-bullet-list" style={{ gap: '1.5px' }}>
-                    {termsBullets.map((b, idx) => (
-                      <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.3' }}>• {b}</div>
-                    ))}
-                  </div>
+              {/* Section 7 */}
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '3px' }}>7. TERMS & CONDITIONS</h2>
+                <div className="discovery-bullet-list" style={{ gap: '2px' }}>
+                  {termsBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px', lineHeight: '1.35' }}>• {b}</div>
+                  ))}
                 </div>
               </div>
 
               {/* Section 8: Acceptance & Signatures */}
-              <div className="discovery-section-block" style={{ marginTop: '2px' }}>
+              <div className="discovery-section-block" style={{ marginTop: '8px' }}>
                 <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>8. PROPOSAL ACCEPTANCE & SIGN-OFF</h2>
                 <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '9px', color: '#334155' }}>
                   Authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth:

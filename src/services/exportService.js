@@ -1847,27 +1847,24 @@ export function customProposalToHtml(doc, forWord = false) {
             </table>
           </div>
 
-          <!-- Sections 6 & 7 (2-Column Grid) -->
-          <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:8px;margin-top:2px;">
-            <!-- Section 6 -->
+          <!-- Section 6 -->
+          <div style="margin-top:8px;">
+            <div class="sec-title" style="font-size:10.5px;margin:2px 0 2px;">6. IMPLEMENTATION ROADMAP & SLA</div>
             <div>
-              <div class="sec-title" style="font-size:10.5px;margin:2px 0 2px;">6. IMPLEMENTATION ROADMAP & SLA</div>
-              <div>
-                ${roadmapBullets.map((b) => `<div class="bullet-item" style="font-size:8.5px;line-height:1.25;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
-              </div>
+              ${roadmapBullets.map((b) => `<div class="bullet-item" style="font-size:8.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
+          </div>
 
-            <!-- Section 7 -->
+          <!-- Section 7 -->
+          <div style="margin-top:8px;">
+            <div class="sec-title" style="font-size:10.5px;margin:2px 0 2px;">7. TERMS & CONDITIONS</div>
             <div>
-              <div class="sec-title" style="font-size:10.5px;margin:2px 0 2px;">7. TERMS AND CONDITIONS</div>
-              <div>
-                ${termsBullets.map((b) => `<div class="bullet-item" style="font-size:8.5px;line-height:1.25;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
-              </div>
+              ${termsBullets.map((b) => `<div class="bullet-item" style="font-size:8.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
           </div>
 
           <!-- Section 8: Acceptance & Sign-off -->
-          <div style="margin-top:2px;">
+          <div style="margin-top:8px;">
             <div class="sec-title" style="font-size:10.5px;margin:2px 0 2px;">8. PROPOSAL ACCEPTANCE & SIGN-OFF</div>
             <div class="sec-text" style="font-size:9px;margin-bottom:4px;">Authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth:</div>
             
