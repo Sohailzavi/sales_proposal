@@ -1,12 +1,11 @@
 import html2pdf from 'html2pdf.js';
 import { SAMPLE_LETTERHEAD_BASE64 } from '../data/letterheadBase64.js';
+import { DEFAULT_COMMERCIAL_SCOPES } from '../data/defaults.js';
 
 export function sanitizeProposalData(data) {
   if (typeof data === 'string') {
     return data
-      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'iBUNIFY')
-      .replace(/www\.iBUNIFY\.com/gi, 'www.ibunify.com')
-      .replace(/@iBUNIFY\.com/gi, '@ibunify.com');
+      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'ibunify');
   }
   if (Array.isArray(data)) {
     return data.map(sanitizeProposalData);
@@ -483,18 +482,27 @@ export function discoveryToHtml(doc, forWord = false) {
     .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .page-2 { width: 210mm; min-height: 297mm; box-sizing: border-box; padding: 120px 44px 140px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; page-break-inside: avoid; break-inside: avoid; }
+    .page-2 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-2 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
     .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
-    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
+    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; page-break-inside: avoid; break-inside: avoid; }
     .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; page-break-inside: avoid; break-inside: avoid; }
+    .pipe-table tr { page-break-inside: avoid; break-inside: avoid; }
     .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; text-align: left; letter-spacing: 0.04em; }
     .pipe-table td { padding: 5px 8px; font-size: 11px; line-height: 1.35; color: #334155; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
+    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; page-break-inside: avoid; break-inside: avoid; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; page-break-inside: avoid; break-inside: avoid; }
     .corp-box strong { color: #1e3a8a; }
     .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page-2 { page-break-inside: avoid; break-inside: avoid; }
+      .pipe-table, .sign-box, tr, .sec-title { page-break-inside: avoid; break-inside: avoid; }
+    }
   </style>
   </head>
   <body>
@@ -504,7 +512,7 @@ export function discoveryToHtml(doc, forWord = false) {
 
         <div>
           <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Discovery — Requirement Gathering & Scoping')}</h1>
-          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting')}</div>
           <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || '')}</p>
         </div>
         <div class="p1-meta-grid">
@@ -512,7 +520,7 @@ export function discoveryToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
-            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-01-2026')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-01-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.date ? doc.date : '______________________')}</div>
           </div>
           <div>
@@ -520,7 +528,7 @@ export function discoveryToHtml(doc, forWord = false) {
             <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
@@ -528,7 +536,9 @@ export function discoveryToHtml(doc, forWord = false) {
     </div>
 
     <div class="page-2">
-      <div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="inner-content">
+        <div>
         ${sections.map((sec, idx) => `
           <div>
             <div class="sec-title">${escapeHtml(sec.title)}</div>
@@ -562,14 +572,15 @@ export function discoveryToHtml(doc, forWord = false) {
                   <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
                   <div style="height:42px;"></div>
                   <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Rama Krishna')}</div>
-                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
                   <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
                 </div>
               </div>
             ` : ''}
           </div>
         `).join('')}
+        </div>
       </div>
     </div>
   </body></html>`;
@@ -617,7 +628,9 @@ export function ndaToHtml(doc, forWord = false) {
 
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-2 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-2 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
     .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
     .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
@@ -635,7 +648,7 @@ export function ndaToHtml(doc, forWord = false) {
 
         <div>
           <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Mutual Non-Disclosure Agreement')}${doc.proposalTitle && !doc.proposalTitle.includes('(NDA)') ? '<br/>(NDA)' : ''}</h1>
-          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting')}</div>
           <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
         </div>
         <div class="p1-meta-grid">
@@ -643,7 +656,7 @@ export function ndaToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
-            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-02-2026')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-02-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.effectiveDate ? doc.effectiveDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
           <div>
@@ -651,7 +664,7 @@ export function ndaToHtml(doc, forWord = false) {
             <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
@@ -660,7 +673,9 @@ export function ndaToHtml(doc, forWord = false) {
     </div>
 
     <div class="page-2">
-      <div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="inner-content">
+        <div>
         <div>
           <div class="sec-title">${escapeHtml(sec1.title)}</div>
           <div class="sec-text">${escapeHtml(sec1.content || '').replaceAll('\n', '<br/>')}</div>
@@ -694,8 +709,8 @@ export function ndaToHtml(doc, forWord = false) {
               <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
               <div style="height:42px;"></div>
               <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Rama Krishna')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
               <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
             </div>
           </div>
@@ -707,6 +722,7 @@ export function ndaToHtml(doc, forWord = false) {
             <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
           </div>
         `).join('')}
+        </div>
       </div>
     </div>
   </body></html>`;
@@ -759,7 +775,9 @@ export function msaToHtml(doc, forWord = false) {
 
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-2 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-2 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
     .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
     .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
@@ -789,7 +807,7 @@ export function msaToHtml(doc, forWord = false) {
 
         <div>
           <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Master Services Agreement (MSA)')}</h1>
-          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting')}</div>
           <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
         </div>
         <div class="p1-meta-grid">
@@ -797,7 +815,7 @@ export function msaToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
-            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-04-2026')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-04-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.executionDate ? doc.executionDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
           <div>
@@ -805,7 +823,7 @@ export function msaToHtml(doc, forWord = false) {
             <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
@@ -814,7 +832,9 @@ export function msaToHtml(doc, forWord = false) {
     </div>
 
     <div class="page-2">
-      <div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="inner-content">
+        <div>
         <div>
           <div class="sec-title">${escapeHtml(sec1.title)}</div>
           <div class="sec-text">${escapeHtml(sec1.content || '').replaceAll('\n', '<br/>')}</div>
@@ -853,8 +873,8 @@ export function msaToHtml(doc, forWord = false) {
               <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
               <div style="height:42px;"></div>
               <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Rama Krishna')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
               <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
             </div>
           </div>
@@ -866,6 +886,7 @@ export function msaToHtml(doc, forWord = false) {
             <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
           </div>
         `).join('')}
+        </div>
       </div>
     </div>
   </body></html>`;
@@ -910,44 +931,51 @@ export function commercialProposalToHtml(doc, forWord = false) {
     }
   ];
 
-  const commercialScheduleItems = doc.commercialScheduleItems || [
+
+  const rawCommercialItemsSow = doc.commercialScheduleItems || [
     {
       id: 'cs-1',
       component: 'One-Time Setup & Implementation',
-      scope: 'System config, Meta CAPI, Google Ads, telephony & team training',
+      scope: DEFAULT_COMMERCIAL_SCOPES[0],
       investment: '₹50,000 (One-Time)'
     },
     {
       id: 'cs-2',
-      component: 'iBUNIFY CRM User License',
-      scope: 'Full CRM pipeline, task management, mobile access & dashboards',
+      component: 'ibunify CRM User License',
+      scope: DEFAULT_COMMERCIAL_SCOPES[1],
       investment: '₹2,500 / user / month'
     },
     {
       id: 'cs-3',
       component: 'WhatsApp Business Platform',
-      scope: 'Official Meta API integration & workflow routing (6 Months)',
+      scope: DEFAULT_COMMERCIAL_SCOPES[2],
       investment: '₹15,000 for 6 Months'
     },
     {
       id: 'cs-4',
       component: 'WhatsApp Message Wallet',
-      scope: 'Prepaid consumption (Utility: ₹0.18 | Marketing: ₹0.87)',
+      scope: DEFAULT_COMMERCIAL_SCOPES[3],
       investment: '₹10,000 Prepaid'
     },
     {
       id: 'cs-5',
       component: 'Cloud Telephony Virtual Numbers',
-      scope: 'Per dedicated virtual number with recording & CDR logging',
+      scope: DEFAULT_COMMERCIAL_SCOPES[4],
       investment: '₹1,500 / Number / mo'
     },
     {
       id: 'cs-6',
       component: 'AI Agent Calling',
-      scope: 'Per connected conversational AI qualification call',
+      scope: DEFAULT_COMMERCIAL_SCOPES[5],
       investment: '₹7 / call'
     }
   ];
+
+  const commercialScheduleItems = rawCommercialItemsSow.map((item, idx) => ({
+    ...item,
+    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+  }));
 
   const sowScopeActivities = doc.sowScopeActivities || [
     'Requirement Discovery & Pipeline Architecture: Define project inventory structures, custom pipeline stages, lead scoring benchmarks, and sales role authorization tiers.',
@@ -959,7 +987,7 @@ export function commercialProposalToHtml(doc, forWord = false) {
 
   const sowDeliverables = doc.sowDeliverables || [
     'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
-    'Deliverable 2: Fully configured iBUNIFY instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
+    'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
     'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
     'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
   ];
@@ -990,9 +1018,9 @@ export function commercialProposalToHtml(doc, forWord = false) {
     'Standard support SLA guarantees Priority 1 response within < 30 minutes. Invoices are payable NET 30.'
   ];
 
-  const headerLeft = doc.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial Proposal & SOW';
+  const headerLeft = doc.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW';
   const headerRight = doc.headerRight || 'Standard Master Template';
-  const pageFootnote = doc.pageFootnote || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com';
+  const pageFootnote = doc.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com';
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Commercial Proposal & SOW')}</title>
   <style>
@@ -1012,46 +1040,52 @@ export function commercialProposalToHtml(doc, forWord = false) {
     .p1-meta-val { font-size: 14.5px; font-weight: 700; margin-bottom: 3px; color: #0f2b6e; }
     .p1-meta-sub { font-size: 12px; color: #475569; line-height: 1.45; }
     
-    .paper-page { width: 210mm; height: 297mm; box-sizing: border-box; padding: 34px 44px 28px 44px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-    .paper-page:last-child { page-break-after: auto; }
+    .paper-page { width: 210mm; min-height: 297mm; box-sizing: border-box; padding: 120px 44px 140px 44px; background: #fff; color: #1e293b; page-break-after: always; break-after: page; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; page-break-inside: avoid; break-inside: avoid; }
+    .paper-page:last-child { page-break-after: auto; break-after: auto; }
+    .paper-page .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
     .paper-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 84px; font-weight: 900; color: rgba(15, 23, 42, 0.032); pointer-events: none; white-space: nowrap; z-index: 0; text-transform: uppercase; letter-spacing: 0.08em; }
     .paper-inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     
-    .p-top { display: flex; justify-content: space-between; font-size: 11px; color: #334155; padding-bottom: 6px; border-bottom: 1px solid #cbd5e1; margin-bottom: 10px; }
-    .p-footnote { margin-top: auto; padding-top: 8px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 10.5px; color: #64748b; }
-    .sec-title { font-size: 12px; font-weight: 800; color: #1e3a8a; margin: 6px 0 4px; text-transform: uppercase; }
-    .sec-text { font-size: 10.5px; line-height: 1.45; color: #334155; margin-bottom: 6px; }
+    .p-top { display: flex; justify-content: space-between; font-size: 12px; color: #334155; padding-bottom: 6px; border-bottom: 1px solid #cbd5e1; margin-bottom: 10px; }
+    .p-footnote { margin-top: auto; padding-top: 8px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 12.5px; color: #64748b; }
+    .sec-title { font-size: 14px; font-weight: 800; color: #1e3a8a; margin: 6px 0 4px; text-transform: uppercase; page-break-inside: avoid; break-inside: avoid; }
+    .sec-text { font-size: 12.5px; line-height: 1.45; color: #334155; margin-bottom: 6px; }
     
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 6px; table-layout: fixed; font-size: 10.5px; }
-    .pipe-table th { background: #0f2b6e; color: #fff; padding: 6px 8px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; }
-    .pipe-table td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 10.5px; vertical-align: middle; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 6px; table-layout: fixed; font-size: 12.5px; page-break-inside: avoid; break-inside: avoid; }
+    .pipe-table tr { page-break-inside: avoid; break-inside: avoid; }
+    .pipe-table th { background: #0f2b6e; color: #fff; padding: 6px 8px; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
+    .pipe-table td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 12.5px; vertical-align: middle; }
     .pipe-table tr:nth-child(even) td { background: #f8fafc; }
     
-    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; page-break-inside: avoid; break-inside: avoid; }
     .metric-card { background: #0f2b6e; color: #ffffff; border-radius: 6px; padding: 8px 4px; text-align: center; }
-    .metric-val { font-size: 16px; font-weight: 800; color: #38b6ff; }
-    .metric-lbl { font-size: 8.5px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; margin-top: 2px; }
+    .metric-val { font-size: 18px; font-weight: 800; color: #38b6ff; }
+    .metric-lbl { font-size: 10.5px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; margin-top: 2px; }
     
-    .callout-box { background: #f0f7ff; border: 1px solid #bfdbfe; border-left: 4px solid #1e3a8a; padding: 6px 10px; border-radius: 4px; font-size: 10.5px; color: #1e293b; margin: 6px 0; }
-    .bullet-item { font-size: 10px; line-height: 1.4; color: #334155; margin-bottom: 3px; }
+    .callout-box { background: #f0f7ff; border: 1px solid #bfdbfe; border-left: 4px solid #1e3a8a; padding: 6px 10px; border-radius: 4px; font-size: 12.5px; color: #1e293b; margin: 6px 0; page-break-inside: avoid; break-inside: avoid; }
+    .bullet-item { font-size: 12px; line-height: 1.4; color: #334155; margin-bottom: 3px; }
     
-    .sign-box { display: flex; gap: 14px; margin-top: 4px; }
-    .sign-col { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; font-size: 9.5px; }
-    .sign-head { font-weight: 700; color: #0f2b6e; font-size: 11px; margin-bottom: 1px; }
-    .sign-sub { font-size: 9px; color: #64748b; margin-bottom: 2px; }
+    .sign-box { display: flex; gap: 14px; margin-top: 4px; page-break-inside: avoid; break-inside: avoid; }
+    .sign-col { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; font-size: 11.5px; page-break-inside: avoid; break-inside: avoid; }
+    .sign-head { font-weight: 700; color: #0f2b6e; font-size: 13px; margin-bottom: 2px; }
+    .sign-sub { font-size: 11px; color: #64748b; margin-bottom: 2px; }
     .sign-line { border-bottom: 1px dashed #cbd5e1; margin: 16px 0 4px; }
     
-    .corp-box { background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 9px; color: #334155; line-height: 1.35; margin-top: 6px; }
+    .corp-box { background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 11px; color: #334155; line-height: 1.35; margin-top: 6px; page-break-inside: avoid; break-inside: avoid; }
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .paper-page { page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }
+      .paper-page:last-child { page-break-after: auto; break-after: auto; }
+      .pipe-table, .sign-box, tr, .sec-title, .callout-box, .metrics-grid { page-break-inside: avoid; break-inside: avoid; }
+    }
   </style></head><body>
 
     <!-- PAGE 1: COVER -->
     <div class="page-1">
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
-        <div>
-          <div class="p1-logo">ibunify</div>
-          <div class="p1-sublogo">CRM BY IGLOBUS</div>
-        </div>
+
 
         <div>
           <div class="p1-badge">${escapeHtml(doc.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK')}</div>
@@ -1065,13 +1099,13 @@ export function commercialProposalToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PROPOSAL PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
-            <div class="p1-meta-sub">Engagement: ${escapeHtml(doc.engagement || 'iBUNIFY CRM & Automation Platform Deployment')}</div>
-            <div class="p1-meta-sub">Proposal Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-PROP-2026')}</div>
-            <div class="p1-meta-sub">SOW Ref: ${escapeHtml(doc.sowNumber || 'IGC-IBUNIFY-SOW-2026')}</div>
+            <div class="p1-meta-sub">Engagement: ${escapeHtml(doc.engagement || 'ibunify CRM & Automation Platform Deployment')}</div>
+            <div class="p1-meta-sub">Proposal Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-PROP-2026')}</div>
+            <div class="p1-meta-sub">SOW Ref: ${escapeHtml(doc.sowNumber || 'IGC-ibunify-SOW-2026')}</div>
           </div>
           <div>
             <div class="p1-meta-head">SERVICE PROVIDER</div>
-            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.)')}</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)')}</div>
@@ -1081,22 +1115,18 @@ export function commercialProposalToHtml(doc, forWord = false) {
       </div>
     </div>
 
-    <!-- PAGE 2: PART 1 - ABOUT PRODUCT & GRANULAR SERVICE BREAKDOWN -->
+    <!-- PAGE 2: PART 1 - ABOUT PRODUCT, SERVICE BREAKDOWN & OVERALL COSTING -->
     <div class="paper-page">
-      <div class="paper-watermark">iBUNIFY CRM</div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="paper-watermark">ibunify CRM</div>
       <div class="paper-inner">
-        <div class="p-top">
-          <span>${escapeHtml(headerLeft)}</span>
-          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
-        </div>
-
         <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
           <div>
-            <div style="background:#0f2b6e;color:#ffffff;padding:6px 12px;border-radius:4px;font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;">
+            <div style="background:#0f2b6e;color:#ffffff;padding:6px 12px;border-radius:4px;font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;">
               PART 1: COMMERCIAL & TECHNICAL PROPOSAL
             </div>
             <div class="sec-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</div>
-            <div class="sec-text">iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.</div>
+            <div class="sec-text">ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.</div>
             
             <div class="callout-box">
               <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
@@ -1117,38 +1147,26 @@ export function commercialProposalToHtml(doc, forWord = false) {
             <div style="display:flex;flex-direction:column;gap:8px;">
               ${serviceBreakdown.map((item) => `
                 <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;padding:8px 12px;">
-                  <div style="font-weight:700;color:#1e3a8a;font-size:11px;margin-bottom:3px;">
+                  <div style="font-weight:700;color:#1e3a8a;font-size:13px;margin-bottom:3px;">
                     ${escapeHtml(item.key)}. ${escapeHtml(item.title)}
                   </div>
-                  <div style="font-size:10px;color:#334155;line-height:1.4;margin-bottom:4px;">
+                  <div style="font-size:12px;color:#334155;line-height:1.4;">
                     <strong>Core Features:</strong> ${escapeHtml(item.features)}
-                  </div>
-                  <div style="font-size:10px;color:#0f2b6e;font-weight:600;background:#eff6ff;padding:3px 8px;border-radius:4px;display:inline-block;">
-                    Individual Costing: ${escapeHtml(item.costing)}
                   </div>
                 </div>
               `).join('')}
             </div>
           </div>
         </div>
-
-        <div class="p-footnote">
-          <span>${escapeHtml(pageFootnote)}</span>
-          <span style="font-weight:600;color:#334155;">Page 2 of 4</span>
-        </div>
       </div>
     </div>
 
-    <!-- PAGE 3: OVERALL COSTING TABLE & PART 2 SCOPE -->
+    <!-- PAGE 3: PART 2 SOW SCOPE, TIMELINE & INVOICING -->
     <div class="paper-page">
-      <div class="paper-watermark">iBUNIFY CRM</div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="paper-watermark">ibunify CRM</div>
       <div class="paper-inner">
-        <div class="p-top">
-          <span>${escapeHtml(headerLeft)}</span>
-          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
-        </div>
-
-        <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
           <div>
             <div class="sec-title">3. OVERALL COSTING & COMMERCIAL SCHEDULE</div>
             <table class="pipe-table">
@@ -1164,10 +1182,10 @@ export function commercialProposalToHtml(doc, forWord = false) {
                   </tr>
                 `).join('')}
                 <tr style="background:#f0f7ff;border-top:2px solid #2563eb;">
-                  <td colSpan="2" style="font-weight:800;color:#1e3a8a;padding:6px 8px;font-size:10.5px;">
+                  <td colSpan="2" style="font-weight:800;color:#1e3a8a;padding:6px 8px;font-size:12.5px;">
                     Base Activation Package Total (Excl. Consumption & Lic.)
                   </td>
-                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:6px 8px;font-size:11px;">
+                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:6px 8px;font-size:13px;">
                     ${escapeHtml(doc.basePackageTotal || '₹75,000 + Wallet / Lic.')}
                   </td>
                 </tr>
@@ -1175,46 +1193,37 @@ export function commercialProposalToHtml(doc, forWord = false) {
             </table>
           </div>
 
-          <div style="margin-top:4px;">
-            <div style="background:#0f2b6e;color:#ffffff;padding:6px 12px;border-radius:4px;font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;">
+          <div>
+            <div style="background:#0f2b6e;color:#ffffff;padding:6px 12px;border-radius:4px;font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;">
               PART 2: STATEMENT OF WORK (SOW)
             </div>
-            <div class="callout-box" style="margin:0 0 8px 0;background:#f8fafc;border-color:#cbd5e1;border-left-color:#0f2b6e;">
-              ${escapeHtml(doc.sowPreamble || 'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the iBUNIFY platform.')}
+            <div class="callout-box" style="margin:0 0 6px 0;background:#f8fafc;border-color:#cbd5e1;border-left-color:#0f2b6e;font-size:12.5px;">
+              ${escapeHtml(doc.sowPreamble || 'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the ibunify platform.')}
             </div>
 
             <div class="sec-title">1. DESCRIPTION OF ASSIGNMENT & SCOPE OF WORK</div>
-            <div class="sec-text" style="margin-bottom:4px;">This engagement operates under a Fixed-Price Phase-I Delivery Model. The following scope activities will be executed:</div>
-            <div style="margin-bottom:8px;">
+            <div class="sec-text" style="margin-bottom:3px;">This engagement operates under a Fixed-Price Phase-I Delivery Model. The following scope activities will be executed:</div>
+            <div style="margin-bottom:6px;">
               ${sowScopeActivities.map((act) => `<div class="bullet-item">• ${escapeHtml(act)}</div>`).join('')}
             </div>
 
             <div class="sec-title">2. DELIVERABLES MATRIX</div>
-            <div>
+            <div style="margin-bottom:6px;">
               ${sowDeliverables.map((del) => `<div class="bullet-item">• ${escapeHtml(del)}</div>`).join('')}
             </div>
           </div>
         </div>
-
-        <div class="p-footnote">
-          <span>${escapeHtml(pageFootnote)}</span>
-          <span style="font-weight:600;color:#334155;">Page 3 of 4</span>
-        </div>
       </div>
     </div>
 
-    <!-- PAGE 4: TIMELINE, MILESTONES, ASSUMPTIONS & SIGN-OFF -->
+    <!-- PAGE 4: ASSUMPTIONS & SIGN-OFF -->
     <div class="paper-page">
-      <div class="paper-watermark">iBUNIFY CRM</div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="paper-watermark">ibunify CRM</div>
       <div class="paper-inner">
-        <div class="p-top">
-          <span>${escapeHtml(headerLeft)}</span>
-          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
-        </div>
-
         <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
           <div>
-            <div class="sec-title" style="font-size:11.5px;">3. PROJECT SCHEDULE & EXECUTION TIMELINE</div>
+            <div class="sec-title" style="margin-top:2px;">3. PROJECT SCHEDULE & EXECUTION TIMELINE</div>
             <table class="pipe-table">
               <thead>
                 <tr>
@@ -1229,18 +1238,16 @@ export function commercialProposalToHtml(doc, forWord = false) {
                 ${sowTimelineMilestones.map((m) => `
                   <tr>
                     <td><strong>${escapeHtml(m.activity)}</strong></td>
-                    <td style="text-align:center;">${m.activeWeek === 1 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:700;">Active</span>' : ''}</td>
-                    <td style="text-align:center;">${m.activeWeek === 2 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:700;">Active</span>' : ''}</td>
-                    <td style="text-align:center;">${m.activeWeek === 3 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:700;">Active</span>' : ''}</td>
-                    <td style="text-align:center;">${m.activeWeek === 4 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:700;">Active</span>' : ''}</td>
+                    <td style="text-align:center;">${m.activeWeek === 1 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">Active</span>' : ''}</td>
+                    <td style="text-align:center;">${m.activeWeek === 2 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">Active</span>' : ''}</td>
+                    <td style="text-align:center;">${m.activeWeek === 3 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">Active</span>' : ''}</td>
+                    <td style="text-align:center;">${m.activeWeek === 4 ? '<span style="background:#0284c7;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">Active</span>' : ''}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-          </div>
 
-          <div>
-            <div class="sec-title" style="font-size:11.5px;">4. SOW MILESTONE INVOICING SCHEDULE</div>
+            <div class="sec-title" style="margin-top:6px;">4. SOW MILESTONE INVOICING SCHEDULE</div>
             <table class="pipe-table">
               <thead>
                 <tr>
@@ -1258,13 +1265,13 @@ export function commercialProposalToHtml(doc, forWord = false) {
                   </tr>
                 `).join('')}
                 <tr style="background:#f0f7ff;border-top:2px solid #2563eb;">
-                  <td style="font-weight:800;color:#1e3a8a;padding:5px 8px;font-size:10.5px;">
+                  <td style="font-weight:800;color:#1e3a8a;padding:5px 8px;font-size:12.5px;">
                     Total Base Fixed Implementation Fee
                   </td>
-                  <td style="text-align:center;font-weight:800;color:#1e3a8a;padding:5px 8px;font-size:10.5px;">
+                  <td style="text-align:center;font-weight:800;color:#1e3a8a;padding:5px 8px;font-size:12.5px;">
                     100%
                   </td>
-                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:5px 8px;font-size:11px;">
+                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:5px 8px;font-size:13px;">
                     ${escapeHtml(doc.totalImplementationFee || '₹50,000')}
                   </td>
                 </tr>
@@ -1273,14 +1280,14 @@ export function commercialProposalToHtml(doc, forWord = false) {
           </div>
 
           <div>
-            <div class="sec-title" style="font-size:11.5px;">5. ENGAGEMENT ASSUMPTIONS & SLAS</div>
+            <div class="sec-title" style="font-size:13.5px;">5. ENGAGEMENT ASSUMPTIONS & SLAS</div>
             <div>
-              ${sowAssumptions.map((ass) => `<div class="bullet-item">• ${escapeHtml(ass)}</div>`).join('')}
+              ${sowAssumptions.map((ass) => `<div class="bullet-item" style="font-size:11.5px;">• ${escapeHtml(ass)}</div>`).join('')}
             </div>
           </div>
 
-          <div style="margin-top:2px;">
-            <div class="sec-title" style="font-size:11.5px;">6. AUTHORIZATION & SIGN-OFF</div>
+          <div style="margin-top:4px;">
+            <div class="sec-title" style="font-size:13.5px;">6. AUTHORIZATION & SIGN-OFF</div>
             <div class="sign-box">
               <div class="sign-col">
                 <div class="sign-head">${escapeHtml(doc.clientSignatoryHeader || 'FOR: [CLIENT COMPANY NAME]')}</div>
@@ -1288,24 +1295,19 @@ export function commercialProposalToHtml(doc, forWord = false) {
                 <div class="sign-line"></div>
                 <div>Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
                 <div style="margin-top:2px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-                <div style="margin-top:2px;color:#64748b;font-size:8.5px;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                <div style="margin-top:2px;color:#64748b;font-size:11px;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
               </div>
               <div class="sign-col">
-                <div class="sign-head">${escapeHtml(doc.providerSignatoryHeader || 'FOR: iBUNIFY (iGLOBUS)')}</div>
+                <div class="sign-head">${escapeHtml(doc.providerSignatoryHeader || 'FOR: ibunify (iGLOBUS)')}</div>
                 <div class="sign-sub">${escapeHtml(doc.providerSignatorySub || 'Service Provider Signatory')}</div>
                 <div class="sign-line"></div>
-                <div>Name: ${escapeHtml(doc.providerSignatoryName || 'Rama Krishna')}</div>
-                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
-                <div style="margin-top:2px;color:#64748b;font-size:8.5px;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                <div>Name: ${escapeHtml(doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Director')}</div>
+                <div style="margin-top:2px;color:#64748b;font-size:11px;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
               </div>
             </div>
 
           </div>
-        </div>
-
-        <div class="p-footnote">
-          <span>${escapeHtml(pageFootnote)}</span>
-          <span style="font-weight:600;color:#334155;">Page 4 of 4</span>
         </div>
       </div>
     </div>
@@ -1369,7 +1371,9 @@ export function slaToHtml(doc, forWord = false) {
 
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-2 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-2 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
     .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
     .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
@@ -1378,7 +1382,7 @@ export function slaToHtml(doc, forWord = false) {
     .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; text-align: left; }
     .pipe-table td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px; color: #334155; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
     .sign-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #64748b; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
     .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
@@ -1390,7 +1394,7 @@ export function slaToHtml(doc, forWord = false) {
 
         <div>
           <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Service Level Agreement (SLA)')}</h1>
-          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting')}</div>
           <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
         </div>
         <div class="p1-meta-grid">
@@ -1398,15 +1402,15 @@ export function slaToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
-            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-06-2026')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-06-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.effectiveDate ? doc.effectiveDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
           <div>
             <div class="p1-meta-head">SERVICE PROVIDER</div>
-            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
@@ -1415,7 +1419,9 @@ export function slaToHtml(doc, forWord = false) {
     </div>
 
     <div class="page-2">
-      <div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="inner-content">
+        <div>
         <div>
           <div class="sec-title">1. SERVICE UPTIME & INFRASTRUCTURE COMMITMENT</div>
           <div class="sec-text">${escapeHtml(doc.uptimeCommitment || 'ibunify guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.')}</div>
@@ -1467,10 +1473,11 @@ export function slaToHtml(doc, forWord = false) {
             <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
             <div style="height:42px;"></div>
             <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-            <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Rama Krishna')}</div>
-            <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+            <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+            <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
             <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -1535,7 +1542,9 @@ export function poToHtml(doc, forWord = false) {
 
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-2 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-2 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
     .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
     .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
@@ -1544,7 +1553,7 @@ export function poToHtml(doc, forWord = false) {
     .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10.5px; font-weight: 700; padding: 5px 8px; border-right: 1px solid #1e3a8a; text-align: left; }
     .pipe-table td { padding: 5px 8px; font-size: 11px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
     .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
+    .corp-box { text-align: center; font-size: 10.5px; color: #64748b; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
     .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
   </style>
@@ -1556,7 +1565,7 @@ export function poToHtml(doc, forWord = false) {
 
         <div>
           <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Purchase Order (PO Template)')}</h1>
-          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
+          <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting')}</div>
           <p class="p1-desc">${escapeHtml(doc.description || doc.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.')}</p>
         </div>
         <div class="p1-meta-grid">
@@ -1564,15 +1573,15 @@ export function poToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
-            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-07-2026')}</div>
+            <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-07-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.poDate ? doc.poDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
           <div>
             <div class="p1-meta-head">SERVICE PROVIDER</div>
-            <div class="p1-meta-val">${escapeHtml(doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
@@ -1581,7 +1590,9 @@ export function poToHtml(doc, forWord = false) {
     </div>
 
     <div class="page-2">
-      <div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="inner-content">
+        <div>
         <div>
           <div class="sec-title">1. PURCHASE ORDER SUMMARY</div>
           <div class="summary-grid">
@@ -1637,8 +1648,8 @@ export function poToHtml(doc, forWord = false) {
               <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
               <div style="height:42px;"></div>
               <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.acceptedByAuthorized || doc.providerSignatoryName || 'Rama Krishna')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.acceptedByDesignation || doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.acceptedByAuthorized || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.acceptedByDesignation || doc.providerSignatoryTitle || 'Director')}</div>
               <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.acceptedByDate ? doc.acceptedByDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
             </div>
           </div>
@@ -1709,7 +1720,7 @@ export function handoverToHtml(doc, forWord = false) {
             <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
@@ -1754,8 +1765,8 @@ export function handoverToHtml(doc, forWord = false) {
               <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
               <div style="height:42px;"></div>
               <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.providerSignatoryName || 'Rama Krishna')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Director')}</div>
               <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
             </div>
           </div>
@@ -1830,7 +1841,7 @@ export function closureToHtml(doc, forWord = false) {
             <div class="p1-meta-val">${escapeHtml(doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
@@ -1880,8 +1891,8 @@ export function closureToHtml(doc, forWord = false) {
               <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
               <div style="height:42px;"></div>
               <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.providerSignatoryName || 'Rama Krishna')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Enterprise Practice Leads')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Director')}</div>
               <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
             </div>
           </div>
@@ -1992,44 +2003,50 @@ export function customProposalToHtml(doc, forWord = false) {
     }
   ];
 
-  const commercialScheduleItems = doc.commercialScheduleItems || [
+  const rawCommercialItemsProp = doc.commercialScheduleItems || [
     {
       id: 'cs-1',
-      component: 'One-Time Setup & Onboarding',
-      scope: 'System config, Meta CAPI, Google Ads, telephony & team training',
+      component: 'One-Time Setup & Implementation',
+      scope: DEFAULT_COMMERCIAL_SCOPES[0],
       investment: '₹50,000 (One-Time)'
     },
     {
       id: 'cs-2',
-      component: 'iBUNIFY CRM User License',
-      scope: 'Full CRM pipeline, task management, mobile access & dashboards',
+      component: 'ibunify CRM User License',
+      scope: DEFAULT_COMMERCIAL_SCOPES[1],
       investment: '₹2,500 / user / month'
     },
     {
       id: 'cs-3',
       component: 'WhatsApp Business Platform',
-      scope: 'Official Meta API integration & workflow routing (6 Months)',
+      scope: DEFAULT_COMMERCIAL_SCOPES[2],
       investment: '₹15,000 for 6 Months'
     },
     {
       id: 'cs-4',
       component: 'WhatsApp Message Wallet',
-      scope: 'Prepaid consumption (Utility: ₹0.18 | Marketing: ₹0.87)',
+      scope: DEFAULT_COMMERCIAL_SCOPES[3],
       investment: '₹10,000 Prepaid'
     },
     {
       id: 'cs-5',
       component: 'Cloud Telephony Virtual Numbers',
-      scope: 'Per dedicated virtual number with recording & CDR logging',
-      investment: '₹1,500 / Number'
+      scope: DEFAULT_COMMERCIAL_SCOPES[4],
+      investment: '₹1,500 / Number / mo'
     },
     {
       id: 'cs-6',
       component: 'AI Agent Calling',
-      scope: 'Per connected conversational AI qualification call',
+      scope: DEFAULT_COMMERCIAL_SCOPES[5],
       investment: '₹7 / call'
     }
   ];
+
+  const commercialScheduleItems = rawCommercialItemsProp.map((item, idx) => ({
+    ...item,
+    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+  }));
 
   const roadmapBullets = doc.roadmapBullets || [
     'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
@@ -2045,9 +2062,9 @@ export function customProposalToHtml(doc, forWord = false) {
     'Invoices are payable within 30 days from date of submission (NET 30).'
   ];
 
-  const headerLeft = doc.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal';
+  const headerLeft = doc.headerLeft || 'ibunify CRM by iGLOBUS | Commercial & Services Proposal';
   const headerRight = doc.headerRight || 'www.ibunify.com';
-  const pageFootnote = doc.pageFootnote || 'Confidential - iBUNIFY (iGLOBUS Corporate Consulting)';
+  const pageFootnote = doc.pageFootnote || 'Confidential - ibunify (iGLOBUS Corporate Consulting)';
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Commercial & Technical Proposal')}</title>
   <style>
@@ -2067,49 +2084,55 @@ export function customProposalToHtml(doc, forWord = false) {
     .p1-meta-val { font-size: 14.5px; font-weight: 700; margin-bottom: 3px; color: #0f2b6e; }
     .p1-meta-sub { font-size: 12px; color: #475569; line-height: 1.45; }
     
-    .paper-page { width: 210mm; height: 297mm; box-sizing: border-box; padding: 34px 44px 28px 44px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-    .paper-page:last-child { page-break-after: auto; }
+    .paper-page { width: 210mm; min-height: 297mm; box-sizing: border-box; padding: 120px 44px 140px 44px; background: #fff; color: #1e293b; page-break-after: always; break-after: page; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; page-break-inside: avoid; break-inside: avoid; }
+    .paper-page:last-child { page-break-after: auto; break-after: auto; }
+    .paper-page .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
     .paper-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 84px; font-weight: 900; color: rgba(15, 23, 42, 0.032); pointer-events: none; white-space: nowrap; z-index: 0; text-transform: uppercase; letter-spacing: 0.08em; }
     .paper-inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
     
     .p-top { display: flex; justify-content: space-between; font-size: 11px; color: #334155; padding-bottom: 6px; border-bottom: 1px solid #cbd5e1; margin-bottom: 12px; }
     .p-footnote { margin-top: auto; padding-top: 8px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 10.5px; color: #64748b; }
-    .sec-title { font-size: 12.5px; font-weight: 800; color: #1e3a8a; margin: 8px 0 4px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 2px; display: inline-block; }
+    .sec-title { font-size: 12.5px; font-weight: 800; color: #1e3a8a; margin: 8px 0 4px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 2px; display: inline-block; page-break-inside: avoid; break-inside: avoid; }
     .sec-text { font-size: 11px; line-height: 1.45; color: #334155; margin-bottom: 6px; }
     
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 6px; table-layout: fixed; font-size: 10.5px; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 6px; table-layout: fixed; font-size: 10.5px; page-break-inside: avoid; break-inside: avoid; }
+    .pipe-table tr { page-break-inside: avoid; break-inside: avoid; }
     .pipe-table th { background: #0f2b6e; color: #fff; padding: 6px 8px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; }
     .pipe-table td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 10.5px; vertical-align: middle; }
     .pipe-table tr:nth-child(even) td { background: #f8fafc; }
     
-    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; page-break-inside: avoid; break-inside: avoid; }
     .metric-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 4px; text-align: center; }
     .metric-val { font-size: 16px; font-weight: 800; color: #0f2b6e; }
     .metric-lbl { font-size: 8.5px; font-weight: 700; color: #475569; text-transform: uppercase; margin-top: 2px; }
     
-    .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
-    .breakdown-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; margin: 0; font-size: 10.5px; }
+    .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; page-break-inside: avoid; break-inside: avoid; }
+    .breakdown-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; margin: 0; font-size: 10.5px; page-break-inside: avoid; break-inside: avoid; }
     .breakdown-title { font-weight: 700; color: #1e3a8a; font-size: 11px; margin-bottom: 2px; }
-    .callout-box { background: #f0f7ff; border: 1px solid #bfdbfe; border-left: 3px solid #2563eb; padding: 7px 12px; border-radius: 4px; font-size: 11px; color: #1e3a8a; margin: 6px 0; }
+    .callout-box { background: #f0f7ff; border: 1px solid #bfdbfe; border-left: 3px solid #2563eb; padding: 7px 12px; border-radius: 4px; font-size: 11px; color: #1e3a8a; margin: 6px 0; page-break-inside: avoid; break-inside: avoid; }
     .bullet-item { font-size: 10.5px; line-height: 1.35; color: #334155; margin-bottom: 3px; }
     
-    .sign-box { display: flex; gap: 14px; margin-top: 6px; }
-    .sign-col { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 10.5px; }
+    .sign-box { display: flex; gap: 14px; margin-top: 6px; page-break-inside: avoid; break-inside: avoid; }
+    .sign-col { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 10.5px; page-break-inside: avoid; break-inside: avoid; }
     .sign-head { font-weight: 700; color: #0f2b6e; font-size: 11.5px; margin-bottom: 2px; }
     .sign-sub { font-size: 10px; color: #64748b; margin-bottom: 4px; }
     .sign-line { border-bottom: 1px dashed #cbd5e1; margin: 18px 0 6px; }
     
-    .corp-box { background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 10px; color: #475569; line-height: 1.4; margin-top: 8px; }
+    .corp-box { background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 10px; color: #475569; line-height: 1.4; margin-top: 8px; page-break-inside: avoid; break-inside: avoid; }
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .paper-page { page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }
+      .paper-page:last-child { page-break-after: auto; break-after: auto; }
+      .pipe-table, .sign-box, tr, .sec-title, .callout-box, .metrics-grid, .breakdown-grid { page-break-inside: avoid; break-inside: avoid; }
+    }
   </style></head><body>
 
     <!-- PAGE 1: COVER -->
     <div class="page-1">
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
-        <div>
-          <div class="p1-logo">ibunify</div>
-          <div class="p1-sublogo">CRM BY IGLOBUS</div>
-        </div>
+
 
         <div>
           <div class="p1-badge">${escapeHtml(doc.badge || 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL')}</div>
@@ -2123,16 +2146,16 @@ export function customProposalToHtml(doc, forWord = false) {
             <div class="p1-meta-head">PROPOSAL PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Enterprise / Jayabheri Group]')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
-            <div class="p1-meta-sub">Engagement: ${escapeHtml(doc.engagement || 'iBUNIFY Platform & Integrated Services Deployment')}</div>
-            <div class="p1-meta-sub">Proposal Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-2026-088')}</div>
+            <div class="p1-meta-sub">Engagement: ${escapeHtml(doc.engagement || 'ibunify Platform & Integrated Services Deployment')}</div>
+            <div class="p1-meta-sub">Proposal Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-2026-088')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.date ? doc.date : '______________________')}</div>
           </div>
           <div>
             <div class="p1-meta-head">SERVICE PROVIDER</div>
-            <div class="p1-meta-val">${escapeHtml(doc.preparedBy || doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
+            <div class="p1-meta-val">${escapeHtml(doc.preparedBy || doc.company || 'ibunify (iGLOBUS Corporate Consulting)')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(formatPortalsText(doc.portals))}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Pavan Chandra Duddilla')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
@@ -2141,18 +2164,14 @@ export function customProposalToHtml(doc, forWord = false) {
 
     <!-- PAGE 2: ABOUT PRODUCTS, AI CALLING, TELEPHONY & WHATSAPP -->
     <div class="paper-page">
-      <div class="paper-watermark">iBUNIFY CRM</div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="paper-watermark">ibunify CRM</div>
       <div class="paper-inner">
-        <div class="p-top">
-          <span>${escapeHtml(headerLeft)}</span>
-          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
-        </div>
-
         <div style="display:flex;flex-direction:column;gap:6px;">
           <!-- Section 1 -->
           <div>
             <div class="sec-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</div>
-            <div class="sec-text">iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.</div>
+            <div class="sec-text">ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.</div>
             
             <div class="callout-box">
               <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
@@ -2167,7 +2186,7 @@ export function customProposalToHtml(doc, forWord = false) {
               `).join('')}
             </div>
 
-            <div style="font-weight:700;font-size:11.5px;color:#0f2b6e;margin:6px 0 3px 0;">
+            <div style="font-weight:700;font-size:12.5px;color:#0f2b6e;margin:6px 0 3px 0;">
               Integrated Platform Services Overview:
             </div>
 
@@ -2175,7 +2194,7 @@ export function customProposalToHtml(doc, forWord = false) {
               ${servicesOverview.map((s) => `
                 <div class="breakdown-card">
                   <div class="breakdown-title">${escapeHtml(s.key)}. ${escapeHtml(s.title)}</div>
-                  <div style="color:#334155;font-size:10px;line-height:1.35;">${escapeHtml(s.desc)}</div>
+                  <div style="color:#334155;font-size:11px;line-height:1.35;">${escapeHtml(s.desc)}</div>
                 </div>
               `).join('')}
             </div>
@@ -2183,21 +2202,21 @@ export function customProposalToHtml(doc, forWord = false) {
 
           <!-- Section 2 -->
           <div style="margin-top:4px;">
-            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">2. AI CALLING SERVICES & COSTING</div>
-            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:</div>
+            <div class="sec-title" style="font-size:12px;margin:2px 0 2px;">2. AI CALLING SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:10.5px;margin-bottom:2px;">ibunify AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:</div>
             <div>
-              ${aiCallingBullets.map((b) => `<div class="bullet-item" style="font-size:9.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
+              ${aiCallingBullets.map((b) => `<div class="bullet-item" style="font-size:10.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
-            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
+            <table class="pipe-table" style="font-size:10.5px;margin-top:2px;margin-bottom:3px;">
               <thead>
-                <tr><th style="width:32%;padding:3px 6px;font-size:9.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+                <tr><th style="width:32%;padding:3px 6px;font-size:10.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:10.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:10.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
               </thead>
               <tbody>
                 ${aiCallingItems.map((item) => `
                   <tr>
-                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
-                    <td style="padding:3px 6px;font-size:9.5px;color:#475569;">${escapeHtml(item.scope)}</td>
-                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                    <td style="padding:3px 6px;font-size:10.5px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:10.5px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:10.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -2206,88 +2225,79 @@ export function customProposalToHtml(doc, forWord = false) {
 
           <!-- Section 3 -->
           <div style="margin-top:4px;">
-            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">3. CLOUD TELEPHONY SERVICES & COSTING</div>
-            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:</div>
+            <div class="sec-title" style="font-size:12px;margin:2px 0 2px;">3. CLOUD TELEPHONY SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:10.5px;margin-bottom:2px;">Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:</div>
             <div>
-              ${cloudTelephonyBullets.map((b) => `<div class="bullet-item" style="font-size:9.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
+              ${cloudTelephonyBullets.map((b) => `<div class="bullet-item" style="font-size:10.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
-            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
+            <table class="pipe-table" style="font-size:10.5px;margin-top:2px;margin-bottom:3px;">
               <thead>
-                <tr><th style="width:32%;padding:3px 6px;font-size:9.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+                <tr><th style="width:32%;padding:3px 6px;font-size:10.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:10.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:10.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
               </thead>
               <tbody>
                 ${cloudTelephonyItems.map((item) => `
                   <tr>
-                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
-                    <td style="padding:3px 6px;font-size:9.5px;color:#475569;">${escapeHtml(item.scope)}</td>
-                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                    <td style="padding:3px 6px;font-size:10.5px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:10.5px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:10.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
           </div>
-
-          <!-- Section 4 -->
-          <div style="margin-top:4px;">
-            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">4. WHATSAPP AUTOMATION SERVICES & COSTING</div>
-            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:</div>
-            <div>
-              ${whatsappBullets.map((b) => `<div class="bullet-item" style="font-size:9.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
-            </div>
-            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
-              <thead>
-                <tr><th style="width:32%;padding:3px 6px;font-size:9.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
-              </thead>
-              <tbody>
-                ${whatsappItems.map((item) => `
-                  <tr>
-                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
-                    <td style="padding:3px 6px;font-size:9.5px;color:#475569;white-space:pre-line;">${escapeHtml(item.scope)}</td>
-                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;white-space:pre-line;">${escapeHtml(item.investment)}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="p-footnote">
-          <span>${escapeHtml(pageFootnote)}</span>
-          <span style="font-weight:600;color:#334155;">Page 2 of 3</span>
         </div>
       </div>
     </div>
 
     <!-- PAGE 3: COMMERCIAL SCHEDULE, ROADMAP, TERMS & SIGN-OFF -->
     <div class="paper-page">
-      <div class="paper-watermark">iBUNIFY CRM</div>
+      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+      <div class="paper-watermark">ibunify CRM</div>
       <div class="paper-inner">
-        <div class="p-top" style="padding-bottom:4px;margin-bottom:8px;">
-          <span>${escapeHtml(headerLeft)}</span>
-          <span style="color:#2563eb;font-weight:700;">${escapeHtml(headerRight)}</span>
-        </div>
-
         <div style="display:flex;flex-direction:column;gap:10px;">
+          <!-- Section 4 -->
+          <div style="margin-top:4px;">
+            <div class="sec-title" style="font-size:12px;margin:2px 0 2px;">4. WHATSAPP AUTOMATION SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:10.5px;margin-bottom:2px;">Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:</div>
+            <div>
+              ${whatsappBullets.map((b) => `<div class="bullet-item" style="font-size:10.5px;line-height:1.3;margin-bottom:1.5px;">• ${escapeHtml(b)}</div>`).join('')}
+            </div>
+            <table class="pipe-table" style="font-size:10.5px;margin-top:2px;margin-bottom:3px;">
+              <thead>
+                <tr><th style="width:32%;padding:3px 6px;font-size:10.5px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:10.5px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:10.5px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+              </thead>
+              <tbody>
+                ${whatsappItems.map((item) => `
+                  <tr>
+                    <td style="padding:3px 6px;font-size:10.5px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:10.5px;color:#475569;white-space:pre-line;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:10.5px;text-align:right;font-weight:700;color:#1e3a8a;white-space:pre-line;">${escapeHtml(item.investment)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
           <!-- Section 5 -->
           <div>
-            <div class="sec-title" style="font-size:11px;margin:2px 0 3px;">5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</div>
-            <table class="pipe-table" style="font-size:10px;margin-top:2px;margin-bottom:3px;">
+            <div class="sec-title" style="font-size:12px;margin:2px 0 3px;">5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</div>
+            <table class="pipe-table" style="font-size:11px;margin-top:2px;margin-bottom:3px;">
               <thead>
-                <tr><th style="width:34%;padding:4px 6px;font-size:10px;">INVESTMENT COMPONENT</th><th style="width:42%;padding:4px 6px;font-size:10px;">COMMERCIAL MODEL & INCLUSIONS</th><th style="width:24%;padding:4px 6px;font-size:10px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+                <tr><th style="width:34%;padding:4px 6px;font-size:11px;">INVESTMENT COMPONENT</th><th style="width:42%;padding:4px 6px;font-size:11px;">COMMERCIAL MODEL & INCLUSIONS</th><th style="width:24%;padding:4px 6px;font-size:11px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
               </thead>
               <tbody>
                 ${commercialScheduleItems.map((item) => `
                   <tr>
-                    <td style="padding:4px 6px;font-size:10px;"><strong>${escapeHtml(item.component)}</strong></td>
-                    <td style="padding:4px 6px;font-size:10px;color:#475569;">${escapeHtml(item.scope)}</td>
-                    <td style="padding:4px 6px;font-size:10px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                    <td style="padding:4px 6px;font-size:11px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:4px 6px;font-size:11px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:4px 6px;font-size:11px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
                   </tr>
                 `).join('')}
                 <tr style="background:#f0f7ff;border-top:2px solid #2563eb;">
-                  <td colspan="2" style="font-weight:800;color:#1e3a8a;padding:5px 6px;font-size:10.5px;">
+                  <td colspan="2" style="font-weight:800;color:#1e3a8a;padding:5px 6px;font-size:11.5px;">
                     Base Activation Package Total (Excl. Consumption & Lic.)
                   </td>
-                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:5px 6px;font-size:11px;">
+                  <td style="text-align:right;font-weight:800;color:#1e3a8a;padding:5px 6px;font-size:12px;">
                     ${escapeHtml(doc.baseActivationPackageTotal || doc.basePackageTotal || '₹75,000 + Wallet / Lic.')}
                   </td>
                 </tr>
@@ -2297,48 +2307,43 @@ export function customProposalToHtml(doc, forWord = false) {
 
           <!-- Section 6: Implementation Roadmap & SLA -->
           <div style="margin-top:2px;">
-            <div class="sec-title" style="font-size:11px;margin:2px 0 3px;">6. IMPLEMENTATION ROADMAP & SLA</div>
+            <div class="sec-title" style="font-size:12px;margin:2px 0 3px;">6. IMPLEMENTATION ROADMAP & SLA</div>
             <div>
-              ${roadmapBullets.map((b) => `<div class="bullet-item" style="font-size:10px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
+              ${roadmapBullets.map((b) => `<div class="bullet-item" style="font-size:11px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
           </div>
 
           <!-- Section 7: Terms & Conditions -->
           <div style="margin-top:2px;">
-            <div class="sec-title" style="font-size:11px;margin:2px 0 3px;">7. TERMS & CONDITIONS</div>
+            <div class="sec-title" style="font-size:12px;margin:2px 0 3px;">7. TERMS & CONDITIONS</div>
             <div>
-              ${termsBullets.map((b) => `<div class="bullet-item" style="font-size:10px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
+              ${termsBullets.map((b) => `<div class="bullet-item" style="font-size:11px;line-height:1.4;margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
           </div>
 
           <!-- Section 8: Acceptance & Sign-off -->
-          <div style="margin-top:2px;">
-            <div class="sec-title" style="font-size:11px;margin:2px 0 6px;border-bottom:2px solid #0f2b6e;padding-bottom:2px;display:inline-block;">8. AUTHORIZATION & SIGN-OFF</div>
+          <div style="margin-top:1px;">
+            <div class="sec-title" style="font-size:12px;margin:1px 0 4px;border-bottom:2px solid #0f2b6e;padding-bottom:1px;display:inline-block;">8. AUTHORIZATION & SIGN-OFF</div>
             
-            <div class="sign-box" style="gap:12px;margin-top:4px;">
-              <div class="sign-col" style="padding:10px 12px;font-size:10px;border-radius:6px;">
-                <div class="sign-head" style="font-size:11px;margin-bottom:1px;color:#0f2b6e;font-weight:700;">${escapeHtml(doc.clientSignatoryHeader || `FOR: [${doc.preparedFor || 'CLIENT COMPANY NAME'}]`)}</div>
-                <div class="sign-sub" style="font-size:9.5px;margin-bottom:2px;color:#64748b;">${escapeHtml(doc.clientSignatorySub || 'Client Authorized Signatory')}</div>
-                <div class="sign-line" style="margin:14px 0 4px;border-bottom:1px dashed #cbd5e1;"></div>
+            <div class="sign-box" style="gap:10px;margin-top:2px;">
+              <div class="sign-col" style="padding:7px 11px;font-size:11px;border-radius:6px;">
+                <div class="sign-head" style="font-size:12px;margin-bottom:1px;color:#0f2b6e;font-weight:700;">${escapeHtml(doc.clientSignatoryHeader || `FOR: [${doc.preparedFor || 'CLIENT COMPANY NAME'}]`)}</div>
+                <div class="sign-sub" style="font-size:10.5px;margin-bottom:2px;color:#64748b;">${escapeHtml(doc.clientSignatorySub || 'Client Authorized Signatory')}</div>
+                <div class="sign-line" style="margin:10px 0 3px;border-bottom:1px dashed #cbd5e1;"></div>
                 <div>Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
                 <div style="margin-top:2px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-                <div style="margin-top:2px;color:#64748b;font-size:9.5px;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                <div style="margin-top:2px;color:#64748b;font-size:10.5px;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
               </div>
-              <div class="sign-col" style="padding:10px 12px;font-size:10px;border-radius:6px;">
-                <div class="sign-head" style="font-size:11px;margin-bottom:1px;color:#0f2b6e;font-weight:700;">${escapeHtml(doc.providerSignatoryHeader || 'FOR: iBUNIFY (iGLOBUS)')}</div>
-                <div class="sign-sub" style="font-size:9.5px;margin-bottom:2px;color:#64748b;">${escapeHtml(doc.providerSignatorySub || 'Service Provider Signatory')}</div>
-                <div class="sign-line" style="margin:14px 0 4px;border-bottom:1px dashed #cbd5e1;"></div>
-                <div>Name: ${escapeHtml(doc.providerSignatoryName || doc.leadSignatoryName || 'Rama Krishna')}</div>
-                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || doc.leadSignatoryTitle || 'Enterprise Practice Leads')}</div>
-                <div style="margin-top:2px;color:#64748b;font-size:9.5px;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+              <div class="sign-col" style="padding:7px 11px;font-size:11px;border-radius:6px;">
+                <div class="sign-head" style="font-size:12px;margin-bottom:1px;color:#0f2b6e;font-weight:700;">${escapeHtml(doc.providerSignatoryHeader || 'FOR: ibunify (iGLOBUS)')}</div>
+                <div class="sign-sub" style="font-size:10.5px;margin-bottom:2px;color:#64748b;">${escapeHtml(doc.providerSignatorySub || 'Service Provider Signatory')}</div>
+                <div class="sign-line" style="margin:10px 0 3px;border-bottom:1px dashed #cbd5e1;"></div>
+                <div>Name: ${escapeHtml(doc.providerSignatoryName || doc.leadSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || doc.leadSignatoryTitle || 'Director')}</div>
+                <div style="margin-top:2px;color:#64748b;font-size:10.5px;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="p-footnote" style="padding-top:6px;">
-          <span>${escapeHtml(pageFootnote)}</span>
-          <span style="font-weight:600;color:#334155;">Page 3 of 3</span>
         </div>
       </div>
     </div>
@@ -2397,8 +2402,73 @@ export async function downloadOfficialPdf() {
   }
 }
 
+export function getExportFileName(proposal = {}, extension = 'pdf') {
+  const docType = proposal.documentType || 'proposal';
+
+  const formatNames = {
+    msa: 'Master Services Agreement (MSA)',
+    nda: 'Mutual Non-Disclosure Agreement (NDA)',
+    discovery: 'Discovery & Scoping Document',
+    commercial_proposal: 'Statement of Work (SOW)',
+    sla: 'Service Level Agreement (SLA)',
+    po: 'Purchase Order (PO)',
+    handover: 'Project Delivery & Handover',
+    closure: 'Project Closure Certificate',
+    proposal: 'Commercial & Technical Proposal',
+    invoice: 'Invoice'
+  };
+
+  const docName = formatNames[docType] || 'Proposal';
+  const customTitle = (proposal.proposalTitle && proposal.proposalTitle.trim())
+    ? proposal.proposalTitle.trim()
+    : '';
+
+  let client = (proposal.preparedFor && proposal.preparedFor.trim()) ? proposal.preparedFor.trim() : '';
+  if (client === '[Client Company Name]' || client === 'Client Company Name' || client === '[Client Enterprise]') {
+    client = '';
+  }
+
+  let baseName = '';
+
+  if (customTitle) {
+    const lowerTitle = customTitle.toLowerCase();
+    const lowerType = docType.toLowerCase();
+
+    const alreadyHasDocName =
+      lowerTitle.includes(lowerType) ||
+      (lowerType === 'commercial_proposal' && (lowerTitle.includes('sow') || lowerTitle.includes('statement of work'))) ||
+      (lowerType === 'msa' && lowerTitle.includes('msa')) ||
+      (lowerType === 'nda' && lowerTitle.includes('nda')) ||
+      (lowerType === 'sla' && lowerTitle.includes('sla')) ||
+      (lowerType === 'po' && lowerTitle.includes('po')) ||
+      (lowerType === 'discovery' && lowerTitle.includes('discovery')) ||
+      (lowerType === 'handover' && (lowerTitle.includes('handover') || lowerTitle.includes('delivery'))) ||
+      (lowerType === 'closure' && lowerTitle.includes('closure')) ||
+      (lowerType === 'invoice' && lowerTitle.includes('invoice'));
+
+    if (alreadyHasDocName) {
+      baseName = customTitle;
+    } else {
+      baseName = `${docName} - ${customTitle}`;
+    }
+  } else {
+    baseName = docName;
+  }
+
+  if (client && !baseName.toLowerCase().includes(client.toLowerCase())) {
+    baseName = `${baseName} - ${client}`;
+  }
+
+  const safeName = baseName
+    .replace(/[/\\:*?"<>|]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return `${safeName}.${extension}`;
+}
+
 export async function exportPdf(proposal) {
-  const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'document'}.pdf`;
+  const fileName = getExportFileName(proposal, 'pdf');
   const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
 
   const opt = {
@@ -2503,18 +2573,18 @@ export async function exportPdf(proposal) {
     if (pdfEngine) {
       await pdfEngine().set(opt).from(container).save();
     } else {
-      downloadBlob(rawHtml, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
+      downloadBlob(rawHtml, getExportFileName(proposal, 'html'), 'text/html;charset=utf-8');
     }
   } catch (err) {
     console.error('PDF export error:', err);
-    downloadBlob(rawHtml, `${proposal.proposalNumber || 'document'}.html`, 'text/html;charset=utf-8');
+    downloadBlob(rawHtml, getExportFileName(proposal, 'html'), 'text/html;charset=utf-8');
   } finally {
     container.remove();
   }
 }
 
 export async function generatePdfBlob(proposal) {
-  const fileName = `${proposal.proposalNumber || proposal.proposalTitle || 'Proposal'}.pdf`;
+  const fileName = getExportFileName(proposal, 'pdf');
   const pdfEngine = typeof html2pdf === 'function' ? html2pdf : html2pdf?.default || window.html2pdf;
 
   const opt = {
@@ -2617,7 +2687,7 @@ export async function generatePdfBlob(proposal) {
       const blob = await pdfEngine().set(opt).from(container).output('blob');
       return new File([blob], fileName, { type: 'application/pdf' });
     } else {
-      return new File([new Blob([rawHtml], { type: 'text/html' })], `${fileName}.html`, { type: 'text/html' });
+      return new File([new Blob([rawHtml], { type: 'text/html' })], getExportFileName(proposal, 'html'), { type: 'text/html' });
     }
   } finally {
     container.remove();
@@ -2626,13 +2696,13 @@ export async function generatePdfBlob(proposal) {
 
 export function exportWord(proposal) {
   const html = proposalToHtml(proposal, true);
-  downloadBlob(html, `${proposal.proposalNumber || 'sales-proposal'}.doc`, 'application/msword');
+  downloadBlob(html, getExportFileName(proposal, 'doc'), 'application/msword');
 }
 
 export function exportHtml(proposal) {
   downloadBlob(
     proposalToHtml(proposal),
-    `${proposal.proposalNumber || 'sales-proposal'}.html`,
+    getExportFileName(proposal, 'html'),
     'text/html;charset=utf-8'
   );
 }
@@ -2640,10 +2710,11 @@ export function exportHtml(proposal) {
 export function exportJson(proposal) {
   downloadBlob(
     JSON.stringify(proposal, null, 2),
-    `${proposal.proposalNumber || 'sales-proposal'}.json`,
+    getExportFileName(proposal, 'json'),
     'application/json'
   );
 }
+
 
 export function validateImportedJson(jsonText) {
   try {

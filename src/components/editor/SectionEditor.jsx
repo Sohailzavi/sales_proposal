@@ -497,7 +497,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -662,14 +662,14 @@ export function SectionEditor({
           <label>
             <span>ibunify Lead Signatory</span>
             <input
-              value={proposal.leadSignatory || 'ibunify Lead: Rama Krishna'}
+              value={proposal.leadSignatory || 'ibunify Lead: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
             />
           </label>
           <label>
             <span>ibunify Signatory Title</span>
             <input
-              value={proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}
               onChange={(e) => {
                 onUpdateField('leadSignatoryTitle', e.target.value);
                 onUpdateField('providerSignatoryTitle', e.target.value);
@@ -805,7 +805,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -921,14 +921,14 @@ export function SectionEditor({
           <label>
             <span>ibunify Signatory Name</span>
             <input
-              value={proposal.leadSignatoryName || 'Rama Krishna'}
+              value={proposal.leadSignatoryName || 'Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
           <label>
             <span>ibunify Signatory Title</span>
             <input
-              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.leadSignatoryTitle || 'Director'}
               onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
             />
           </label>
@@ -1061,7 +1061,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -1177,14 +1177,14 @@ export function SectionEditor({
           <label>
             <span>ibunify Signatory Name</span>
             <input
-              value={proposal.leadSignatoryName || 'Rama Krishna'}
+              value={proposal.leadSignatoryName || 'Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
           <label>
             <span>ibunify Signatory Title</span>
             <input
-              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.leadSignatoryTitle || 'Director'}
               onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
             />
           </label>
@@ -1340,7 +1340,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -1641,14 +1641,14 @@ export function SectionEditor({
           <label>
             <span>ibunify Lead Signatory</span>
             <input
-              value={proposal.leadSignatoryName || 'Rama Krishna'}
+              value={proposal.leadSignatoryName || 'Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
           <label>
             <span>ibunify Signatory Title</span>
             <input
-              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.leadSignatoryTitle || 'Director'}
               onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
             />
           </label>
@@ -1770,7 +1770,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -1891,7 +1891,7 @@ export function SectionEditor({
           <label>
             <span>Service Provider Signatory Title</span>
             <input
-              value={proposal.leadSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.leadSignatoryTitle || 'Director'}
               onChange={(e) => onUpdateField('leadSignatoryTitle', e.target.value)}
             />
           </label>
@@ -2063,7 +2063,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -2249,14 +2249,14 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Authorized By</span>
               <input
-                value={proposal.acceptedByAuthorized || 'Rama Krishna'}
+                value={proposal.acceptedByAuthorized || 'Pavan Chandra Duddilla'}
                 onChange={(e) => onUpdateField('acceptedByAuthorized', e.target.value)}
               />
             </label>
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Designation</span>
               <input
-                value={proposal.acceptedByDesignation || 'Enterprise Practice Leads'}
+                value={proposal.acceptedByDesignation || 'Director'}
                 onChange={(e) => onUpdateField('acceptedByDesignation', e.target.value)}
               />
             </label>
@@ -2401,7 +2401,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -2496,7 +2496,7 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
               <input
-                value={proposal.handoverAcceptClientName || 'Rama Krishna'}
+                value={proposal.handoverAcceptClientName || 'Pavan Chandra Duddilla'}
                 onChange={(e) => onUpdateField('handoverAcceptClientName', e.target.value)}
               />
             </label>
@@ -2539,7 +2539,7 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Designation / Title</span>
               <input
-                value={proposal.handoverDeliveredLeadTitle || 'Enterprise Practice Leads'}
+                value={proposal.handoverDeliveredLeadTitle || 'Director'}
                 onChange={(e) => onUpdateField('handoverDeliveredLeadTitle', e.target.value)}
               />
             </label>
@@ -2691,7 +2691,7 @@ export function SectionEditor({
           <label>
             <span>Product Owner</span>
             <input
-              value={proposal.contacts || 'Product Owner: Rama Krishna | CTO'}
+              value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('contacts', e.target.value)}
             />
           </label>
@@ -2816,14 +2816,14 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
               <input
-                value={proposal.providerSignatoryName || 'Rama Krishna'}
+                value={proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}
                 onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
               />
             </label>
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
               <input
-                value={proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
+                value={proposal.providerSignatoryTitle || 'Director'}
                 onChange={(e) => onUpdateField('providerSignatoryTitle', e.target.value)}
               />
             </label>
@@ -2974,7 +2974,7 @@ export function SectionEditor({
     },
     {
       id: 'cs-2',
-      component: 'iBUNIFY CRM User License',
+      component: 'ibunify CRM User License',
       scope: 'Full CRM pipeline, task management, mobile access & dashboards',
       investment: '₹2,500 / user / month'
     },
@@ -3051,7 +3051,7 @@ export function SectionEditor({
         <label>
           <span>Proposal Reference Number</span>
           <input
-            value={proposal.proposalNumber || 'IGC-IBUNIFY-2026-088'}
+            value={proposal.proposalNumber || 'IGC-ibunify-2026-088'}
             onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
           />
         </label>
@@ -3072,7 +3072,7 @@ export function SectionEditor({
         <label>
           <span>Engagement Scope</span>
           <input
-            value={proposal.engagement || 'iBUNIFY Platform & Integrated Services Deployment'}
+            value={proposal.engagement || 'ibunify Platform & Integrated Services Deployment'}
             onChange={(e) => onUpdateField('engagement', e.target.value)}
           />
         </label>
@@ -3087,7 +3087,7 @@ export function SectionEditor({
         <label>
           <span>Service Provider Name</span>
           <input
-            value={proposal.preparedBy || proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}
+            value={proposal.preparedBy || proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
             onChange={(e) => {
               onUpdateField('preparedBy', e.target.value);
               onUpdateField('company', e.target.value);
@@ -3143,7 +3143,7 @@ export function SectionEditor({
         <label>
           <span>Running Header (Left)</span>
           <input
-            value={proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal'}
+            value={proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial & Services Proposal'}
             onChange={(e) => onUpdateField('headerLeft', e.target.value)}
           />
         </label>
@@ -3157,7 +3157,7 @@ export function SectionEditor({
         <label style={{ gridColumn: '1 / -1' }}>
           <span>Running Page Footnote (Left)</span>
           <input
-            value={proposal.pageFootnote || 'Confidential - iBUNIFY (iGLOBUS Corporate Consulting)'}
+            value={proposal.pageFootnote || 'Confidential - ibunify (iGLOBUS Corporate Consulting)'}
             onChange={(e) => onUpdateField('pageFootnote', e.target.value)}
           />
         </label>
@@ -3482,21 +3482,21 @@ export function SectionEditor({
           <label style={{ display: 'block', marginBottom: '8px' }}>
             <span style={{ fontSize: '12px', color: '#64748b' }}>Header</span>
             <input
-              value={proposal.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)'}
+              value={proposal.providerSignatoryHeader || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
               onChange={(e) => onUpdateField('providerSignatoryHeader', e.target.value)}
             />
           </label>
           <label style={{ display: 'block', marginBottom: '8px' }}>
             <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
             <input
-              value={proposal.providerSignatoryName || 'Rama Krishna'}
+              value={proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}
               onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
             />
           </label>
           <label style={{ display: 'block', marginBottom: '8px' }}>
             <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
             <input
-              value={proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.providerSignatoryTitle || 'Director'}
               onChange={(e) => onUpdateField('providerSignatoryTitle', e.target.value)}
             />
           </label>
@@ -3518,7 +3518,7 @@ export function SectionEditor({
         <label>
           <span>Company Name</span>
           <input
-            value={proposal.corporateFooterCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+            value={proposal.corporateFooterCompany || 'ibunify CRM by iGLOBUS Corporate Consulting'}
             onChange={(e) => onUpdateField('corporateFooterCompany', e.target.value)}
           />
         </label>

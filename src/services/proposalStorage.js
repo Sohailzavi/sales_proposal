@@ -1,10 +1,10 @@
-import { STORAGE_KEY_V1, STORAGE_KEY_V2, sampleProposal } from '../data/defaults.js';
+import { STORAGE_KEY_V1, STORAGE_KEY_V2, sampleProposal, DEFAULT_COMMERCIAL_SCOPES } from '../data/defaults.js';
 import { proposalTemplates } from '../data/templates.js';
 
 function sanitizeProposalData(data) {
   if (typeof data === 'string') {
     return data
-      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'iBUNIFY');
+      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'ibunify');
   }
   if (Array.isArray(data)) {
     return data.map(sanitizeProposalData);
@@ -48,8 +48,8 @@ export function loadProposalsFromStorage() {
           return trimmed;
         };
         const cleanContactsField = (c) => {
-          if (!c || c.includes('Contacts: Rama Krishna') || c === 'Rama Krishna | Sohail' || c === 'Rama Krishna | Sohail | Ramyasree') {
-            return 'Product Owner: Rama Krishna | CTO';
+          if (!c || c.includes('Contacts: Rama Krishna') || c === 'Rama Krishna | Sohail' || c === 'Rama Krishna | Sohail | Ramyasree' || c === 'Product Owner: Rama Krishna | CTO') {
+            return 'Product Owner: Pavan Chandra Duddilla';
           }
           return c;
         };
@@ -59,9 +59,15 @@ export function loadProposalsFromStorage() {
           }
           return pl;
         };
+        const cleanSignatoryName = (sn) => {
+          if (!sn || sn === 'Rama Krishna' || sn.includes('Rama Krishna')) {
+            return 'Pavan Chandra Duddilla';
+          }
+          return sn;
+        };
         const cleanSignatoryTitle = (st) => {
-          if (!st || st.includes('Practice Leads') || st.includes('Enterprise Lead')) {
-            return 'Enterprise Practice Leads';
+          if (!st || st.includes('Practice Leads') || st.includes('Enterprise Lead') || st === 'Enterprise Practice Leads') {
+            return 'Director';
           }
           return st;
         };
@@ -91,6 +97,23 @@ export function loadProposalsFromStorage() {
           }
           return pf;
         };
+        const cleanCommercialItems = (items) => {
+          if (!Array.isArray(items) || items.length === 0) {
+            return [
+              { id: 'cs-1', component: 'One-Time Setup & Implementation', scope: DEFAULT_COMMERCIAL_SCOPES[0], investment: '₹50,000 (One-Time)' },
+              { id: 'cs-2', component: 'ibunify CRM User License', scope: DEFAULT_COMMERCIAL_SCOPES[1], investment: '₹2,500 / user / month' },
+              { id: 'cs-3', component: 'WhatsApp Business Platform', scope: DEFAULT_COMMERCIAL_SCOPES[2], investment: '₹15,000 for 6 Months' },
+              { id: 'cs-4', component: 'WhatsApp Message Wallet', scope: DEFAULT_COMMERCIAL_SCOPES[3], investment: '₹10,000 Prepaid' },
+              { id: 'cs-5', component: 'Cloud Telephony Virtual Numbers', scope: DEFAULT_COMMERCIAL_SCOPES[4], investment: '₹1,500 / Number / mo' },
+              { id: 'cs-6', component: 'AI Agent Calling', scope: DEFAULT_COMMERCIAL_SCOPES[5], investment: '₹7 / call' }
+            ];
+          }
+          return items.map((item, idx) => ({
+            ...item,
+            component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+            scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+          }));
+        };
         const cleaned = sanitizeProposalData(withoutCompact).map((p) => {
           let company = (p.company === 'I-Globus Corporate Consulting' || p.company === 'iGlobus Corporate Consulting') ? 'iGLOBUS Corporate Consulting' : p.company;
           if (company === 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)' || company === 'ibunify (iGLOBUS Corporate Consulting)') {
@@ -104,9 +127,14 @@ export function loadProposalsFromStorage() {
             portals: cleanPortalsField(p.portals),
             contacts: cleanContactsField(p.contacts),
             productLead: cleanProductLeadField(p.productLead),
+            leadSignatoryName: cleanSignatoryName(p.leadSignatoryName),
+            providerSignatoryName: cleanSignatoryName(p.providerSignatoryName),
+            acceptedByAuthorized: cleanSignatoryName(p.acceptedByAuthorized),
+            deliveredByLead: cleanSignatoryName(p.deliveredByLead),
             leadSignatoryTitle: cleanSignatoryTitle(p.leadSignatoryTitle),
             providerSignatoryTitle: cleanSignatoryTitle(p.providerSignatoryTitle),
             acceptedByDesignation: cleanSignatoryTitle(p.acceptedByDesignation),
+            commercialScheduleItems: cleanCommercialItems(p.commercialScheduleItems),
             footerContacts: p.footerContacts ? cleanContactsField(p.footerContacts) : p.footerContacts,
             date: cleanDateField(p.date),
             effectiveDate: cleanDateField(p.effectiveDate),
