@@ -1738,18 +1738,41 @@ export function customProposalToHtml(doc, forWord = false) {
             <div class="sec-title">2. AI CALLING SERVICES & COSTING</div>
             <div class="sec-text" style="margin-bottom:3px;">iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:</div>
             <div>
-              ${aiCallingBullets.map((b) => `<div class="bullet-item">• ${escapeHtml(b)}</div>`).join('')}
+              ${aiCallingBullets.map((b) => `<div class="bullet-item" style="font-size:9px;line-height:1.25;margin-bottom:1px;">• ${escapeHtml(b)}</div>`).join('')}
             </div>
-            <table class="pipe-table">
+            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
               <thead>
-                <tr><th style="width:32%;">SERVICE COMPONENT</th><th style="width:44%;">SCOPE & DELIVERABLES</th><th style="width:24%;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+                <tr><th style="width:32%;padding:3px 6px;font-size:9px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
               </thead>
               <tbody>
                 ${aiCallingItems.map((item) => `
                   <tr>
-                    <td><strong>${escapeHtml(item.component)}</strong></td>
-                    <td style="color:#475569;">${escapeHtml(item.scope)}</td>
-                    <td style="text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                    <td style="padding:3px 6px;font-size:9px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:9px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:9px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 3 -->
+          <div style="margin-top:3px;">
+            <div class="sec-title" style="font-size:10.5px;margin:2px 0 2px;">3. CLOUD TELEPHONY SERVICES & COSTING</div>
+            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:</div>
+            <div>
+              ${cloudTelephonyBullets.map((b) => `<div class="bullet-item" style="font-size:9px;line-height:1.25;margin-bottom:1px;">• ${escapeHtml(b)}</div>`).join('')}
+            </div>
+            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
+              <thead>
+                <tr><th style="width:32%;padding:3px 6px;font-size:9px;">SERVICE COMPONENT</th><th style="width:44%;padding:3px 6px;font-size:9px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:3px 6px;font-size:9px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
+              </thead>
+              <tbody>
+                ${cloudTelephonyItems.map((item) => `
+                  <tr>
+                    <td style="padding:3px 6px;font-size:9px;"><strong>${escapeHtml(item.component)}</strong></td>
+                    <td style="padding:3px 6px;font-size:9px;color:#475569;">${escapeHtml(item.scope)}</td>
+                    <td style="padding:3px 6px;font-size:9px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -1764,7 +1787,7 @@ export function customProposalToHtml(doc, forWord = false) {
       </div>
     </div>
 
-    <!-- PAGE 3: TELEPHONY, WHATSAPP, COMMERCIALS, ROADMAP, TERMS & SIGN-OFF -->
+    <!-- PAGE 3: WHATSAPP, COMMERCIALS, ROADMAP, TERMS & SIGN-OFF -->
     <div class="paper-page">
       <div class="paper-watermark">iBUNIFY CRM</div>
       <div class="paper-inner">
@@ -1774,28 +1797,6 @@ export function customProposalToHtml(doc, forWord = false) {
         </div>
 
         <div style="display:flex;flex-direction:column;gap:4px;">
-          <!-- Section 3 -->
-          <div>
-            <div class="sec-title" style="font-size:11px;margin:2px 0 2px;">3. CLOUD TELEPHONY SERVICES & COSTING</div>
-            <div class="sec-text" style="font-size:9.5px;margin-bottom:2px;">Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:</div>
-            <div>
-              ${cloudTelephonyBullets.map((b) => `<div class="bullet-item" style="font-size:9px;line-height:1.25;margin-bottom:1px;">• ${escapeHtml(b)}</div>`).join('')}
-            </div>
-            <table class="pipe-table" style="font-size:9.5px;margin-top:2px;margin-bottom:3px;">
-              <thead>
-                <tr><th style="width:32%;padding:4px 6px;font-size:9px;">SERVICE COMPONENT</th><th style="width:44%;padding:4px 6px;font-size:9px;">SCOPE & DELIVERABLES</th><th style="width:24%;padding:4px 6px;font-size:9px;text-align:right;">INVESTMENT (INR / ₹)</th></tr>
-              </thead>
-              <tbody>
-                ${cloudTelephonyItems.map((item) => `
-                  <tr>
-                    <td style="padding:3px 6px;font-size:9.5px;"><strong>${escapeHtml(item.component)}</strong></td>
-                    <td style="padding:3px 6px;font-size:9px;color:#475569;">${escapeHtml(item.scope)}</td>
-                    <td style="padding:3px 6px;font-size:9.5px;text-align:right;font-weight:700;color:#1e3a8a;">${escapeHtml(item.investment)}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
 
           <!-- Section 4 -->
           <div>

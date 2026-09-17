@@ -1935,25 +1935,56 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 <div className="discovery-section-text" style={{ marginBottom: '3px', fontSize: '10.5px' }}>
                   iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:
                 </div>
-                <div className="discovery-bullet-list" style={{ marginBottom: '5px', gap: '2px' }}>
+                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1px' }}>
                   {aiCallingBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '10px' }}>• {b}</div>
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px' }}>• {b}</div>
                   ))}
                 </div>
                 <table className="discovery-pipeline-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '32%' }}>SERVICE COMPONENT</th>
-                      <th style={{ width: '44%' }}>SCOPE & DELIVERABLES</th>
-                      <th style={{ width: '24%', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                      <th style={{ width: '32%', padding: '3px 6px', fontSize: '9.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '3px 6px', fontSize: '9.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '3px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {aiCallingItems.map((item) => (
                       <tr key={item.id}>
-                        <td><strong>{item.component}</strong></td>
-                        <td style={{ fontSize: '10px', color: '#475569' }}>{item.scope}</td>
-                        <td style={{ textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                        <td style={{ padding: '3px 6px', fontSize: '9px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '3px 6px', fontSize: '9px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '3px 6px', fontSize: '9px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Section 3 */}
+              <div className="discovery-section-block" style={{ marginTop: '3px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '2px' }}>3. CLOUD TELEPHONY SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '9.5px' }}>
+                  Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:
+                </div>
+                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1px' }}>
+                  {cloudTelephonyBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px' }}>• {b}</div>
+                  ))}
+                </div>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '32%', padding: '3px 6px', fontSize: '9.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '3px 6px', fontSize: '9.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '3px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cloudTelephonyItems.map((item) => (
+                      <tr key={item.id}>
+                        <td style={{ padding: '3px 6px', fontSize: '9px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '3px 6px', fontSize: '9px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '3px 6px', fontSize: '9px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1983,36 +2014,6 @@ export function ProposalPreview({ proposal: rawProposal }) {
             </div>
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              {/* Section 3 */}
-              <div className="discovery-section-block">
-                <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '2px' }}>3. CLOUD TELEPHONY SERVICES & COSTING</h2>
-                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '9.5px' }}>
-                  Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:
-                </div>
-                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1px' }}>
-                  {cloudTelephonyBullets.map((b, idx) => (
-                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '9px' }}>• {b}</div>
-                  ))}
-                </div>
-                <table className="discovery-pipeline-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: '32%', padding: '4px 6px', fontSize: '9.5px' }}>SERVICE COMPONENT</th>
-                      <th style={{ width: '44%', padding: '4px 6px', fontSize: '9.5px' }}>SCOPE & DELIVERABLES</th>
-                      <th style={{ width: '24%', padding: '4px 6px', fontSize: '9.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cloudTelephonyItems.map((item) => (
-                      <tr key={item.id}>
-                        <td style={{ padding: '3px 6px', fontSize: '9.5px' }}><strong>{item.component}</strong></td>
-                        <td style={{ padding: '3px 6px', fontSize: '9px', color: '#475569' }}>{item.scope}</td>
-                        <td style={{ padding: '3px 6px', fontSize: '9.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
 
               {/* Section 4 */}
               <div className="discovery-section-block" style={{ marginTop: '2px' }}>
