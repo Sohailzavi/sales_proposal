@@ -1259,7 +1259,7 @@ export function SectionEditor({
           <label>
             <span>Subtitle / Platform</span>
             <input
-              value={proposal.subtitle || ''}
+              value={proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
               onChange={(e) => onUpdateField('subtitle', e.target.value)}
             />
           </label>
@@ -2901,7 +2901,7 @@ export function SectionEditor({
 
   const aiCallingBullets = proposal.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
@@ -3044,7 +3044,7 @@ export function SectionEditor({
         <label>
           <span>Proposal Subtitle</span>
           <input
-            value={proposal.subtitle || ''}
+            value={proposal.subtitle || 'Built for High-Velocity Real Estate & Sales Enterprises'}
             onChange={(e) => onUpdateField('subtitle', e.target.value)}
           />
         </label>
@@ -3489,14 +3489,14 @@ export function SectionEditor({
           <label style={{ display: 'block', marginBottom: '8px' }}>
             <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
             <input
-              value={proposal.providerSignatoryName || 'Rama Krishna'}
+              value={proposal.providerSignatoryName || 'Ramyasree / Rama Krishna'}
               onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
             />
           </label>
           <label style={{ display: 'block', marginBottom: '8px' }}>
             <span style={{ fontSize: '12px', color: '#64748b' }}>Title</span>
             <input
-              value={proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}
+              value={proposal.providerSignatoryTitle || 'Product Lead & Enterprise Practice'}
               onChange={(e) => onUpdateField('providerSignatoryTitle', e.target.value)}
             />
           </label>
