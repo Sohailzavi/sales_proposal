@@ -1884,15 +1884,15 @@ export function customProposalToHtml(doc, forWord = false) {
                 <div class="sign-head" style="font-size:10px;margin-bottom:1px;">${escapeHtml(doc.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)')}</div>
                 <div class="sign-sub" style="font-size:8.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
                 <div class="sign-line" style="margin:14px 0 3px;"></div>
-                <div>Name: ${escapeHtml(doc.providerSignatoryName || 'Ramyasree / Rama Krishna')}</div>
-                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'Product Lead & Enterprise Practice')}</div>
+                <div>Name: ${escapeHtml(doc.providerSignatoryName || 'Rama Krishna')}</div>
+                <div style="margin-top:2px;">Title: ${escapeHtml(doc.providerSignatoryTitle || 'CTO')}</div>
                 <div style="margin-top:2px;color:#64748b;font-size:8.5px;">Date: ${escapeHtml(doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________'))}</div>
               </div>
             </div>
 
             <div class="corp-box" style="margin-top:5px;padding:4px 8px;font-size:8.5px;line-height:1.3;">
               <div style="font-weight:700;color:#0f2b6e;">${escapeHtml(doc.corporateFooterCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting')}</div>
-              <div>${escapeHtml(doc.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081')} | Contact: Ramyasree (+91 63005 61742) | Rama Krishna: +91 78420 97496</div>
+              <div>${escapeHtml(doc.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081')} | Contact: Rama Krishna | CTO (+91 78420 97496)</div>
             </div>
           </div>
         </div>

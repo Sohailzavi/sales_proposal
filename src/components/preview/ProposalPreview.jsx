@@ -1695,7 +1695,6 @@ export function ProposalPreview({ proposal: rawProposal }) {
 
   const aiCallingBullets = proposal.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
@@ -1870,8 +1869,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-value-bold">{proposal.preparedBy || proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
                   <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                   <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                  <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
-                  <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                  <div className="discovery-meta-sub">{proposal.contacts || proposal.productLead || 'Product Owner: Rama Krishna | CTO'}</div>
                 </div>
               </div>
             </div>
@@ -2132,15 +2130,15 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     </div>
                     <div style={{ height: '22px' }}></div>
                     <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
-                    <div className="sign-line" style={{ fontSize: '9px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || 'Ramyasree / Rama Krishna'}</div>
-                    <div className="sign-line" style={{ fontSize: '9px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || 'Product Lead & Enterprise Practice'}</div>
+                    <div className="sign-line" style={{ fontSize: '9px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna'}</div>
+                    <div className="sign-line" style={{ fontSize: '9px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || 'CTO'}</div>
                     <div className="sign-date" style={{ fontSize: '8.5px', color: '#1e293b' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
                   </div>
                 </div>
 
                 <div className="discovery-corp-footer-box" style={{ marginTop: '5px', padding: '4px 8px', fontSize: '8.5px', lineHeight: '1.3' }}>
                   <div style={{ fontWeight: '700', color: '#0f2b6e' }}>{proposal.corporateFooterCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}</div>
-                  <div>{proposal.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'} | Contact: Ramyasree (+91 63005 61742) | Rama Krishna: +91 78420 97496</div>
+                  <div>{proposal.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'} | Contact: Rama Krishna | CTO (+91 78420 97496)</div>
                 </div>
               </div>
             </div>
