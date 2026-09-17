@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generatePdfBlob } from '../../services/exportService.js';
+import { generatePdfBlob, getExportFileName } from '../../services/exportService.js';
 import { sendProposalEmail } from '../../services/emailService.js';
 import { IconCheck } from '../common/Icons.jsx';
 
@@ -9,7 +9,7 @@ export function SendEmailModal({ proposal, isOpen, onClose }) {
   const defaultCompany = proposal.company || proposal.proposalTitle || 'Client';
   const defaultSubject = `Proposal – ${defaultCompany}`;
   const defaultMessage = `Dear Client,\n\nPlease find our proposal attached for your consideration.\n\nRegards,\nibunify Sales Team`;
-  const attachmentFileName = `${proposal.proposalNumber || proposal.proposalTitle || 'Proposal'}.pdf`;
+  const attachmentFileName = getExportFileName(proposal, 'pdf');
 
   const [toEmail, setToEmail] = useState('');
   const [message, setMessage] = useState(defaultMessage);

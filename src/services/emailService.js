@@ -1,7 +1,4 @@
-/**
- * Email Service Module
- * Direct Email Delivery via Node backend / Google SMTP (.env)
- */
+import { getExportFileName } from './exportService.js';
 
 export async function sendProposalEmail({ to, subject, message, proposal, attachment }) {
   if (!to || !to.trim()) {
@@ -14,7 +11,7 @@ export async function sendProposalEmail({ to, subject, message, proposal, attach
   }
 
   const recipient = to.trim();
-  const fileName = `${proposal?.proposalNumber || proposal?.proposalTitle || 'Proposal'}.pdf`;
+  const fileName = getExportFileName(proposal, 'pdf');
   
   let attachmentBase64 = '';
   if (attachment) {

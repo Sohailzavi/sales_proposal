@@ -1,11 +1,12 @@
 import React from 'react';
 import { calculateCommercialTotals, calculateInvoiceTotals, paginateProposal } from '../../services/exportService.js';
 import { SAMPLE_LETTERHEAD_BASE64 } from '../../data/letterheadBase64.js';
+import { DEFAULT_COMMERCIAL_SCOPES } from '../../data/defaults.js';
 
 function sanitizeProposalData(data) {
   if (typeof data === 'string') {
     return data
-      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'iBUNIFY');
+      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'ibunify');
   }
   if (Array.isArray(data)) {
     return data.map(sanitizeProposalData);
@@ -343,7 +344,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     {proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -356,7 +357,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-01-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-01-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
                   </div>
 
@@ -365,8 +366,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -467,8 +468,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
                     </div>
                   </div>
@@ -542,7 +543,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     )}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -555,7 +556,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-02-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-02-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.effectiveDate ? proposal.effectiveDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
 
@@ -564,8 +565,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -644,8 +645,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
                     </div>
                   </div>
@@ -720,7 +721,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     {proposal.proposalTitle || 'Master Services Agreement (MSA)'}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -732,7 +733,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-04-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-04-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.executionDate ? proposal.executionDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
 
@@ -741,8 +742,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -825,8 +826,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
                     </div>
                   </div>
@@ -910,7 +911,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     {proposal.proposalTitle || 'Service Level Agreement (SLA)'}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -922,7 +923,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-06-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-06-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.effectiveDate ? proposal.effectiveDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
 
@@ -931,8 +932,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -1027,8 +1028,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
                     </div>
                   </div>
@@ -1105,7 +1106,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     {proposal.proposalTitle || 'Purchase Order (PO Template)'}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1117,7 +1118,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-07-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-07-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.poDate ? proposal.poDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
 
@@ -1126,8 +1127,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -1169,7 +1170,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   }}>
                     <div>
                       <span style={{ color: '#64748b' }}>PO Number: </span>
-                      <strong style={{ color: '#0f2b6e' }}>{proposal.poNumber || 'PO-IBUNIFY-2026-001'}</strong>
+                      <strong style={{ color: '#0f2b6e' }}>{proposal.poNumber || 'PO-ibunify-2026-001'}</strong>
                     </div>
                     <div>
                       <span style={{ color: '#64748b' }}>Payment Terms: </span>
@@ -1245,8 +1246,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.acceptedByAuthorized || proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.acceptedByDesignation || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.acceptedByAuthorized || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.acceptedByDesignation || proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.acceptedByDate ? proposal.acceptedByDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
                     </div>
                   </div>
@@ -1255,6 +1256,461 @@ export function ProposalPreview({ proposal: rawProposal }) {
             </div>
 
           </section>
+        </div>
+      </div>
+    );
+  }
+
+  const isCommercialProposal = proposal.documentType === 'commercial_proposal';
+
+  if (isCommercialProposal) {
+    const metrics = proposal.metrics || [
+      { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
+      { value: '100%', label: 'LEAD ATTRIBUTION' },
+      { value: '3x', label: 'FOLLOW-UP VELOCITY' },
+      { value: '24/7', label: 'AI VOICE & CHAT' }
+    ];
+
+    const serviceBreakdown = proposal.serviceBreakdown || [
+      {
+        key: 'A',
+        title: 'Centralized Real Estate CRM & Pipeline Platform',
+        features:
+          '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
+        costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
+      },
+      {
+        key: 'B',
+        title: 'Conversational AI Agent Calling Service',
+        features:
+          'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
+        costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
+      },
+      {
+        key: 'C',
+        title: 'Integrated Cloud Telephony & Virtual Numbers',
+        features:
+          'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
+        costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
+      },
+      {
+        key: 'D',
+        title: 'Official WhatsApp Business Platform Automation',
+        features:
+          'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
+        costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
+      }
+    ];
+
+    const rawCommercialItems = proposal.commercialScheduleItems || [
+      {
+        id: 'cs-1',
+        component: 'One-Time Setup & Implementation',
+        scope: DEFAULT_COMMERCIAL_SCOPES[0],
+        investment: '₹50,000 (One-Time)'
+      },
+      {
+        id: 'cs-2',
+        component: 'ibunify CRM User License',
+        scope: DEFAULT_COMMERCIAL_SCOPES[1],
+        investment: '₹2,500 / user / month'
+      },
+      {
+        id: 'cs-3',
+        component: 'WhatsApp Business Platform',
+        scope: DEFAULT_COMMERCIAL_SCOPES[2],
+        investment: '₹15,000 for 6 Months'
+      },
+      {
+        id: 'cs-4',
+        component: 'WhatsApp Message Wallet',
+        scope: DEFAULT_COMMERCIAL_SCOPES[3],
+        investment: '₹10,000 Prepaid'
+      },
+      {
+        id: 'cs-5',
+        component: 'Cloud Telephony Virtual Numbers',
+        scope: DEFAULT_COMMERCIAL_SCOPES[4],
+        investment: '₹1,500 / Number / mo'
+      },
+      {
+        id: 'cs-6',
+        component: 'AI Agent Calling',
+        scope: DEFAULT_COMMERCIAL_SCOPES[5],
+        investment: '₹7 / call'
+      }
+    ];
+
+    const commercialScheduleItems = rawCommercialItems.map((item, idx) => ({
+      ...item,
+      component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+      scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+    }));
+
+    const sowScopeActivities = proposal.sowScopeActivities || [
+      'Requirement Discovery & Pipeline Architecture: Define project inventory structures, custom pipeline stages, lead scoring benchmarks, and sales role authorization tiers.',
+      'Omnichannel Campaign Ingestion: Connect Meta Ads (CAPI API), Google Offline Conversion tracking, website webhooks, and portal lead connectors.',
+      'Telephony & AI Calling Configuration: Provision dedicated virtual numbers, configure Call-to-Lead auto record triggers, and program conversational voice scripts.',
+      'WhatsApp API Integration: Register official Business API templates, design automated brochure auto-responders, and configure multi-agent shared inboxes.',
+      'UAT, Training & Rollout: Conduct sandbox functional testing, administrator runbook handover, and end-user sales executive onboarding sessions.'
+    ];
+
+    const sowDeliverables = proposal.sowDeliverables || [
+      'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
+      'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
+      'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
+      'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
+    ];
+
+    const sowTimelineMilestones = proposal.sowTimelineMilestones || [
+      { activity: 'Discovery, Role Hierarchy & Lead Ingestion Setup', activeWeek: 1 },
+      { activity: 'Cloud Telephony & WhatsApp Business API Deployment', activeWeek: 2 },
+      { activity: 'AI Agent Calling Configuration & Integration Testing', activeWeek: 3 },
+      { activity: 'User Acceptance Testing (UAT), Training & Production Go-Live', activeWeek: 4 }
+    ];
+
+    const sowInvoicingMilestones = proposal.sowInvoicingMilestones || [
+      {
+        deliverable: 'Milestone 1: Contract Signing / Project Kick-off & Mobilization',
+        percentage: '50%',
+        amount: '₹25,000'
+      },
+      {
+        deliverable: 'Milestone 2: Deployment, Integrations (Meta/WhatsApp/Telephony) & UAT Sign-off',
+        percentage: '50%',
+        amount: '₹25,000'
+      }
+    ];
+
+    const sowAssumptions = proposal.sowAssumptions || [
+      'Client will designate a Project Manager to provide timely feedback/approvals within 48 hours.',
+      'Client will provide necessary API access keys (Meta Business Manager, WhatsApp Business Account, Google Ads) before configuration commences.',
+      'Standard support SLA guarantees Priority 1 response within < 30 minutes. Invoices are payable NET 30.'
+    ];
+
+    const headerLeft = proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW';
+    const headerRight = proposal.headerRight || 'Standard Master Template';
+    const pageFootnote = proposal.pageFootnote || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com';
+
+    return (
+      <div className="proposal-pages-container commercial-proposal-pages-container">
+        {/* PAGE 1: COVER PAGE */}
+        <div className="preview-page-card">
+          <div className="preview-page-card-header">
+            <span>Page 1 of 4 · Cover Page</span>
+          </div>
+          <section className="discovery-cover-paper custom-proposal-cover-paper">
+            <img
+              src={SAMPLE_LETTERHEAD_BASE64}
+              className="letterhead-bg-img"
+              alt="Letterhead Background"
+            />
+            <div className="letterhead-content-wrap">
+              <div className="cover-card-inner">
+
+
+                <div className="discovery-cover-main">
+                  <div className="discovery-badge-pill">
+                    {proposal.badge || 'STANDARD COMMERCIAL PROPOSAL & STATEMENT OF WORK'}
+                  </div>
+                  <h1 className="discovery-main-title">
+                    {proposal.proposalTitle || 'Unified CRM, Communication & AI Sales Automation'}
+                  </h1>
+                  {proposal.subtitle && (
+                    <div className="discovery-main-subtitle">
+                      {proposal.subtitle}
+                    </div>
+                  )}
+                  <p className="discovery-main-description">
+                    {proposal.description || proposal.descriptionText || 'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive operating rhythm.'}
+                  </p>
+                </div>
+
+                <div className="discovery-cover-bottom-meta">
+                  <div className="discovery-meta-col">
+                    <div className="discovery-meta-heading">PREPARED FOR</div>
+                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">Engagement: {proposal.engagement || 'ibunify CRM & Automation Platform Deployment'}</div>
+                    <div className="discovery-meta-sub">Proposal Ref: {proposal.proposalNumber || 'IGC-ibunify-PROP-2026'}</div>
+                    <div className="discovery-meta-sub">SOW Ref: {proposal.sowNumber || 'IGC-ibunify-SOW-2026'}</div>
+                  </div>
+
+                  <div className="discovery-meta-col">
+                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
+                    <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)'}</div>
+                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramyasree (+91 63005 61742)'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        {/* PAGE 2: PART 1 - ABOUT PRODUCT & GRANULAR SERVICE BREAKDOWN */}
+        <div className="preview-page-card">
+          <div className="preview-page-card-header">
+            <span>Page 2 of 4 · Commercial & Technical Proposal (Part 1)</span>
+          </div>
+          <section className="custom-proposal-page-paper">
+            <img
+              src={SAMPLE_LETTERHEAD_BASE64}
+              className="letterhead-bg-img"
+              alt="Letterhead Background"
+            />
+            <div className="letterhead-content-wrap">
+              <div className="custom-proposal-watermark">ibunify CRM</div>
+              <div className="custom-proposal-inner">
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {/* Part 1 Header & Section 1 */}
+                <div className="discovery-section-block">
+                  <div style={{ background: '#0f2b6e', color: '#ffffff', padding: '6px 12px', borderRadius: '4px', fontWeight: '800', fontSize: '13px', letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                    PART 1: COMMERCIAL & TECHNICAL PROPOSAL
+                  </div>
+                  <h2 className="discovery-section-title" style={{ fontSize: '13px', marginBottom: '4px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
+                  <div className="discovery-section-text" style={{ marginBottom: '6px', fontSize: '11.5px', lineHeight: '1.45' }}>
+                    ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.
+                  </div>
+
+                  <div className="ctp-callout-box" style={{ margin: '6px 0', padding: '6px 10px', fontSize: '11.5px' }}>
+                    <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+                  </div>
+
+                  <div className="ctp-metrics-grid" style={{ margin: '8px 0', gap: '8px' }}>
+                    {metrics.map((m, idx) => (
+                      <div key={idx} className="ctp-metric-card" style={{ padding: '8px 4px' }}>
+                        <div className="ctp-metric-val" style={{ fontSize: '17px' }}>{m.value}</div>
+                        <div className="ctp-metric-lbl" style={{ fontSize: '9.5px' }}>{m.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section 2: Granular Service Breakdown */}
+                <div className="discovery-section-block">
+                  <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '6px' }}>2. GRANULAR SERVICE BREAKDOWN, FEATURES & COSTING</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {serviceBreakdown.map((item) => (
+                      <div key={item.key} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '8px 12px' }}>
+                        <div style={{ fontWeight: '700', color: '#1e3a8a', fontSize: '13px', marginBottom: '3px' }}>
+                          {item.key}. {item.title}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#334155', lineHeight: '1.4' }}>
+                          <strong>Core Features:</strong> {item.features}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div>
+
+        {/* PAGE 3: PART 2 SCOPE OF WORK & COMMERCIAL SCHEDULE */}
+        <div className="preview-page-card">
+          <div className="preview-page-card-header">
+            <span>Page 3 of 4 · Commercial Schedule & Statement of Work (Part 2)</span>
+          </div>
+          <section className="custom-proposal-page-paper">
+            <img
+              src={SAMPLE_LETTERHEAD_BASE64}
+              className="letterhead-bg-img"
+              alt="Letterhead Background"
+            />
+            <div className="letterhead-content-wrap">
+              <div className="custom-proposal-watermark">ibunify CRM</div>
+              <div className="custom-proposal-inner">
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {/* Section 3: Overall Costing & Commercial Schedule */}
+                <div className="discovery-section-block">
+                  <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '6px' }}>3. OVERALL COSTING & COMMERCIAL SCHEDULE</h2>
+                  <table className="discovery-pipeline-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '32%', fontSize: '12px' }}>SERVICE COMPONENT</th>
+                        <th style={{ width: '44%', fontSize: '12px' }}>SCOPE & DELIVERABLES</th>
+                        <th style={{ width: '24%', textAlign: 'right', fontSize: '12px' }}>INVESTMENT (INR / ₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {commercialScheduleItems.map((item) => (
+                        <tr key={item.id}>
+                          <td style={{ fontSize: '12px' }}><strong>{item.component}</strong></td>
+                          <td style={{ fontSize: '12px', color: '#475569' }}>{item.scope}</td>
+                          <td style={{ textAlign: 'right', fontWeight: '700', color: '#1e3a8a', fontSize: '12px' }}>{item.investment}</td>
+                        </tr>
+                      ))}
+                      <tr style={{ background: '#f0f7ff', borderTop: '2px solid #2563eb' }}>
+                        <td colSpan="2" style={{ fontWeight: '800', color: '#1e3a8a', padding: '6px 8px', fontSize: '12.5px' }}>
+                          Base Activation Package Total (Excl. Consumption & Lic.)
+                        </td>
+                        <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '6px 8px', fontSize: '13px' }}>
+                          {proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Part 2 Header & Scope */}
+                <div className="discovery-section-block">
+                  <div style={{ background: '#0f2b6e', color: '#ffffff', padding: '6px 12px', borderRadius: '4px', fontWeight: '800', fontSize: '14px', letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    PART 2: STATEMENT OF WORK (SOW)
+                  </div>
+                  <div className="ctp-callout-box" style={{ margin: '0 0 6px 0', padding: '6px 10px', fontSize: '12.5px', background: '#f8fafc', borderColor: '#cbd5e1', borderLeftColor: '#0f2b6e' }}>
+                    {proposal.sowPreamble || 'THIS STATEMENT OF WORK ("SOW") is effective as of [Effective Date], by and between iGLOBUS Corporate Consulting Private Limited ("Service Provider") and [Client Company Name] ("Client"), and defines the delivery terms and execution milestones for the ibunify platform.'}
+                  </div>
+
+                  <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '3px' }}>1. DESCRIPTION OF ASSIGNMENT & SCOPE OF WORK</h2>
+                  <div className="discovery-section-text" style={{ marginBottom: '3px', fontSize: '12.5px' }}>
+                    This engagement operates under a Fixed-Price Phase-I Delivery Model. The following scope activities will be executed:
+                  </div>
+                  <div className="discovery-bullet-list" style={{ marginBottom: '6px', gap: '2px' }}>
+                    {sowScopeActivities.map((act, idx) => (
+                      <div key={idx} className="discovery-bullet-item" style={{ fontSize: '12px' }}>• {act}</div>
+                    ))}
+                  </div>
+
+                  <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '3px' }}>2. DELIVERABLES MATRIX</h2>
+                  <div className="discovery-bullet-list" style={{ marginBottom: '6px', gap: '2px' }}>
+                    {sowDeliverables.map((del, idx) => (
+                      <div key={idx} className="discovery-bullet-item" style={{ fontSize: '12px' }}>• {del}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div>
+
+        {/* PAGE 4: INVOICING, ASSUMPTIONS & SIGN-OFF */}
+        <div className="preview-page-card">
+          <div className="preview-page-card-header">
+            <span>Page 4 of 4 · Timeline, Invoicing & Dual Authorization</span>
+          </div>
+          <section className="custom-proposal-page-paper">
+            <img
+              src={SAMPLE_LETTERHEAD_BASE64}
+              className="letterhead-bg-img"
+              alt="Letterhead Background"
+            />
+            <div className="letterhead-content-wrap">
+              <div className="custom-proposal-watermark">ibunify CRM</div>
+              <div className="custom-proposal-inner">
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {/* Section 3: Project Schedule & Execution Timeline */}
+                <div className="discovery-section-block">
+                  <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '3px' }}>3. PROJECT SCHEDULE & EXECUTION TIMELINE</h2>
+                  <table className="discovery-pipeline-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '52%', fontSize: '12px' }}>MILESTONE ACTIVITY</th>
+                        <th style={{ width: '12%', textAlign: 'center', fontSize: '12px' }}>WEEK 1</th>
+                        <th style={{ width: '12%', textAlign: 'center', fontSize: '12px' }}>WEEK 2</th>
+                        <th style={{ width: '12%', textAlign: 'center', fontSize: '12px' }}>WEEK 3</th>
+                        <th style={{ width: '12%', textAlign: 'center', fontSize: '12px' }}>WEEK 4</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sowTimelineMilestones.map((m, idx) => (
+                        <tr key={idx}>
+                          <td style={{ fontSize: '12px' }}><strong>{m.activity}</strong></td>
+                          <td style={{ textAlign: 'center' }}>{m.activeWeek === 1 ? <span style={{ background: '#0284c7', color: '#fff', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700' }}>Active</span> : ''}</td>
+                          <td style={{ textAlign: 'center' }}>{m.activeWeek === 2 ? <span style={{ background: '#0284c7', color: '#fff', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700' }}>Active</span> : ''}</td>
+                          <td style={{ textAlign: 'center' }}>{m.activeWeek === 3 ? <span style={{ background: '#0284c7', color: '#fff', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700' }}>Active</span> : ''}</td>
+                          <td style={{ textAlign: 'center' }}>{m.activeWeek === 4 ? <span style={{ background: '#0284c7', color: '#fff', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700' }}>Active</span> : ''}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Section 4: SOW Milestone Invoicing Schedule */}
+                <div className="discovery-section-block">
+                  <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '6px' }}>4. SOW MILESTONE INVOICING SCHEDULE</h2>
+                  <table className="discovery-pipeline-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '56%', fontSize: '12px' }}>MILESTONE DELIVERABLE</th>
+                        <th style={{ width: '20%', textAlign: 'center', fontSize: '12px' }}>MILESTONE %</th>
+                        <th style={{ width: '24%', textAlign: 'right', fontSize: '12px' }}>AMOUNT (INR / ₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sowInvoicingMilestones.map((inv, idx) => (
+                        <tr key={idx}>
+                          <td style={{ fontSize: '12px' }}><strong>{inv.deliverable}</strong></td>
+                          <td style={{ textAlign: 'center', fontWeight: '600', fontSize: '12px' }}>{inv.percentage}</td>
+                          <td style={{ textAlign: 'right', fontWeight: '700', color: '#1e3a8a', fontSize: '12px' }}>{inv.amount}</td>
+                        </tr>
+                      ))}
+                      <tr style={{ background: '#f0f7ff', borderTop: '2px solid #2563eb' }}>
+                        <td style={{ fontWeight: '800', color: '#1e3a8a', padding: '5px 8px', fontSize: '12.5px' }}>
+                          Total Base Fixed Implementation Fee
+                        </td>
+                        <td style={{ textAlign: 'center', fontWeight: '800', color: '#1e3a8a', padding: '5px 8px', fontSize: '12.5px' }}>
+                          100%
+                        </td>
+                        <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '5px 8px', fontSize: '13px' }}>
+                          {proposal.totalImplementationFee || '₹50,000'}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Section 5: Engagement Assumptions & SLAs */}
+                <div className="discovery-section-block">
+                  <h2 className="discovery-section-title" style={{ fontSize: '13.5px', marginBottom: '4px' }}>5. ENGAGEMENT ASSUMPTIONS & SLAS</h2>
+                  <div className="discovery-bullet-list" style={{ gap: '4px' }}>
+                    {sowAssumptions.map((ass, idx) => (
+                      <div key={idx} className="discovery-bullet-item" style={{ fontSize: '11.5px' }}>• {ass}</div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section 6: Authorization & Sign-Off */}
+                <div className="discovery-section-block" style={{ marginTop: '4px' }}>
+                  <h2 className="discovery-section-title" style={{ fontSize: '13.5px', marginBottom: '6px' }}>6. AUTHORIZATION & SIGN-OFF</h2>
+                  <div style={{ display: 'flex', gap: '14px', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '10px 14px', boxSizing: 'border-box' }}>
+                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '13px', marginBottom: '2px' }}>
+                        {proposal.clientSignatoryHeader || 'FOR: [CLIENT COMPANY NAME]'}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '2px' }}>
+                        {proposal.clientSignatorySub || 'Client Authorized Signatory'}
+                      </div>
+                      <div style={{ height: '32px' }}></div>
+                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '6px' }}></div>
+                      <div className="sign-line" style={{ fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
+                      <div className="sign-line" style={{ fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
+                      <div className="sign-date" style={{ fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                    </div>
+
+                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '10px 14px', boxSizing: 'border-box' }}>
+                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '13px', marginBottom: '2px' }}>
+                        {proposal.providerSignatoryHeader || 'FOR: ibunify (iGLOBUS)'}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '2px' }}>
+                        {proposal.providerSignatorySub || 'Service Provider Signatory'}
+                      </div>
+                      <div style={{ height: '32px' }}></div>
+                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '6px' }}></div>
+                      <div className="sign-line" style={{ fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || 'Director'}</div>
+                      <div className="sign-date" style={{ fontSize: '11px', color: '#1e293b' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         </div>
       </div>
     );
@@ -1324,7 +1780,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     {proposal.proposalTitle || 'Project Delivery & Handover Sign-off'}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || proposal.handoverSubtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || proposal.handoverSubtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1336,7 +1792,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || proposal.handoverClientOrg || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || proposal.handoverClientLead || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || proposal.handoverRefNo || 'IGC-IBUNIFY-08-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || proposal.handoverRefNo || 'IGC-ibunify-08-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.handoverDate ? proposal.handoverDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
 
@@ -1345,8 +1801,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || proposal.handoverProvider || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -1385,7 +1841,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     lineHeight: '1.6',
                     color: '#334155'
                   }}>
-                    {proposal.handoverScopeText || proposal.scopeVerificationText || 'This Delivery & Handover Document certifies that the implementation, configuration, user acceptance testing (UAT), and operational enablement of the iBUNIFY CRM Enterprise Suite have been completed in accordance with the agreed Statement of Work (SOW).'}
+                    {proposal.handoverScopeText || proposal.scopeVerificationText || 'This Delivery & Handover Document certifies that the implementation, configuration, user acceptance testing (UAT), and operational enablement of the ibunify CRM Enterprise Suite have been completed in accordance with the agreed Statement of Work (SOW).'}
                   </div>
                 </div>
 
@@ -1454,8 +1910,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.handoverDeliveredLeadName || proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.handoverDeliveredLeadTitle || proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.handoverDeliveredLeadName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.handoverDeliveredLeadTitle || proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.handoverDeliveredLeadDate ? proposal.handoverDeliveredLeadDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
                     </div>
                   </div>
@@ -1501,7 +1957,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     {proposal.proposalTitle || 'Project Closure & Hypercare Transition'}
                   </h1>
                   <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}
+                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
                   </div>
                   <p className="discovery-main-description">
                     {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
@@ -1513,7 +1969,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
                     <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-09-2026'}</div>
+                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-09-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
                   </div>
 
@@ -1522,8 +1978,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                     <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
+                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
                     <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
@@ -1647,8 +2103,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       </div>
                       <div style={{ height: '42px' }}></div>
                       <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || 'Enterprise Practice Leads'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || 'Director'}</div>
                       <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
                     </div>
                   </div>
@@ -1758,44 +2214,50 @@ export function ProposalPreview({ proposal: rawProposal }) {
     }
   ];
 
-  const commercialScheduleItems = proposal.commercialScheduleItems || [
+  const rawCommercialItemsProposal = proposal.commercialScheduleItems || [
     {
       id: 'cs-1',
-      component: 'One-Time Setup & Onboarding',
-      scope: 'System config, Meta CAPI, Google Ads, telephony & team training',
+      component: 'One-Time Setup & Implementation',
+      scope: DEFAULT_COMMERCIAL_SCOPES[0],
       investment: '₹50,000 (One-Time)'
     },
     {
       id: 'cs-2',
-      component: 'iBUNIFY CRM User License',
-      scope: 'Full CRM pipeline, task management, mobile access & dashboards',
+      component: 'ibunify CRM User License',
+      scope: DEFAULT_COMMERCIAL_SCOPES[1],
       investment: '₹2,500 / user / month'
     },
     {
       id: 'cs-3',
       component: 'WhatsApp Business Platform',
-      scope: 'Official Meta API integration & workflow routing (6 Months)',
+      scope: DEFAULT_COMMERCIAL_SCOPES[2],
       investment: '₹15,000 for 6 Months'
     },
     {
       id: 'cs-4',
       component: 'WhatsApp Message Wallet',
-      scope: 'Prepaid consumption (Utility: ₹0.18 | Marketing: ₹0.87)',
+      scope: DEFAULT_COMMERCIAL_SCOPES[3],
       investment: '₹10,000 Prepaid'
     },
     {
       id: 'cs-5',
       component: 'Cloud Telephony Virtual Numbers',
-      scope: 'Per dedicated virtual number with recording & CDR logging',
-      investment: '₹1,500 / Number'
+      scope: DEFAULT_COMMERCIAL_SCOPES[4],
+      investment: '₹1,500 / Number / mo'
     },
     {
       id: 'cs-6',
       component: 'AI Agent Calling',
-      scope: 'Per connected conversational AI qualification call',
+      scope: DEFAULT_COMMERCIAL_SCOPES[5],
       investment: '₹7 / call'
     }
   ];
+
+  const commercialScheduleItems = rawCommercialItemsProposal.map((item, idx) => ({
+    ...item,
+    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+  }));
 
   const roadmapBullets = proposal.roadmapBullets || [
     'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
@@ -1811,9 +2273,9 @@ export function ProposalPreview({ proposal: rawProposal }) {
     'Invoices are payable within 30 days from date of submission (NET 30).'
   ];
 
-  const headerLeft = proposal.headerLeft || 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal';
+  const headerLeft = proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial & Services Proposal';
   const headerRight = proposal.headerRight || 'www.ibunify.com';
-  const pageFootnote = proposal.pageFootnote || 'Confidential - iBUNIFY (iGLOBUS Corporate Consulting)';
+  const pageFootnote = proposal.pageFootnote || 'Confidential - ibunify (iGLOBUS Corporate Consulting)';
 
   return (
     <div className="proposal-pages-container custom-proposal-pages-container">
@@ -1830,12 +2292,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
           />
           <div className="letterhead-content-wrap">
             <div className="cover-card-inner">
-              <div className="discovery-cover-top">
-                <div className="discovery-logo-wrap">
-                  <div className="ibunify-logo-text">ibunify</div>
-                  <div className="ibunify-sub-text">CRM BY IGLOBUS</div>
-                </div>
-              </div>
+
 
               <div className="discovery-cover-main">
                 <div className="discovery-badge-pill">
@@ -1859,17 +2316,18 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-heading">PROPOSAL PREPARED FOR</div>
                   <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Enterprise / Jayabheri Group]'}</div>
                   <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                  <div className="discovery-meta-sub">Engagement: {proposal.engagement || 'iBUNIFY Platform & Integrated Services Deployment'}</div>
-                  <div className="discovery-meta-sub">Proposal Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-2026-088'}</div>
+                  <div className="discovery-meta-sub">Engagement: {proposal.engagement || 'ibunify Platform & Integrated Services Deployment'}</div>
+                  <div className="discovery-meta-sub">Proposal Ref: {proposal.proposalNumber || 'IGC-ibunify-2026-088'}</div>
                   <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
                 </div>
 
                 <div className="discovery-meta-col">
                   <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                  <div className="discovery-meta-value-bold">{proposal.preparedBy || proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
+                  <div className="discovery-meta-value-bold">{proposal.preparedBy || proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
                   <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                  <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                  <div className="discovery-meta-sub">{proposal.contacts || proposal.productLead || 'Product Owner: Rama Krishna | CTO'}</div>
+                  <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
+                  <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
+                  <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                 </div>
               </div>
             </div>
@@ -1882,286 +2340,253 @@ export function ProposalPreview({ proposal: rawProposal }) {
         <div className="preview-page-card-header">
           <span>Page 2 of 3 · Scope & Costing</span>
         </div>
-        <section className="discovery-content-paper ctp-content-paper">
+        <section className="custom-proposal-page-paper">
           <img
             src={SAMPLE_LETTERHEAD_BASE64}
             className="letterhead-bg-img"
             alt="Letterhead Background"
           />
           <div className="letterhead-content-wrap">
-            <div className="discovery-p2-body" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <div className="discovery-p2-header-top" style={{ paddingBottom: '6px', borderBottom: '1px solid #cbd5e1', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', color: '#334155', fontWeight: '500' }}>{headerLeft}</span>
-                  <span style={{ fontSize: '11px', color: '#2563eb', fontWeight: '600' }}>{headerRight}</span>
+            <div className="custom-proposal-watermark">ibunify CRM</div>
+            <div className="custom-proposal-inner">
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {/* Section 1 */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '11px', lineHeight: '1.38' }}>
+                  ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* Section 1 */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
-                    <div className="discovery-section-text" style={{ marginBottom: '6px', fontSize: '10px', lineHeight: '1.4' }}>
-                      iBUNIFY is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, iBUNIFY solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.
-                    </div>
-
-                    <div className="ctp-callout-box" style={{ margin: '5px 0', padding: '5px 10px', fontSize: '9.5px' }}>
-                      <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
-                    </div>
-
-                    <div className="ctp-metrics-grid" style={{ margin: '5px 0', gap: '6px' }}>
-                      {metrics.map((m, idx) => (
-                        <div key={idx} className="ctp-metric-card" style={{ padding: '5px 4px' }}>
-                          <div className="ctp-metric-val" style={{ fontSize: '13.5px' }}>{m.value}</div>
-                          <div className="ctp-metric-lbl" style={{ fontSize: '8px' }}>{m.label}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div style={{ fontWeight: '700', fontSize: '10px', color: '#0f2b6e', margin: '5px 0 2px 0' }}>
-                      Integrated Platform Services Overview:
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
-                      {servicesOverview.map((item) => (
-                        <div key={item.key} className="ctp-breakdown-card" style={{ padding: '4px 7px', margin: 0 }}>
-                          <div className="ctp-breakdown-title" style={{ fontSize: '9.5px' }}>
-                            {item.key}. {item.title}
-                          </div>
-                          <div className="ctp-breakdown-features" style={{ fontSize: '8.5px', lineHeight: '1.3' }}>
-                            {item.desc}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Section 2 */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>2. AI CALLING SERVICES & COSTING</h2>
-                    <div className="discovery-section-text" style={{ marginBottom: '3px', fontSize: '9.5px' }}>
-                      iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:
-                    </div>
-                    <div className="discovery-bullet-list" style={{ marginBottom: '4px', gap: '2px' }}>
-                      {aiCallingBullets.map((b, idx) => (
-                        <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.3' }}>• {b}</div>
-                      ))}
-                    </div>
-                    <table className="discovery-pipeline-table">
-                      <thead>
-                        <tr>
-                          <th style={{ width: '32%', padding: '4px 6px', fontSize: '9px' }}>SERVICE COMPONENT</th>
-                          <th style={{ width: '44%', padding: '4px 6px', fontSize: '9px' }}>SCOPE & DELIVERABLES</th>
-                          <th style={{ width: '24%', padding: '4px 6px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {aiCallingItems.map((item) => (
-                          <tr key={item.id}>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', color: '#475569' }}>{item.scope}</td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Section 3 */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>3. CLOUD TELEPHONY SERVICES & COSTING</h2>
-                    <div className="discovery-section-text" style={{ marginBottom: '3px', fontSize: '9.5px' }}>
-                      Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:
-                    </div>
-                    <div className="discovery-bullet-list" style={{ marginBottom: '4px', gap: '2px' }}>
-                      {cloudTelephonyBullets.map((b, idx) => (
-                        <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.3' }}>• {b}</div>
-                      ))}
-                    </div>
-                    <table className="discovery-pipeline-table">
-                      <thead>
-                        <tr>
-                          <th style={{ width: '32%', padding: '4px 6px', fontSize: '9px' }}>SERVICE COMPONENT</th>
-                          <th style={{ width: '44%', padding: '4px 6px', fontSize: '9px' }}>SCOPE & DELIVERABLES</th>
-                          <th style={{ width: '24%', padding: '4px 6px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {cloudTelephonyItems.map((item) => (
-                          <tr key={item.id}>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', color: '#475569' }}>{item.scope}</td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Section 4 */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>4. WHATSAPP AUTOMATION SERVICES & COSTING</h2>
-                    <div className="discovery-section-text" style={{ marginBottom: '3px', fontSize: '9.5px' }}>
-                      Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:
-                    </div>
-                    <div className="discovery-bullet-list" style={{ marginBottom: '4px', gap: '2px' }}>
-                      {whatsappBullets.map((b, idx) => (
-                        <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.3' }}>• {b}</div>
-                      ))}
-                    </div>
-                    <table className="discovery-pipeline-table">
-                      <thead>
-                        <tr>
-                          <th style={{ width: '32%', padding: '4px 6px', fontSize: '9px' }}>SERVICE COMPONENT</th>
-                          <th style={{ width: '44%', padding: '4px 6px', fontSize: '9px' }}>SCOPE & DELIVERABLES</th>
-                          <th style={{ width: '24%', padding: '4px 6px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {whatsappItems.map((item) => (
-                          <tr key={item.id}>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', color: '#475569', whiteSpace: 'pre-line' }}>{item.scope}</td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a', whiteSpace: 'pre-line' }}>{item.investment}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                <div className="ctp-callout-box" style={{ margin: '4px 0', padding: '5px 8px', fontSize: '11px' }}>
+                  <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
                 </div>
+
+                <div className="ctp-metrics-grid" style={{ margin: '4px 0', gap: '5px' }}>
+                  {metrics.map((m, idx) => (
+                    <div key={idx} className="ctp-metric-card" style={{ padding: '5px 4px' }}>
+                      <div className="ctp-metric-val" style={{ fontSize: '15px' }}>{m.value}</div>
+                      <div className="ctp-metric-lbl" style={{ fontSize: '9px' }}>{m.label}</div>
+                    </div>
+
+                <div style={{ fontWeight: '700', fontSize: '11.5px', color: '#0f2b6e', margin: '4px 0 2px 0' }}>
+                  Integrated Platform Services Overview:
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
+                  {servicesOverview.map((item) => (
+                    <div key={item.key} className="ctp-breakdown-card" style={{ padding: '4px 6px', margin: 0 }}>
+                      <div className="ctp-breakdown-title" style={{ fontSize: '11px' }}>
+                        {item.key}. {item.title}
+                      </div>
+                      <div className="ctp-breakdown-features" style={{ fontSize: '10px', lineHeight: '1.3' }}>
+                        {item.desc}
+                      </div>
+                    </div>
+
+              {/* Section 2 */}
+              <div className="discovery-section-block" style={{ marginTop: '2px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>2. AI CALLING SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '10.5px' }}>
+                  ibunify AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:
+                </div>
+                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1.5px' }}>
+                  {aiCallingBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '10.5px', lineHeight: '1.3' }}>• {b}</div>
+                  ))}
+                </div>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '32%', padding: '3px 6px', fontSize: '10.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '3px 6px', fontSize: '10.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '3px 6px', fontSize: '10.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {aiCallingItems.map((item) => (
+                      <tr key={item.id}>
+                        <td style={{ padding: '3px 6px', fontSize: '10.5px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '3px 6px', fontSize: '10.5px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '3px 6px', fontSize: '10.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="discovery-p2-footnote" style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b' }}>
-                <span>{pageFootnote}</span>
-                <span style={{ fontWeight: '600', color: '#334155' }}>Page 2 of 3</span>
+              {/* Section 3 */}
+              <div className="discovery-section-block" style={{ marginTop: '2px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>3. CLOUD TELEPHONY SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '10.5px' }}>
+                  Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:
+                </div>
+                <div className="discovery-bullet-list" style={{ marginBottom: '3px', gap: '1.5px' }}>
+                  {cloudTelephonyBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '10.5px', lineHeight: '1.3' }}>• {b}</div>
+                  ))}
+                </div>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '32%', padding: '3px 6px', fontSize: '10.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '3px 6px', fontSize: '10.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '3px 6px', fontSize: '10.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cloudTelephonyItems.map((item) => (
+                      <tr key={item.id}>
+                        <td style={{ padding: '3px 6px', fontSize: '10.5px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '3px 6px', fontSize: '10.5px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '3px 6px', fontSize: '10.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
       </div>
 
-      {/* PAGE 3: COMMERCIAL INVESTMENT, TERMS & ACCEPTANCE */}
+      {/* PAGE 3: COMMERCIAL SCHEDULE, ROADMAP, TERMS & SIGN-OFF */}
       <div className="preview-page-card">
         <div className="preview-page-card-header">
-          <span>Page 3 of 3 · Commercial Investment, Terms & Acceptance</span>
+          <span>Page 3 of 3 · Commercial Schedule, Terms & Sign-off</span>
         </div>
-        <section className="discovery-content-paper ctp-content-paper">
+        <section className="custom-proposal-page-paper">
           <img
             src={SAMPLE_LETTERHEAD_BASE64}
             className="letterhead-bg-img"
             alt="Letterhead Background"
           />
           <div className="letterhead-content-wrap">
-            <div className="discovery-p2-body" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <div className="discovery-p2-header-top" style={{ paddingBottom: '6px', borderBottom: '1px solid #cbd5e1', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', color: '#334155', fontWeight: '500' }}>{headerLeft}</span>
-                  <span style={{ fontSize: '11px', color: '#2563eb', fontWeight: '600' }}>{headerRight}</span>
+            <div className="custom-proposal-watermark">ibunify CRM</div>
+            <div className="custom-proposal-inner">
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {/* Section 4 */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>4. WHATSAPP AUTOMATION SERVICES & COSTING</h2>
+                <div className="discovery-section-text" style={{ marginBottom: '2px', fontSize: '10.5px' }}>
+                  Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:
                 </div>
+                <div className="discovery-bullet-list" style={{ marginBottom: '2px', gap: '1.5px' }}>
+                  {whatsappBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '10.5px', lineHeight: '1.3' }}>• {b}</div>
+                  ))}
+                </div>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '32%', padding: '2.5px 5px', fontSize: '10.5px' }}>SERVICE COMPONENT</th>
+                      <th style={{ width: '44%', padding: '2.5px 5px', fontSize: '10.5px' }}>SCOPE & DELIVERABLES</th>
+                      <th style={{ width: '24%', padding: '2.5px 5px', fontSize: '10.5px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {whatsappItems.map((item) => (
+                      <tr key={item.id}>
+                        <td style={{ padding: '2.5px 5px', fontSize: '10.5px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '2.5px 5px', fontSize: '10.5px', color: '#475569', whiteSpace: 'pre-line' }}>{item.scope}</td>
+                        <td style={{ padding: '2.5px 5px', fontSize: '10.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a', whiteSpace: 'pre-line' }}>{item.investment}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* Section 5: Overall Commercial Investment Schedule */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</h2>
-                    <table className="discovery-pipeline-table">
-                      <thead>
-                        <tr>
-                          <th style={{ width: '34%', padding: '4px 6px', fontSize: '9px' }}>INVESTMENT COMPONENT</th>
-                          <th style={{ width: '42%', padding: '4px 6px', fontSize: '9px' }}>COMMERCIAL MODEL & INCLUSIONS</th>
-                          <th style={{ width: '24%', padding: '4px 6px', fontSize: '9px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {commercialScheduleItems.map((item) => (
-                          <tr key={item.id}>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px' }}><strong>{item.component}</strong></td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', color: '#475569' }}>{item.scope}</td>
-                            <td style={{ padding: '3.5px 6px', fontSize: '8.5px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
-                          </tr>
-                        ))}
-                        <tr style={{ background: '#f0f7ff', borderTop: '2px solid #2563eb' }}>
-                          <td colSpan="2" style={{ fontWeight: '800', color: '#1e3a8a', padding: '4px 6px', fontSize: '9.5px' }}>
-                            Base Activation Package Total (Excl. Consumption & Lic.)
-                          </td>
-                          <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '4px 6px', fontSize: '10px' }}>
-                            {proposal.baseActivationPackageTotal || proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+              {/* Section 5: Overall Commercial Investment Schedule */}
+              <div className="discovery-section-block">
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>5. OVERALL COMMERCIAL INVESTMENT SCHEDULE</h2>
+                <table className="discovery-pipeline-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '34%', padding: '3px 5px', fontSize: '11px' }}>INVESTMENT COMPONENT</th>
+                      <th style={{ width: '42%', padding: '3px 5px', fontSize: '11px' }}>COMMERCIAL MODEL & INCLUSIONS</th>
+                      <th style={{ width: '24%', padding: '3px 5px', fontSize: '11px', textAlign: 'right' }}>INVESTMENT (INR / ₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {commercialScheduleItems.map((item) => (
+                      <tr key={item.id}>
+                        <td style={{ padding: '3px 5px', fontSize: '11px' }}><strong>{item.component}</strong></td>
+                        <td style={{ padding: '3px 5px', fontSize: '11px', color: '#475569' }}>{item.scope}</td>
+                        <td style={{ padding: '3px 5px', fontSize: '11px', textAlign: 'right', fontWeight: '700', color: '#1e3a8a' }}>{item.investment}</td>
+                      </tr>
+                    ))}
+                    <tr style={{ background: '#f0f7ff', borderTop: '2px solid #2563eb' }}>
+                      <td colSpan="2" style={{ fontWeight: '800', color: '#1e3a8a', padding: '4px 5px', fontSize: '11px' }}>
+                        Base Activation Package Total (Excl. Consumption & Lic.)
+                      </td>
+                      <td style={{ textAlign: 'right', fontWeight: '800', color: '#1e3a8a', padding: '4px 5px', fontSize: '11.5px' }}>
+                        {proposal.baseActivationPackageTotal || proposal.basePackageTotal || '₹75,000 + Wallet / Lic.'}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-                  {/* Section 6 */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>6. IMPLEMENTATION ROADMAP & SLA</h2>
-                    <div className="discovery-bullet-list" style={{ gap: '2px' }}>
-                      {roadmapBullets.map((b, idx) => (
-                        <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.35' }}>• {b}</div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Section 7 */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '11px', marginBottom: '4px' }}>7. TERMS & CONDITIONS</h2>
-                    <div className="discovery-bullet-list" style={{ gap: '2px' }}>
-                      {termsBullets.map((b, idx) => (
-                        <div key={idx} className="discovery-bullet-item" style={{ fontSize: '8.5px', lineHeight: '1.35' }}>• {b}</div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Section 8: Acceptance & Signatures */}
-                  <div className="discovery-section-block">
-                    <h2 className="discovery-section-title" style={{ fontSize: '10.5px', marginBottom: '4px' }}>8. PROPOSAL ACCEPTANCE & SIGN-OFF</h2>
-                    <div className="discovery-section-text" style={{ marginBottom: '5px', fontSize: '8.5px', color: '#334155' }}>
-                      Authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth:
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '10px', width: '100%', boxSizing: 'border-box' }}>
-                      <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '6px 10px', boxSizing: 'border-box' }}>
-                        <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '9.5px', marginBottom: '1px' }}>
-                          {proposal.clientSignatoryHeader || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
-                        </div>
-                        <div style={{ fontSize: '8px', color: '#64748b', marginBottom: '2px' }}>
-                          {proposal.clientSignatorySub || 'Authorized Signatory'}
-                        </div>
-                        <div style={{ height: '20px' }}></div>
-                        <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
-                        <div style={{ fontSize: '8.5px' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                        <div style={{ marginTop: '2px', fontSize: '8.5px' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                        <div style={{ marginTop: '2px', color: '#64748b', fontSize: '8px' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
-                      </div>
-
-                      <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '6px 10px', boxSizing: 'border-box' }}>
-                        <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '9.5px', marginBottom: '1px' }}>
-                          {proposal.providerSignatoryHeader || 'ACCEPTED FOR: iBUNIFY (iGLOBUS)'}
-                        </div>
-                        <div style={{ fontSize: '8px', color: '#64748b', marginBottom: '2px' }}>
-                          {proposal.providerSignatorySub || 'Authorized Signatory'}
-                        </div>
-                        <div style={{ height: '20px' }}></div>
-                        <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
-                        <div style={{ fontSize: '8.5px' }}>Name: {proposal.providerSignatoryName || 'Rama Krishna'}</div>
-                        <div style={{ marginTop: '2px', fontSize: '8.5px' }}>Title: {proposal.providerSignatoryTitle || 'CTO'}</div>
-                        <div style={{ marginTop: '2px', color: '#64748b', fontSize: '8px' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
-                      </div>
-                    </div>
-
-                    <div className="discovery-corp-box" style={{ marginTop: '6px', padding: '4px 8px', fontSize: '8px', lineHeight: '1.3', background: '#f0f7ff', border: '1px solid #bfdbfe', borderRadius: '4px' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e' }}>{proposal.corporateFooterCompany || 'iBUNIFY CRM by iGLOBUS Corporate Consulting'}</div>
-                      <div>{proposal.corporateFooterAddress || 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081'} | Contact: Rama Krishna | CTO (+91 78420 97496)</div>
-                    </div>
-                  </div>
+              {/* Section 6: Implementation Roadmap & SLA */}
+              <div className="discovery-section-block" style={{ marginTop: '1px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>6. IMPLEMENTATION ROADMAP & SLA</h2>
+                <div className="discovery-bullet-list" style={{ gap: '1.5px' }}>
+                  {roadmapBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '11px', lineHeight: '1.3' }}>• {b}</div>
+                  ))}
                 </div>
               </div>
 
-              <div className="discovery-p2-footnote" style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b' }}>
-                <span>{pageFootnote}</span>
-                <span style={{ fontWeight: '600', color: '#334155' }}>Page 3 of 3</span>
+              {/* Section 7: Terms & Conditions */}
+              <div className="discovery-section-block" style={{ marginTop: '1px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>7. TERMS & CONDITIONS</h2>
+                <div className="discovery-bullet-list" style={{ gap: '1.5px' }}>
+                  {termsBullets.map((b, idx) => (
+                    <div key={idx} className="discovery-bullet-item" style={{ fontSize: '11px', lineHeight: '1.3' }}>• {b}</div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section 8: Acceptance & Signatures */}
+              <div className="discovery-section-block" style={{ marginTop: '1px' }}>
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '4px', borderBottom: '2px solid #0f2b6e', paddingBottom: '1px', display: 'inline-block' }}>
+                  8. AUTHORIZATION & SIGN-OFF
+                </h2>
+
+                <div style={{ display: 'flex', gap: '10px', width: '100%', boxSizing: 'border-box', marginTop: '2px' }}>
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '7px 11px', boxSizing: 'border-box' }}>
+                    <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '1px' }}>
+                      {proposal.clientSignatoryHeader || `FOR: [${proposal.preparedFor || 'CLIENT COMPANY NAME'}]`}
+                    </div>
+                    <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '2px' }}>
+                      {proposal.clientSignatorySub || 'Client Authorized Signatory'}
+                    </div>
+                    <div style={{ height: '18px' }}></div>
+                    <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
+                    <div className="sign-line" style={{ fontSize: '11px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
+                    <div className="sign-line" style={{ fontSize: '11px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
+                    <div className="sign-date" style={{ fontSize: '10.5px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                  </div>
+
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '7px 11px', boxSizing: 'border-box' }}>
+                    <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '1px' }}>
+                      {proposal.providerSignatoryHeader || 'FOR: ibunify (iGLOBUS)'}
+                    </div>
+                    <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '2px' }}>
+                      {proposal.providerSignatorySub || 'Service Provider Signatory'}
+                    </div>
+                    <div style={{ height: '18px' }}></div>
+                    <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '3px' }}></div>
+                    <div className="sign-line" style={{ fontSize: '11px', color: '#1e293b' }}>Name: {proposal.providerSignatoryName || proposal.leadSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                    <div className="sign-line" style={{ fontSize: '11px', color: '#1e293b' }}>Title: {proposal.providerSignatoryTitle || proposal.leadSignatoryTitle || 'Director'}</div>
+                    <div className="sign-date" style={{ fontSize: '10.5px', color: '#1e293b' }}>Date: {proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
       </div>
     </div>
   );
