@@ -26,7 +26,7 @@ export const sampleProposal = {
   company: 'ibunify (iGLOBUS Corporate Consulting)',
   badge: 'SPECIALIZED COMMERCIAL & TECHNICAL PROPOSAL',
   proposalTitle: 'Unified CRM, Communication & AI Sales Automation',
-  subtitle: 'Built for High-Velocity Real Estate & Sales Enterprises',
+  subtitle: '',
   description:
     'One Platform. Every Connection. Endless Growth. Connecting Meta Ads, Google Ads, Portals, Cloud Telephony, WhatsApp Business, and Conversational AI into one cohesive pipeline.',
   headerLeft: 'iBUNIFY CRM by iGLOBUS | Commercial & Services Proposal',
@@ -75,7 +75,7 @@ export const sampleProposal = {
   ],
   aiCallingBullets: [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
-    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
+    'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ],
@@ -191,8 +191,8 @@ export const sampleProposal = {
   clientSignDate: '____________________________',
   providerSignatoryHeader: 'ACCEPTED FOR: iBUNIFY (iGLOBUS)',
   providerSignatorySub: 'Authorized Signatory',
-  providerSignatoryName: 'Ramyasree / Rama Krishna',
-  providerSignatoryTitle: 'Product Lead & Enterprise Practice',
+  providerSignatoryName: 'Rama Krishna',
+  providerSignatoryTitle: 'Enterprise Practice Leads',
   providerSignDate: 'August 25, 2026',
   corporateFooterCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting',
   corporateFooterAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
@@ -209,7 +209,7 @@ export const sampleProposal = {
       id: 'sec-2',
       title: '2. AI CALLING SERVICES & COSTING',
       content:
-        'iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.\n\nCommercial Schedule:\n• AI Voice Agent Engine: Included in Setup\n• AI Calling Usage: ₹7 / completed incoming or outgoing conversational call'
+        'iBUNIFY AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.\n\nCommercial Schedule:\n• AI Voice Agent Engine: Included in Setup\n• AI Calling Usage: ₹7 / completed incoming or outgoing conversational call'
     },
     {
       id: 'sec-3',
@@ -245,7 +245,7 @@ export const sampleProposal = {
       id: 'sec-8',
       title: '8. PROPOSAL ACCEPTANCE & SIGN-OFF',
       content:
-        'By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.\n\nACCEPTED FOR: [CLIENT ENTERPRISE]\nName: ___________________________\nTitle: ____________________________\nDate: ____________________________\n\nACCEPTED FOR: iBUNIFY (iGLOBUS)\nName: Ramyasree / Rama Krishna\nTitle: Product Lead & Enterprise Practice\nDate: August 25, 2026'
+        'By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.\n\nACCEPTED FOR: [CLIENT ENTERPRISE]\nName: ___________________________\nTitle: ____________________________\nDate: ____________________________\n\nACCEPTED FOR: iBUNIFY (iGLOBUS)\nName: Rama Krishna\nTitle: Enterprise Practice Leads\nDate: August 25, 2026'
     }
   ]
 };
