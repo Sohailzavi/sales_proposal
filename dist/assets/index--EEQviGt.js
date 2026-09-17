@@ -1124,7 +1124,7 @@ Marketing Message: ₹0.87 / message`,investment:`₹10,000 Prepaid
     .paper-page { width: 210mm; height: 297mm; box-sizing: border-box; padding: 34px 44px 28px 44px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
     .paper-page:last-child { page-break-after: auto; }
     .paper-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 84px; font-weight: 900; color: rgba(15, 23, 42, 0.032); pointer-events: none; white-space: nowrap; z-index: 0; text-transform: uppercase; letter-spacing: 0.08em; }
-    .paper-inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .paper-inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: flex-start; height: 100%; box-sizing: border-box; }
     
     .p-top { display: flex; justify-content: space-between; font-size: 11px; color: #334155; padding-bottom: 6px; border-bottom: 1px solid #cbd5e1; margin-bottom: 12px; }
     .p-footnote { margin-top: auto; padding-top: 8px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 10.5px; color: #64748b; }
