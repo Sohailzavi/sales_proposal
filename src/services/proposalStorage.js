@@ -11,8 +11,105 @@ export function loadProposalsFromStorage() {
       if (Array.isArray(parsed) && parsed.length > 0) {
         // Filter out legacy compact invoices and ensure INR currency with GST
         const withoutCompact = parsed.filter((p) => p.invoiceStyle !== 'compact');
+<<<<<<< HEAD
         const cleaned = withoutCompact.map((p) => {
           const company = p.company === 'I-Globus Corporate Consulting' ? 'iGlobus Corporate Consulting' : p.company;
+=======
+        const cleanDateField = (val) => {
+          if (!val || typeof val !== 'string') return '';
+          const trimmed = val.trim();
+          if (
+            trimmed === '[Date]' ||
+            trimmed === '[Effective Date]' ||
+            trimmed === 'August 2026' ||
+            trimmed === '2026-09-10' ||
+            trimmed === '2026-09-11' ||
+            trimmed === '2026-09-12' ||
+            trimmed === '2026-09-13' ||
+            trimmed === '2026-09-14' ||
+            trimmed === '2026-09-15'
+          ) {
+            return '';
+          }
+          return trimmed;
+        };
+        const cleanContactsField = (c) => {
+          if (!c || c.includes('Contacts: Rama Krishna') || c === 'Rama Krishna | Sohail' || c === 'Rama Krishna | Sohail | Ramyasree') {
+            return 'Product Owner: Rama Krishna | CTO';
+          }
+          return c;
+        };
+        const cleanProductLeadField = (pl) => {
+          if (!pl || pl === 'Rama Krishna' || pl === 'Product Lead: Rama Krishna' || pl === 'Rama Krishna | CTO' || pl.includes('Ramyasree') || pl === 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)') {
+            return 'Product Lead: Ramya | Sohail';
+          }
+          return pl;
+        };
+        const cleanSignatoryTitle = (st) => {
+          if (!st || st.includes('Practice Leads') || st.includes('Enterprise Lead')) {
+            return 'Enterprise Practice Leads';
+          }
+          return st;
+        };
+        const cleanAddress = (addr) => {
+          if (!addr || addr.includes('Madhapur') || addr.includes('Hyderabad')) {
+            return 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad';
+          }
+          return addr;
+        };
+        const cleanPortalsField = (portals) => {
+          if (!portals) return 'Website: www.ibunify.com | www.iglobuscc.com';
+          const lower = portals.toLowerCase();
+          if (lower.includes('ibunify.com') || lower.includes('iglobuscc.com') || lower.startsWith('portals:') || lower.startsWith('digital portals:')) {
+            return 'Website: www.ibunify.com | www.iglobuscc.com';
+          }
+          return portals.replace(/^(Portals|Digital Portals):\s*/i, 'Website: ');
+        };
+        const cleanProposalNumber = (num, docType) => {
+          if (docType === 'commercial_proposal' && (!num || num === 'IGC-ibunify-PROP-2026')) {
+            return 'IGC-ibunify-05-2026';
+          }
+          return num;
+        };
+        const cleanPreparedFor = (pf) => {
+          if (!pf || pf === 'Client Company Name') {
+            return '[Client Company Name]';
+          }
+          return pf;
+        };
+        const cleaned = sanitizeProposalData(withoutCompact).map((p) => {
+          let company = (p.company === 'I-Globus Corporate Consulting' || p.company === 'iGlobus Corporate Consulting') ? 'iGLOBUS Corporate Consulting' : p.company;
+          if (company === 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)' || company === 'ibunify (iGLOBUS Corporate Consulting)') {
+            company = 'ibunify (iGLOBUS Corporate Consulting)';
+          }
+          const sanitizedProposal = {
+            ...p,
+            proposalNumber: cleanProposalNumber(p.proposalNumber, p.documentType),
+            preparedFor: cleanPreparedFor(p.preparedFor),
+            companyAddress: cleanAddress(p.companyAddress),
+            portals: cleanPortalsField(p.portals),
+            contacts: cleanContactsField(p.contacts),
+            productLead: cleanProductLeadField(p.productLead),
+            leadSignatoryTitle: cleanSignatoryTitle(p.leadSignatoryTitle),
+            providerSignatoryTitle: cleanSignatoryTitle(p.providerSignatoryTitle),
+            acceptedByDesignation: cleanSignatoryTitle(p.acceptedByDesignation),
+            footerContacts: p.footerContacts ? cleanContactsField(p.footerContacts) : p.footerContacts,
+            date: cleanDateField(p.date),
+            effectiveDate: cleanDateField(p.effectiveDate),
+            executionDate: cleanDateField(p.executionDate),
+            poDate: cleanDateField(p.poDate),
+            handoverDate: cleanDateField(p.handoverDate),
+            clientSignDate: cleanDateField(p.clientSignDate),
+            leadSignDate: cleanDateField(p.leadSignDate),
+            providerSignDate: cleanDateField(p.providerSignDate),
+            issuedByDate: cleanDateField(p.issuedByDate),
+            acceptedByDate: cleanDateField(p.acceptedByDate),
+            acceptedDate: cleanDateField(p.acceptedDate),
+            deliveredDate: cleanDateField(p.deliveredDate),
+            handoverAcceptClientDate: cleanDateField(p.handoverAcceptClientDate),
+            handoverDeliveredLeadDate: cleanDateField(p.handoverDeliveredLeadDate),
+          };
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
           if (p.documentType === 'invoice') {
             return {
               ...p,

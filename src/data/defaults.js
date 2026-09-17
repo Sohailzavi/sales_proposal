@@ -6,6 +6,7 @@ export const LOGIN_PASSWORD = 'Sales@2026';
 export const OFFICIAL_PROPOSAL_FILE = '/iBunify-Overall-Proposal.pdf';
 
 export const documentFormats = [
+<<<<<<< HEAD
   { id: 'all', label: 'All Assets', extension: 'ALL', count: 11 },
   { id: 'pdf', label: 'Corporate Deck', extension: 'PDF', count: 1 },
   { id: 'discovery', label: 'Discovery & Scoping', extension: 'DISC', count: 1 },
@@ -18,6 +19,20 @@ export const documentFormats = [
   { id: 'closure', label: 'Closure', extension: 'CLS', count: 1 },
   { id: 'proposal', label: 'Custom Proposal', extension: 'PROP', count: 1 },
   { id: 'invoice', label: 'Invoices', extension: 'INV', count: 1 }
+=======
+  { id: 'all', label: 'All Assets', extension: 'ALL' },
+  { id: 'pdf', label: 'Corporate Deck', extension: 'PDF' },
+  { id: 'discovery', label: 'Discovery & Scoping', extension: 'DISC' },
+  { id: 'nda', label: 'Mutual NDA', extension: 'NDA' },
+  { id: 'msa', label: 'Master Services Agreement', extension: 'MSA' },
+  { id: 'commercial_proposal', label: 'Statement of Work (SOW)', extension: 'SOW' },
+  { id: 'sla', label: 'Service Level Agreement', extension: 'SLA' },
+  { id: 'po', label: 'Purchase Order', extension: 'PO' },
+  { id: 'handover', label: 'Delivery', extension: 'DEL' },
+  { id: 'closure', label: 'Closure', extension: 'CLS' },
+  { id: 'proposal', label: 'Proposal', extension: 'PROP' },
+  { id: 'invoice', label: 'Invoices', extension: 'INV' }
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
 ];
 
 export const sampleProposal = {
@@ -34,9 +49,16 @@ export const sampleProposal = {
   engagement: 'iBUNIFY Platform & Integrated Services Deployment',
   preparedBy: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   productLead: 'Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)',
   date: new Date().toISOString().slice(0, 10),
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+  date: 'August 25, 2026',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   validUntil: '',
   currency: 'INR',
   useStructuredCommercials: false,
@@ -113,8 +135,14 @@ export const sampleDiscoveryDoc = {
   clientAttention: 'Attn: Project Sponsor / Sales Leadership',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   clientSignatory: 'Client Signatory: ______________________',
   leadSignatory: 'iBUNIFY Lead: Rama Krishna / Sohail',
   footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
@@ -192,8 +220,14 @@ export const sampleNdaDoc = {
   clientAttention: 'Attn: Project Sponsor / Sales Leadership',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   clientSignatory: 'FOR: [CLIENT COMPANY NAME]',
   clientSignatoryName: '',
   leadSignatory: 'FOR: iBUNIFY (iGLOBUS)',
@@ -247,8 +281,14 @@ export const sampleMsaDoc = {
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   clientSignatory: 'FOR: [CLIENT COMPANY NAME]',
   clientSignatoryName: '',
   leadSignatory: 'FOR: iBUNIFY (iGLOBUS)',
@@ -306,6 +346,7 @@ export const sampleCommercialProposalDoc = {
   date: new Date().toISOString().slice(0, 10),
   effectiveDate: '[Effective Date]',
   preparedFor: '[Client Company Name]',
+<<<<<<< HEAD
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
   engagement: 'iBUNIFY CRM & Automation Platform Deployment',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting Pvt. Ltd.)',
@@ -314,6 +355,17 @@ export const sampleCommercialProposalDoc = {
   contacts: 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390)',
   productLead: 'Product Lead: Ramyasree (+91 63005 61742)',
   footerCompany: 'iBUNIFY CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+=======
+  clientAttention: 'Attn: Project Sponsor / Sales Leadership',
+  engagement: 'ibunify CRM & Automation Platform Deployment',
+  company: 'ibunify (iGLOBUS Corporate Consulting)',
+  companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+  footerContacts: 'Product Owner: Rama Krishna | CTO',
+  footerCompany: 'ibunify CRM by iGLOBUS Corporate Consulting Pvt. Ltd.',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerContacts: 'Contacts: Rama Krishna (+91 78420 97496) | Sohail (+91 96032 70390) | Ramyasree (+91 63005 61742)',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
@@ -459,8 +511,14 @@ export const sampleSlaDoc = {
   clientAttention: 'Attn: [Project Sponsor / Sales Leadership]',
   company: 'iBUNIFY (iGLOBUS Corporate Consulting)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   uptimeCommitment:
     'iBUNIFY guarantees a minimum of 99.9% Platform Availability for core cloud telephony, CRM databases, and AI routing endpoints, excluding scheduled maintenance windows.',
   incidentBenchmarks: [
@@ -527,8 +585,14 @@ export const samplePoDoc = {
   paymentTerms: 'NET 30',
   currency: 'INR (₹)',
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   orderScheduleItems: [
     {
       id: 'po-item-1',
@@ -598,8 +662,14 @@ export const sampleHandoverDoc = {
   proposalNumber: 'IGC-IBUNIFY-08-2026',
   date: new Date().toISOString().slice(0, 10),
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   scopeVerificationText:
     'This Delivery & Handover Document certifies that the implementation of the iBUNIFY CRM Platform has been completed in accordance with the Statement of Work.',
   handoverChecklistItems: [
@@ -667,8 +737,14 @@ export const sampleClosureDoc = {
   proposalNumber: 'IGC-IBUNIFY-09-2026',
   date: new Date().toISOString().slice(0, 10),
   companyAddress: 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad',
+<<<<<<< HEAD
   portals: 'Portals: www.ibunify.com | www.iglobuscc.com',
   contacts: 'Contacts: Rama Krishna | Sohail | Ramyasree',
+=======
+  portals: 'Website: www.ibunify.com | www.iglobuscc.com',
+  contacts: 'Product Owner: Rama Krishna | CTO',
+  productLead: 'Product Lead: Ramya | Sohail',
+>>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
   formalClosureStatement:
     'This Project Closure Certificate formally confirms that the Phase-I deployment of the iBUNIFY CRM Platform for [Client Company Name] is complete and operational.',
   operationalMetrics: [
