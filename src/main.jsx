@@ -609,14 +609,14 @@ function App() {
 
   const handleOpenBuilder = () => {
     let target = proposals.find(
-      (p) => p.id === activeProposalId && p.documentType !== 'invoice' && p.documentType !== 'discovery' && p.documentType !== 'nda' && p.documentType !== 'msa' && p.documentType !== 'commercial_proposal' && p.documentType !== 'sla' && p.documentType !== 'po' && p.documentType !== 'handover' && p.documentType !== 'closure'
+      (p) => p.documentType === 'proposal' || p.id === 'sample-ibunify-proposal-001' || p.id === 'sample-custom-proposal-001'
     );
     if (!target) {
-      target = proposals.find((p) => p.documentType !== 'invoice' && p.documentType !== 'discovery' && p.documentType !== 'nda' && p.documentType !== 'msa' && p.documentType !== 'commercial_proposal' && p.documentType !== 'sla' && p.documentType !== 'po' && p.documentType !== 'handover' && p.documentType !== 'closure');
-    }
-    if (!target) {
-      target = { ...sampleProposal, id: `prop-${Date.now()}` };
+      target = { ...sampleProposal, id: 'sample-ibunify-proposal-001', documentType: 'proposal' };
       setProposals((prev) => [target, ...prev]);
+    } else {
+      target = { ...sampleProposal, id: target.id, documentType: 'proposal' };
+      setProposals((prev) => prev.map((p) => (p.id === target.id ? target : p)));
     }
     setActiveProposalId(target.id);
     setSelectedId(target.sections?.[0]?.id || null);

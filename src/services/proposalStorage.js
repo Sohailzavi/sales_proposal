@@ -132,7 +132,7 @@ export function loadProposalsFromStorage() {
               invoiceStyle: 'standard'
             };
           }
-          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || p.documentType === 'proposal' || (p.proposalTitle && (p.proposalTitle.includes('Digital Workspace') || p.proposalTitle.includes('Unified CRM')))) {
+          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || p.documentType === 'proposal') {
             return {
               ...sampleProposal,
               id: p.id || 'sample-ibunify-proposal-001',
