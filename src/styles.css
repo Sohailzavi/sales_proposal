@@ -468,8 +468,162 @@ textarea { resize: vertical; line-height: 1.55; }
 .letterhead-content-wrap {
   position: relative;
   z-index: 1;
-  padding: 135px 48px 145px 48px;
+  padding: 120px 44px 135px 44px;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page 2: Crisp White Structured Content Paper */
+.discovery-content-paper {
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1120px;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.discovery-p2-header {
+  margin-bottom: 16px;
+}
+
+.discovery-p2-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #475569;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.confidential-tag {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.discovery-p2-sub-bar {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #2563eb;
+  letter-spacing: 0.06em;
+  margin-top: 8px;
+}
+
+.discovery-p2-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.discovery-section-block {
+  margin-bottom: 2px;
+}
+
+.discovery-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid #2563eb;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+.discovery-section-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #334155;
+  white-space: pre-wrap;
+}
+
+.discovery-bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.discovery-bullet-item {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.discovery-pipeline-table-wrap {
+  margin-top: 6px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+}
+
+.discovery-pipeline-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  border: 1px solid #cbd5e1;
+  table-layout: fixed;
+}
+
+.discovery-pipeline-table th {
+  background: #0f2b6e;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 6px 10px;
+  letter-spacing: 0.04em;
+  border-right: 1px solid #1e3a8a;
+}
+
+.discovery-pipeline-table td {
+  padding: 6px 10px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #334155;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.discovery-pipeline-table tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+.stage-name-cell strong {
+  color: #1e3a8a;
+  font-size: 11.5px;
+}
+
+.discovery-signoff-desc {
+  font-size: 12px;
+  color: #334155;
+  margin: 0 0 8px 0;
+}
+
+.discovery-signoff-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 11.5px;
 }
 .cover-block { border-bottom: 4px solid #5b4bdb; padding-bottom: 28px; margin-bottom: 28px; overflow-wrap: break-word; word-break: break-word; }
 .brand-mark { color: #5b4bdb; text-transform: uppercase; font-weight: 900; letter-spacing: .12em; }
@@ -527,18 +681,50 @@ article h2 { color: #2e2a76; font-size: 21px; border-bottom: 1px solid #e1e3eb; 
   body { background: #ffffff !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .topbar, .sidebar, .editor, .proposal-selector-bar, .preview-page-card-header, .document-sidebar, .locked-header-footer-box { display: none !important; }
   .workspace, .workspace.preview-only, .workspace.official-library { display: block !important; padding: 0 !important; max-width: none !important; margin: 0 !important; }
-  .proposal-pages-container { gap: 0 !important; display: block !important; }
-  .proposal-page-card-wrapper { max-width: none !important; width: 100% !important; margin: 0 !important; page-break-after: always !important; }
-  .proposal-page-card-wrapper:last-child { page-break-after: auto !important; }
-  .sample-letterhead-paper {
+  .proposal-pages-container, .discovery-pages-container, .nda-pages-container, .msa-pages-container, .commercial-proposal-pages-container, .sla-pages-container, .po-pages-container, .handover-pages-container, .closure-pages-container, .invoice-pages-container { gap: 0 !important; display: block !important; }
+  .proposal-page-card-wrapper, .preview-page-card { max-width: none !important; width: 100% !important; margin: 0 !important; page-break-after: always !important; break-after: page !important; }
+  .proposal-page-card-wrapper:last-child, .preview-page-card:last-child { page-break-after: auto !important; break-after: auto !important; }
+  .sample-letterhead-paper,
+  .standard-invoice-paper,
+  .compact-invoice-paper,
+  .discovery-cover-paper,
+  .discovery-content-paper,
+  .nda-cover-paper,
+  .nda-content-paper,
+  .msa-cover-paper,
+  .msa-content-paper,
+  .ctp-cover-paper,
+  .ctp-content-paper,
+  .sla-cover-paper,
+  .sla-content-paper,
+  .po-cover-paper,
+  .po-content-paper,
+  .handover-cover-paper,
+  .handover-content-paper,
+  .closure-cover-paper,
+  .closure-content-paper {
     width: 210mm !important;
     height: 297mm !important;
     max-width: none !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
+    page-break-after: always !important;
+    break-after: page !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+  .preview-section-block,
+  .discovery-section-block,
+  .commercial-preview-block,
+  .discovery-pipeline-table,
+  .ctp-gantt-table,
+  .discovery-signoff-box,
+  .nda-signoff-box,
+  .ctp-callout-box,
+  .ctp-breakdown-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 }
 
@@ -1472,7 +1658,6 @@ html::-webkit-scrollbar,
 .closure-content-paper {
   box-sizing: border-box;
   width: 794px;
-  height: 1120px;
   min-height: 1120px;
   background-color: #ffffff;
   color: #1e293b;
@@ -1521,6 +1706,8 @@ html::-webkit-scrollbar,
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
 
 .discovery-cover-top {
@@ -1552,8 +1739,8 @@ html::-webkit-scrollbar,
 }
 
 .discovery-cover-main {
-  margin: 28px 0 0 0;
-  padding-top: 16px;
+  margin: 36px 0 auto;
+  padding-top: 24px;
 }
 
 .discovery-badge-pill {
@@ -1640,11 +1827,13 @@ html::-webkit-scrollbar,
 
 .discovery-cover-footer-brand span {
   font-weight: 700;
+  color: #0b1f4d;
 }
 
 .discovery-cover-footer-brand small {
   font-size: 9px;
   letter-spacing: 0.1em;
+  color: #2563eb;
 }
 
 /* Page 2: Crisp White Structured Content Paper */
@@ -1652,9 +1841,7 @@ html::-webkit-scrollbar,
   box-sizing: border-box;
   width: 794px;
   min-height: 1120px;
-  padding: 0;
-  position: relative;
-  overflow: hidden;
+  padding: 44px 48px 36px;
   background: #ffffff;
   color: #1e293b;
   border-radius: 8px;
@@ -1666,16 +1853,16 @@ html::-webkit-scrollbar,
 }
 
 .discovery-p2-header {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .discovery-p2-header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: 11.5px;
   color: #475569;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #cbd5e1;
 }
 
@@ -1685,39 +1872,39 @@ html::-webkit-scrollbar,
 }
 
 .discovery-p2-sub-bar {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   color: #2563eb;
   letter-spacing: 0.06em;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .discovery-p2-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   flex: 1;
 }
 
 .discovery-section-block {
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .discovery-section-title {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
   color: #1e3a8a;
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   border-bottom: 2px solid #2563eb;
   display: inline-block;
-  padding-bottom: 2px;
+  padding-bottom: 3px;
 }
 
 .discovery-section-text {
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.6;
   color: #334155;
   white-space: pre-wrap;
 }
@@ -1725,18 +1912,18 @@ html::-webkit-scrollbar,
 .discovery-bullet-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .discovery-bullet-item {
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: #334155;
 }
 
 .discovery-pipeline-table-wrap {
-  margin-top: 6px;
-  margin-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 10px;
   overflow-x: auto;
 }
 
@@ -1744,30 +1931,27 @@ html::-webkit-scrollbar,
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  border: 1px solid #cbd5e1;
-  table-layout: fixed;
+  border: 1px solid #e2e8f0;
 }
 
 .discovery-pipeline-table th {
   background: #0f2b6e;
   color: #ffffff;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 6px 10px;
+  padding: 8px 12px;
   letter-spacing: 0.04em;
   border-right: 1px solid #1e3a8a;
 }
 
 .discovery-pipeline-table td {
-  padding: 6px 10px;
-  font-size: 11.5px;
-  line-height: 1.35;
+  padding: 9px 12px;
+  font-size: 12px;
+  line-height: 1.45;
   color: #334155;
   border-bottom: 1px solid #e2e8f0;
   border-right: 1px solid #e2e8f0;
   vertical-align: top;
-  word-break: break-word;
-  overflow-wrap: break-word;
 }
 
 .discovery-pipeline-table tr:nth-child(even) td {
@@ -1776,30 +1960,30 @@ html::-webkit-scrollbar,
 
 .stage-name-cell strong {
   color: #1e3a8a;
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .discovery-signoff-desc {
-  font-size: 12px;
+  font-size: 12.5px;
   color: #334155;
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
 }
 
 .discovery-signoff-box {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding: 10px 14px;
+  gap: 20px;
+  padding: 14px 16px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  font-size: 11.5px;
+  font-size: 12.5px;
 }
 
 .discovery-signoff-col {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .discovery-signoff-col .sign-line {
@@ -1809,19 +1993,19 @@ html::-webkit-scrollbar,
 
 .discovery-signoff-col .sign-date {
   color: #64748b;
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .discovery-corp-footer-box {
   text-align: center;
-  font-size: 10.5px;
-  line-height: 1.4;
+  font-size: 11px;
+  line-height: 1.5;
   color: #475569;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: #f0f7ff;
   border: 1px solid #dbeafe;
   border-radius: 6px;
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .discovery-corp-footer-box .corp-name {
@@ -1837,11 +2021,11 @@ html::-webkit-scrollbar,
 .discovery-p2-footnote {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 10.5px;
   color: #94a3b8;
-  padding-top: 6px;
+  padding-top: 12px;
   border-top: 1px solid #e2e8f0;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 /* ==========================================================================
@@ -2257,4 +2441,93 @@ html::-webkit-scrollbar,
   line-height: 1.5;
 }
 
+/* Page-Aligned Editor Block Styles */
+.editor-page-block {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+}
+
+.editor-page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0f7ff;
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #bfdbfe;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.editor-sub-heading {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f2b6e;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editor-dual-sign-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+/* 4-Page Custom Proposal Paper Styles */
+.custom-proposal-page-paper {
+  box-sizing: border-box;
+  width: 794px;
+  height: 1120px;
+  min-height: 1120px;
+  background-color: #ffffff;
+  color: #1e293b;
+  border-radius: 6px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 34px 44px 28px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.custom-proposal-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 78px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: rgba(15, 43, 110, 0.032);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+  user-select: none;
+}
+
+.custom-proposal-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+}
 

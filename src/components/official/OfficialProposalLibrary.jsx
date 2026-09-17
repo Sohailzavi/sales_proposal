@@ -1,7 +1,6 @@
 import React from 'react';
 import { OFFICIAL_PROPOSAL } from '../../data/officialProposal.js';
 import { documentFormats } from '../../data/defaults.js';
-import { proposalTemplates } from '../../data/templates.js';
 import { downloadOfficialPdf } from '../../services/exportService.js';
 import {
   IconAllAssets,
@@ -65,8 +64,6 @@ export function OfficialProposalLibrary({
   onOpenClosure,
   onSelectTemplate
 }) {
-  const invoiceTemplates = proposalTemplates.filter((t) => t.category === 'Invoice');
-
   return (
     <>
       <aside className="document-sidebar panel" aria-label="Document workspace">
@@ -111,65 +108,9 @@ export function OfficialProposalLibrary({
                 <span className="format-icon">{getFormatIcon(format.id)}</span>
                 <span className="format-name">{format.label}</span>
               </span>
-              {format.count !== undefined && <span className="format-count">{format.count}</span>}
             </button>
           ))}
         </nav>
-
-        <div className="document-list">
-          <div className="document-list-label">Deliverables</div>
-
-          {(activeDocumentFormat === 'all' || activeDocumentFormat === 'pdf') && (
-            <button
-              type="button"
-              className="document-card active invoice-card-btn"
-              onClick={downloadOfficialPdf}
-            >
-              <span className="file-icon-box pdf">
-                <IconCorporateDeck size={18} />
-              </span>
-              <span>
-                <strong>AI-Powered Unified Custo...</strong>
-                <small>Official proposal · {OFFICIAL_PROPOSAL.fileSize}</small>
-              </span>
-            </button>
-          )}
-
-          {(activeDocumentFormat === 'all' || activeDocumentFormat === 'proposal') && (
-            <button
-              type="button"
-              className="document-card invoice-card-btn"
-              onClick={onOpenBuilder}
-            >
-              <span className="file-icon-box prop">
-                <IconCustomProposal size={18} />
-              </span>
-              <span>
-                <strong>Custom Proposal</strong>
-                <small>Editable Proposal · Deal Studio</small>
-              </span>
-            </button>
-          )}
-
-          {(activeDocumentFormat === 'all' || activeDocumentFormat === 'invoice') && (
-            invoiceTemplates.map((tpl) => (
-              <button
-                key={tpl.id}
-                type="button"
-                className="document-card invoice-card-btn"
-                onClick={onOpenInvoice}
-              >
-                <span className="file-icon-box inv">
-                  <IconInvoices size={18} />
-                </span>
-                <span>
-                  <strong>{tpl.name}</strong>
-                  <small>Editable Invoice · Standard Executive</small>
-                </span>
-              </button>
-            ))
-          )}
-        </div>
       </aside>
 
       {(activeDocumentFormat === 'all' || activeDocumentFormat === 'pdf') ? (
@@ -191,7 +132,7 @@ export function OfficialProposalLibrary({
             <div className="pdf-inner-clipper">
               <iframe
                 src={`${OFFICIAL_PROPOSAL.filePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
-                title="Official iGlobus Proposal PDF"
+                title="Official iGLOBUS Proposal PDF"
                 className="official-pdf"
                 scrolling="no"
               />
@@ -203,7 +144,7 @@ export function OfficialProposalLibrary({
           <div className="empty-file-icon">
             <IconCustomProposal size={34} />
           </div>
-          <h2>Proposal Studio</h2>
+          <h2>Custom Proposal Studio</h2>
           <p>Create, customize, and export interactive business proposals tailored to your client's needs.</p>
           <div className="invoice-action-buttons">
             <button type="button" className="primary-blue-btn" onClick={onOpenBuilder}>

@@ -490,7 +490,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -662,7 +662,7 @@ export function SectionEditor({
           <label>
             <span>ibunify Lead Signatory</span>
             <input
-              value={proposal.leadSignatory || 'ibunify Lead: Rama Krishna'}
+              value={proposal.leadSignatory || 'ibunify Lead: Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatory', e.target.value)}
             />
           </label>
@@ -798,7 +798,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -921,7 +921,7 @@ export function SectionEditor({
           <label>
             <span>ibunify Signatory Name</span>
             <input
-              value={proposal.leadSignatoryName || 'Rama Krishna'}
+              value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
@@ -1054,7 +1054,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -1177,7 +1177,7 @@ export function SectionEditor({
           <label>
             <span>ibunify Signatory Name</span>
             <input
-              value={proposal.leadSignatoryName || 'Rama Krishna'}
+              value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
@@ -1333,7 +1333,7 @@ export function SectionEditor({
           <label>
             <span>Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -1641,7 +1641,7 @@ export function SectionEditor({
           <label>
             <span>ibunify Lead Signatory</span>
             <input
-              value={proposal.leadSignatoryName || 'Rama Krishna'}
+              value={proposal.leadSignatoryName || 'Rama Krishna / Sohail'}
               onChange={(e) => onUpdateField('leadSignatoryName', e.target.value)}
             />
           </label>
@@ -1763,7 +1763,7 @@ export function SectionEditor({
           <label>
             <span>Digital Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -2056,7 +2056,7 @@ export function SectionEditor({
           <label>
             <span>Digital Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -2249,7 +2249,7 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Authorized By</span>
               <input
-                value={proposal.acceptedByAuthorized || 'Rama Krishna'}
+                value={proposal.acceptedByAuthorized || 'Rama Krishna / Sohail'}
                 onChange={(e) => onUpdateField('acceptedByAuthorized', e.target.value)}
               />
             </label>
@@ -2684,7 +2684,7 @@ export function SectionEditor({
           <label>
             <span>Digital Portals</span>
             <input
-              value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+              value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
               onChange={(e) => onUpdateField('portals', e.target.value)}
             />
           </label>
@@ -2816,7 +2816,7 @@ export function SectionEditor({
             <label style={{ display: 'block', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', color: '#64748b' }}>Name</span>
               <input
-                value={proposal.providerSignatoryName || 'Rama Krishna'}
+                value={proposal.providerSignatoryName || 'Rama Krishna / Sohail'}
                 onChange={(e) => onUpdateField('providerSignatoryName', e.target.value)}
               />
             </label>
@@ -3020,7 +3020,7 @@ export function SectionEditor({
 
   return (
     <section className="editor panel">
-      <h2>Proposal Details & Settings</h2>
+      <h2>Custom Proposal Details & Settings</h2>
 
       {/* Cover Page Metadata */}
       <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '16px', marginBottom: '12px' }}>
@@ -3104,7 +3104,7 @@ export function SectionEditor({
         <label>
           <span>Digital Portals</span>
           <input
-            value={proposal.portals || 'Website: www.ibunify.com | www.iglobuscc.com'}
+            value={proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}
             onChange={(e) => onUpdateField('portals', e.target.value)}
           />
         </label>

@@ -1,6 +1,24 @@
 import { STORAGE_KEY_V1, STORAGE_KEY_V2, sampleProposal } from '../data/defaults.js';
 import { proposalTemplates } from '../data/templates.js';
 
+function sanitizeProposalData(data) {
+  if (typeof data === 'string') {
+    return data
+      .replace(/[iI][bB][uU][nN][iI][fF][yY]/g, 'iBUNIFY');
+  }
+  if (Array.isArray(data)) {
+    return data.map(sanitizeProposalData);
+  }
+  if (data && typeof data === 'object') {
+    const res = {};
+    for (const key of Object.keys(data)) {
+      res[key] = sanitizeProposalData(data[key]);
+    }
+    return res;
+  }
+  return data;
+}
+
 export function loadProposalsFromStorage() {
   const standardInvoiceTemplate = proposalTemplates.find((t) => t.id === 'template-invoice-standard') || proposalTemplates[0];
 
@@ -9,12 +27,8 @@ export function loadProposalsFromStorage() {
     if (v2Raw) {
       const parsed = JSON.parse(v2Raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Filter out legacy compact invoices and ensure INR currency with GST
+        // Filter out legacy compact invoices, ensure INR currency with GST, and normalize ibunify
         const withoutCompact = parsed.filter((p) => p.invoiceStyle !== 'compact');
-<<<<<<< HEAD
-        const cleaned = withoutCompact.map((p) => {
-          const company = p.company === 'I-Globus Corporate Consulting' ? 'iGlobus Corporate Consulting' : p.company;
-=======
         const cleanDateField = (val) => {
           if (!val || typeof val !== 'string') return '';
           const trimmed = val.trim();
@@ -58,12 +72,10 @@ export function loadProposalsFromStorage() {
           return addr;
         };
         const cleanPortalsField = (portals) => {
-          if (!portals) return 'Website: www.ibunify.com | www.iglobuscc.com';
-          const lower = portals.toLowerCase();
-          if (lower.includes('ibunify.com') || lower.includes('iglobuscc.com') || lower.startsWith('portals:') || lower.startsWith('digital portals:')) {
-            return 'Website: www.ibunify.com | www.iglobuscc.com';
+          if (!portals || portals.includes('ibunify.com') || portals.includes('iglobuscc.com')) {
+            return 'Portals: www.ibunify.com | www.iglobuscc.com';
           }
-          return portals.replace(/^(Portals|Digital Portals):\s*/i, 'Website: ');
+          return portals;
         };
         const cleanProposalNumber = (num, docType) => {
           if (docType === 'commercial_proposal' && (!num || num === 'IGC-ibunify-PROP-2026')) {
@@ -109,11 +121,10 @@ export function loadProposalsFromStorage() {
             handoverAcceptClientDate: cleanDateField(p.handoverAcceptClientDate),
             handoverDeliveredLeadDate: cleanDateField(p.handoverDeliveredLeadDate),
           };
->>>>>>> 37a53730edd5b80b3aba21b40971f29601312559
           if (p.documentType === 'invoice') {
             return {
-              ...p,
-              company: company || 'iGlobus Corporate Consulting',
+              ...sanitizedProposal,
+              company: company || 'iGLOBUS Corporate Consulting',
               currency: 'INR',
               cgstPct: typeof p.cgstPct === 'number' ? p.cgstPct : 9,
               sgstPct: typeof p.sgstPct === 'number' ? p.sgstPct : 9,
@@ -121,13 +132,14 @@ export function loadProposalsFromStorage() {
               invoiceStyle: 'standard'
             };
           }
-          if (p.id === 'sample-ibunify-proposal-001' || p.proposalTitle === 'Digital Workspace Transformation Proposal') {
+          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || p.documentType === 'proposal') {
             return {
               ...sampleProposal,
-              id: 'sample-ibunify-proposal-001'
+              id: p.id || 'sample-ibunify-proposal-001',
+              documentType: 'proposal'
             };
           }
-          return { ...p, company };
+          return { ...sanitizedProposal, company };
         });
 
         // Deduplicate proposals based on type, title and preparedFor
@@ -164,7 +176,7 @@ export function loadProposalsFromStorage() {
       const v1Parsed = JSON.parse(v1Raw);
       if (v1Parsed && typeof v1Parsed === 'object') {
         const migratedProposal = {
-          ...v1Parsed,
+          ...sanitizeProposalData(v1Parsed),
           id: v1Parsed.id || `migrated-${Date.now()}`
         };
         const initialList = [migratedProposal];
@@ -193,7 +205,7 @@ export function loadProposalsFromStorage() {
 
 export function saveProposalsToStorage(proposals) {
   try {
-    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(proposals));
+    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(sanitizeProposalData(proposals)));
   } catch (err) {
     console.error('Failed to save proposals to storage:', err);
   }
