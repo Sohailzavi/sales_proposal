@@ -10,6 +10,7 @@ function sanitizeProposalData(data) {
     return data.map(sanitizeProposalData);
   }
   if (data && typeof data === 'object') {
+    const res = {};
     for (const key of Object.keys(data)) {
       res[key] = sanitizeProposalData(data[key]);
     }
@@ -27,6 +28,7 @@ export function loadProposalsFromStorage() {
       const parsed = JSON.parse(v2Raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         // Filter out legacy compact invoices, ensure INR currency with GST, and normalize ibunify
+        const withoutCompact = parsed.filter((p) => p.invoiceStyle !== 'compact');
         const cleanDateField = (val) => {
           if (!val || typeof val !== 'string') return '';
           const trimmed = val.trim();
@@ -52,28 +54,28 @@ export function loadProposalsFromStorage() {
           return c;
         };
         const cleanProductLeadField = (pl) => {
-          if (!pl || pl.includes('Sohail') || pl.includes('Ramyasree') || pl.includes('Ramya')) {
-            return 'Product Lead: Rama Krishna';
+          if (!pl || pl === 'Rama Krishna' || pl === 'Product Lead: Rama Krishna' || pl === 'Rama Krishna | CTO' || pl.includes('Ramyasree') || pl === 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)') {
+            return 'Product Lead: Ramya | Sohail';
           }
           return pl;
         };
+        const cleanSignatoryTitle = (st) => {
+          if (!st || st.includes('Practice Leads') || st.includes('Enterprise Lead')) {
+            return 'Enterprise Practice Leads';
+          }
+          return st;
+        };
         const cleanAddress = (addr) => {
-          if (!addr || addr === 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad') {
+          if (!addr || addr.includes('Madhapur') || addr.includes('Hyderabad')) {
             return 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad';
           }
           return addr;
         };
         const cleanPortalsField = (portals) => {
-          if (!portals || portals === 'Digital Portals: www.ibunify.com | www.iglobuscc.com') {
+          if (!portals || portals.includes('ibunify.com') || portals.includes('iglobuscc.com')) {
             return 'Portals: www.ibunify.com | www.iglobuscc.com';
           }
           return portals;
-        };
-        const cleanSignatoryTitle = (t) => {
-          if (!t || t === 'CTO' || t === 'FOR ibunify TECHNOLOGIES' || (typeof t === 'string' && (t.includes('FOR ibunify') || t.includes('FOR: ibunify')))) {
-            return 'Enterprise Practice Leads';
-          }
-          return t;
         };
         const cleanProposalNumber = (num, docType) => {
           if (docType === 'commercial_proposal' && (!num || num === 'IGC-ibunify-PROP-2026')) {
@@ -87,7 +89,6 @@ export function loadProposalsFromStorage() {
           }
           return pf;
         };
-        const withoutCompact = parsed.filter((p) => p.invoiceStyle !== 'compact');
         const cleaned = sanitizeProposalData(withoutCompact).map((p) => {
           let company = (p.company === 'I-Globus Corporate Consulting' || p.company === 'iGlobus Corporate Consulting') ? 'iGLOBUS Corporate Consulting' : p.company;
           if (company === 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)' || company === 'ibunify (iGLOBUS Corporate Consulting)') {
@@ -131,10 +132,10 @@ export function loadProposalsFromStorage() {
               invoiceStyle: 'standard'
             };
           }
-          if (p.id === 'sample-ibunify-proposal-001' || p.proposalTitle === 'Digital Workspace Transformation Proposal') {
+          if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || (p.documentType === 'proposal' && p.proposalTitle && (p.proposalTitle.includes('Digital Workspace') || p.proposalTitle.includes('Unified CRM')))) {
             return {
               ...sampleProposal,
-              id: 'sample-ibunify-proposal-001'
+              id: p.id || 'sample-custom-proposal-001'
             };
           }
           return { ...sanitizedProposal, company };

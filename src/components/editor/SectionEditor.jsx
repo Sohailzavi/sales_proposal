@@ -470,7 +470,7 @@ export function SectionEditor({
             <input
               value={proposal.clientAttention || ''}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
-              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+              placeholder="Attn: Project Sponsor / Sales Leadership"
             />
           </label>
           <label>
@@ -778,7 +778,7 @@ export function SectionEditor({
             <input
               value={proposal.clientAttention || ''}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
-              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+              placeholder="Attn: Project Sponsor / Sales Leadership"
             />
           </label>
           <label>
@@ -1034,7 +1034,7 @@ export function SectionEditor({
             <input
               value={proposal.clientAttention || ''}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
-              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+              placeholder="Attn: Project Sponsor / Sales Leadership"
             />
           </label>
           <label>
@@ -1311,9 +1311,9 @@ export function SectionEditor({
           <label>
             <span>Client Attention / Sponsor</span>
             <input
-              value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+              value={proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
-              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+              placeholder="Attn: Project Sponsor / Sales Leadership"
             />
           </label>
           <label>
@@ -1743,7 +1743,7 @@ export function SectionEditor({
             <input
               value={proposal.clientAttention || ''}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
-              placeholder="Attn: [Project Sponsor / Sales Leadership]"
+              placeholder="Attn: Project Sponsor / Sales Leadership"
             />
           </label>
           <label>
@@ -2035,7 +2035,7 @@ export function SectionEditor({
           <label>
             <span>Attention</span>
             <input
-              value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+              value={proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
             />
           </label>
@@ -2663,7 +2663,7 @@ export function SectionEditor({
           <label>
             <span>Attention</span>
             <input
-              value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+              value={proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}
               onChange={(e) => onUpdateField('clientAttention', e.target.value)}
             />
           </label>
@@ -3065,7 +3065,7 @@ export function SectionEditor({
         <label>
           <span>Client Attention / Sponsor</span>
           <input
-            value={proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}
+            value={proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}
             onChange={(e) => onUpdateField('clientAttention', e.target.value)}
           />
         </label>

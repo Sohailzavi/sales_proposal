@@ -500,7 +500,7 @@ export function discoveryToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
             <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-01-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.date ? doc.date : '______________________')}</div>
           </div>
@@ -510,7 +510,7 @@ export function discoveryToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
       </div>
@@ -631,7 +631,7 @@ export function ndaToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
             <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-02-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.effectiveDate ? doc.effectiveDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
@@ -641,7 +641,7 @@ export function ndaToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
         </div>
@@ -785,7 +785,7 @@ export function msaToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
             <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-04-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.executionDate ? doc.executionDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
@@ -795,7 +795,7 @@ export function msaToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
         </div>
@@ -949,7 +949,7 @@ export function slaToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
             <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-06-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.effectiveDate ? doc.effectiveDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
@@ -959,7 +959,7 @@ export function slaToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
         </div>
@@ -1115,7 +1115,7 @@ export function poToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Company Name]')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
             <div class="p1-meta-sub">Document Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-07-2026')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.poDate ? doc.poDate : (doc.date ? doc.date : '______________________'))}</div>
           </div>
@@ -1125,7 +1125,7 @@ export function poToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
 
         </div>
@@ -1262,7 +1262,7 @@ export function handoverToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
       </div>
@@ -1383,7 +1383,7 @@ export function closureToHtml(doc, forWord = false) {
             <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
             <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Rama Krishna')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
           </div>
         </div>
       </div>
@@ -1674,7 +1674,7 @@ export function customProposalToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">PROPOSAL PREPARED FOR</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedFor || '[Client Enterprise / Jayabheri Group]')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.clientAttention || 'Attn: Project Sponsor / Sales Leadership')}</div>
             <div class="p1-meta-sub">Engagement: ${escapeHtml(doc.engagement || 'iBUNIFY Platform & Integrated Services Deployment')}</div>
             <div class="p1-meta-sub">Proposal Ref: ${escapeHtml(doc.proposalNumber || 'IGC-IBUNIFY-2026-088')}</div>
             <div class="p1-meta-sub">Date: ${escapeHtml(doc.date ? doc.date : '______________________')}</div>
@@ -1682,10 +1682,10 @@ export function customProposalToHtml(doc, forWord = false) {
           <div>
             <div class="p1-meta-head">SERVICE PROVIDER</div>
             <div class="p1-meta-val">${escapeHtml(doc.preparedBy || doc.company || 'iBUNIFY (iGLOBUS Corporate Consulting)')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)')}</div>
-            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Rama Krishna: +91 78420 97496')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.portals || 'Portals: www.ibunify.com | www.iglobuscc.com')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.productLead || 'Product Lead: Ramya | Sohail')}</div>
+            <div class="p1-meta-sub">${escapeHtml(doc.contacts || 'Product Owner: Rama Krishna | CTO')}</div>
           </div>
         </div>
       </div>

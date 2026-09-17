@@ -355,7 +355,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-01-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
                   </div>
@@ -367,7 +367,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -554,7 +554,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-02-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.effectiveDate ? proposal.effectiveDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
@@ -566,7 +566,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -731,7 +731,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-04-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.executionDate ? proposal.executionDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
@@ -743,7 +743,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -921,7 +921,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-06-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.effectiveDate ? proposal.effectiveDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
@@ -933,7 +933,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -1116,7 +1116,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-07-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.poDate ? proposal.poDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
@@ -1128,7 +1128,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -1335,7 +1335,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || proposal.handoverClientOrg || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || proposal.handoverClientLead || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || proposal.handoverClientLead || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || proposal.handoverRefNo || 'IGC-IBUNIFY-08-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.handoverDate ? proposal.handoverDate : (proposal.date ? proposal.date : '______________________')}</div>
                   </div>
@@ -1347,7 +1347,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -1512,7 +1512,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                   <div className="discovery-meta-col">
                     <div className="discovery-meta-heading">PREPARED FOR</div>
                     <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                     <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-09-2026'}</div>
                     <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
                   </div>
@@ -1524,7 +1524,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                     <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
                     <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
                     <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Rama Krishna'}</div>
+                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
                   </div>
                 </div>
 
@@ -1859,7 +1859,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 <div className="discovery-meta-col">
                   <div className="discovery-meta-heading">PROPOSAL PREPARED FOR</div>
                   <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Enterprise / Jayabheri Group]'}</div>
-                  <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: [Project Sponsor / Sales Leadership]'}</div>
+                  <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
                   <div className="discovery-meta-sub">Engagement: {proposal.engagement || 'iBUNIFY Platform & Integrated Services Deployment'}</div>
                   <div className="discovery-meta-sub">Proposal Ref: {proposal.proposalNumber || 'IGC-IBUNIFY-2026-088'}</div>
                   <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
@@ -1868,10 +1868,10 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 <div className="discovery-meta-col">
                   <div className="discovery-meta-heading">SERVICE PROVIDER</div>
                   <div className="discovery-meta-value-bold">{proposal.preparedBy || proposal.company || 'iBUNIFY (iGLOBUS Corporate Consulting)'}</div>
-                  <div className="discovery-meta-sub">{proposal.companyAddress || 'Headquarters: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                  <div className="discovery-meta-sub">{proposal.portals || 'Digital Portals: www.ibunify.com | www.iglobuscc.com'}</div>
-                  <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramyasree (+91 63005 61742 | ramyasree@iglobuscc.com)'}</div>
-                  <div className="discovery-meta-sub">{proposal.contacts || 'Rama Krishna: +91 78420 97496'}</div>
+                  <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
+                  <div className="discovery-meta-sub">{proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}</div>
+                  <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
+                  <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Rama Krishna | CTO'}</div>
                 </div>
               </div>
             </div>
