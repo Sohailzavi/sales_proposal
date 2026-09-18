@@ -11,9 +11,20 @@ export function sanitizeProposalData(data) {
     return data.map(sanitizeProposalData);
   }
   if (data && typeof data === 'object') {
+    const res = {};
+    for (const key of Object.keys(data)) {
+      res[key] = sanitizeProposalData(data[key]);
+    }
     return res;
   }
   return data;
+}
+
+export function formatPortalsText(portals) {
+  if (!portals || portals.includes('ibunify.com') || portals.includes('iglobuscc.com')) {
+    return 'Portals: www.ibunify.com | www.iglobuscc.com';
+  }
+  return portals.startsWith('Portals:') ? portals : `Portals: ${portals}`;
 }
 
 export function escapeHtml(value = '') {

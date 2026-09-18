@@ -1,5 +1,5 @@
 import React from 'react';
-import { calculateCommercialTotals, calculateInvoiceTotals, paginateProposal } from '../../services/exportService.js';
+import { calculateCommercialTotals, calculateInvoiceTotals, paginateProposal, formatPortalsText } from '../../services/exportService.js';
 import { SAMPLE_LETTERHEAD_BASE64 } from '../../data/letterheadBase64.js';
 import { DEFAULT_COMMERCIAL_SCOPES } from '../../data/defaults.js';
 
@@ -2367,6 +2367,8 @@ export function ProposalPreview({ proposal: rawProposal }) {
                       <div className="ctp-metric-val" style={{ fontSize: '15px' }}>{m.value}</div>
                       <div className="ctp-metric-lbl" style={{ fontSize: '9px' }}>{m.label}</div>
                     </div>
+                  ))}
+                </div>
 
                 <div style={{ fontWeight: '700', fontSize: '11.5px', color: '#0f2b6e', margin: '4px 0 2px 0' }}>
                   Integrated Platform Services Overview:
@@ -2382,6 +2384,9 @@ export function ProposalPreview({ proposal: rawProposal }) {
                         {item.desc}
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
 
               {/* Section 2 */}
               <div className="discovery-section-block" style={{ marginTop: '2px' }}>
