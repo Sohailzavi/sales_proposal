@@ -1,5 +1,24 @@
 import React from 'react';
 import { calculateCommercialTotals, calculateInvoiceTotals } from '../../services/exportService.js';
+import { sampleCommercialProposalDoc } from '../../data/defaults.js';
+
+const PILLAR_KEYS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
+
+const reindexServiceBreakdown = (items = []) => {
+  return items.map((item, i) => ({
+    ...item,
+    id: item.id || `sb-${i}-${item.key || 'k'}-${Date.now()}`,
+    key: PILLAR_KEYS[i] || `Pillar ${i + 1}`
+  }));
+};
+
+const reindexServicesOverview = (items = []) => {
+  return items.map((item, i) => ({
+    ...item,
+    id: item.id || `so-${i}-${item.key || 'k'}-${Date.now()}`,
+    key: PILLAR_KEYS[i] || `Pillar ${i + 1}`
+  }));
+};
 
 export function SectionEditor({
   proposal,
@@ -1225,8 +1244,9 @@ export function SectionEditor({
   const isCommercialProposal = proposal.documentType === 'commercial_proposal';
 
   if (isCommercialProposal) {
-    const metrics = proposal.metrics || [];
-    const serviceBreakdown = proposal.serviceBreakdown || [];
+    const metrics = proposal.metrics !== undefined ? proposal.metrics : (sampleCommercialProposalDoc.metrics || []);
+    const rawServiceBreakdown = proposal.serviceBreakdown !== undefined ? proposal.serviceBreakdown : (sampleCommercialProposalDoc.serviceBreakdown || []);
+    const serviceBreakdown = reindexServiceBreakdown(rawServiceBreakdown);
     const commercialScheduleItems = proposal.commercialScheduleItems || [];
     const sowScopeActivities = proposal.sowScopeActivities || [];
     const sowDeliverables = proposal.sowDeliverables || [];
@@ -1415,12 +1435,38 @@ export function SectionEditor({
           </label>
         </div>
 
-        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-          Key Metrics Highlights (Page 2)
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+            Key Metrics Highlights (Page 2)
+          </h3>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('metrics', [...metrics, { value: '100%', label: 'NEW METRIC' }]);
+            }}
+          >
+            ＋ Add Metric Card
+          </button>
+        </div>
         <div className="form-grid">
           {metrics.map((m, mIdx) => (
-            <div key={mIdx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <div key={mIdx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0', position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <span style={{ fontSize: '11px', fontWeight: '700', color: '#0f2b6e' }}>Metric #{mIdx + 1}</span>
+                <button
+                  type="button"
+                  className="del-item-btn"
+                  style={{ width: '22px', height: '22px', fontSize: '14px', lineHeight: '1' }}
+                  title="Delete Metric"
+                  onClick={() => {
+                    const next = metrics.filter((_, i) => i !== mIdx);
+                    onUpdateField('metrics', next);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
               <label>
                 <span style={{ fontSize: '11px' }}>Metric Value</span>
                 <input
@@ -1447,14 +1493,47 @@ export function SectionEditor({
           ))}
         </div>
 
-        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-          Section 2: Granular Service Breakdown & Costing (Page 2)
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+            Section 2: Granular Service Breakdown & Costing (Page 2)
+          </h3>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              const newItem = {
+                id: `sb-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+                title: 'New Service Pillar',
+                features: 'Enter core features scope here...',
+                costing: 'Enter pricing details here...'
+              };
+              const updated = reindexServiceBreakdown([...serviceBreakdown, newItem]);
+              onUpdateField('serviceBreakdown', updated);
+            }}
+          >
+            ＋ Add Service Pillar
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {serviceBreakdown.map((item, idx) => (
-            <div key={item.key || idx} style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <div key={item.id || item.key || idx} style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '13px' }}>Pillar {item.key || PILLAR_KEYS[idx] || (idx + 1)}</span>
+                <button
+                  type="button"
+                  className="del-item-btn"
+                  title="Delete Service Pillar"
+                  onClick={() => {
+                    const remaining = serviceBreakdown.filter((_, i) => i !== idx);
+                    const updated = reindexServiceBreakdown(remaining);
+                    onUpdateField('serviceBreakdown', updated);
+                  }}
+                >
+                  × Delete Pillar
+                </button>
+              </div>
               <label>
-                <span>{item.key}. Service Pillar Title</span>
+                <span>{item.key || PILLAR_KEYS[idx] || (idx + 1)}. Service Pillar Title</span>
                 <input
                   value={item.title}
                   onChange={(e) => {
@@ -1480,12 +1559,29 @@ export function SectionEditor({
           ))}
         </div>
 
-        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-          Section 3: Overall Costing & Commercial Schedule (Page 2 & 3)
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+            Section 3: Overall Costing & Commercial Schedule (Page 2 & 3)
+          </h3>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              const newItem = {
+                id: `cs-${Date.now()}`,
+                component: 'New Service Component',
+                scope: 'Scope & Deliverables description',
+                investment: '₹0'
+              };
+              onUpdateField('commercialScheduleItems', [...commercialScheduleItems, newItem]);
+            }}
+          >
+            ＋ Add Commercial Item
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {commercialScheduleItems.map((item, idx) => (
-            <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr auto', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', alignItems: 'center' }}>
               <input
                 value={item.component}
                 placeholder="Service Component"
@@ -1513,6 +1609,17 @@ export function SectionEditor({
                   onUpdateField('commercialScheduleItems', next);
                 }}
               />
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Row"
+                onClick={() => {
+                  const next = commercialScheduleItems.filter((_, i) => i !== idx);
+                  onUpdateField('commercialScheduleItems', next);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <label style={{ marginTop: '8px' }}>
@@ -1536,47 +1643,107 @@ export function SectionEditor({
           />
         </label>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          1. Scope Activities (5 Bullets)
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            1. Scope Activities Bullets
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowScopeActivities', [...sowScopeActivities, 'New scope activity description...']);
+            }}
+          >
+            ＋ Add Activity Bullet
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {sowScopeActivities.map((act, idx) => (
-            <textarea
-              key={idx}
-              rows="2"
-              value={act}
-              onChange={(e) => {
-                const next = [...sowScopeActivities];
-                next[idx] = e.target.value;
-                onUpdateField('sowScopeActivities', next);
-              }}
-            />
+            <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <textarea
+                rows="2"
+                style={{ flex: 1 }}
+                value={act}
+                onChange={(e) => {
+                  const next = [...sowScopeActivities];
+                  next[idx] = e.target.value;
+                  onUpdateField('sowScopeActivities', next);
+                }}
+              />
+              <button
+                type="button"
+                className="del-item-btn"
+                style={{ marginTop: '4px' }}
+                title="Delete Activity Bullet"
+                onClick={() => {
+                  const next = sowScopeActivities.filter((_, i) => i !== idx);
+                  onUpdateField('sowScopeActivities', next);
+                }}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          2. Deliverables Matrix (4 Bullets)
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            2. Deliverables Matrix Bullets
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowDeliverables', [...sowDeliverables, `Deliverable ${sowDeliverables.length + 1}: New deliverable description.`]);
+            }}
+          >
+            ＋ Add Deliverable Bullet
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {sowDeliverables.map((del, idx) => (
-            <input
-              key={idx}
-              value={del}
-              onChange={(e) => {
-                const next = [...sowDeliverables];
-                next[idx] = e.target.value;
-                onUpdateField('sowDeliverables', next);
-              }}
-            />
+            <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input
+                style={{ flex: 1 }}
+                value={del}
+                onChange={(e) => {
+                  const next = [...sowDeliverables];
+                  next[idx] = e.target.value;
+                  onUpdateField('sowDeliverables', next);
+                }}
+              />
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Deliverable Bullet"
+                onClick={() => {
+                  const next = sowDeliverables.filter((_, i) => i !== idx);
+                  onUpdateField('sowDeliverables', next);
+                }}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          3. Timeline Schedule (Gantt Matrix)
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            3. Timeline Schedule (Gantt Matrix)
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowTimelineMilestones', [...sowTimelineMilestones, { activity: 'New Timeline Milestone', activeWeek: 1 }]);
+            }}
+          >
+            ＋ Add Timeline Milestone
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {sowTimelineMilestones.map((m, idx) => (
-            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr auto', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', alignItems: 'center' }}>
               <input
                 value={m.activity}
                 onChange={(e) => {
@@ -1598,16 +1765,41 @@ export function SectionEditor({
                 <option value={3}>Active in Week 3</option>
                 <option value={4}>Active in Week 4</option>
               </select>
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Timeline Milestone"
+                onClick={() => {
+                  const next = sowTimelineMilestones.filter((_, i) => i !== idx);
+                  onUpdateField('sowTimelineMilestones', next);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          4. Milestone Invoicing Schedule
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            4. Milestone Invoicing Schedule
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowInvoicingMilestones', [
+                ...sowInvoicingMilestones,
+                { deliverable: `Milestone ${sowInvoicingMilestones.length + 1}: Description`, percentage: '50%', amount: '₹0' }
+              ]);
+            }}
+          >
+            ＋ Add Invoicing Milestone
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {sowInvoicingMilestones.map((inv, idx) => (
-            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', alignItems: 'center' }}>
               <input
                 value={inv.deliverable}
                 onChange={(e) => {
@@ -1632,6 +1824,17 @@ export function SectionEditor({
                   onUpdateField('sowInvoicingMilestones', next);
                 }}
               />
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Invoicing Milestone"
+                onClick={() => {
+                  const next = sowInvoicingMilestones.filter((_, i) => i !== idx);
+                  onUpdateField('sowInvoicingMilestones', next);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <label style={{ marginTop: '6px' }}>
@@ -1643,21 +1846,46 @@ export function SectionEditor({
           </label>
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          5. Engagement Assumptions & SLAs
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            5. Engagement Assumptions & SLAs
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowAssumptions', [...sowAssumptions, 'New Engagement Assumption statement...']);
+            }}
+          >
+            ＋ Add Assumption Bullet
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {sowAssumptions.map((assump, idx) => (
-            <textarea
-              key={idx}
-              rows="2"
-              value={assump}
-              onChange={(e) => {
-                const next = [...sowAssumptions];
-                next[idx] = e.target.value;
-                onUpdateField('sowAssumptions', next);
-              }}
-            />
+            <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <textarea
+                rows="2"
+                style={{ flex: 1 }}
+                value={assump}
+                onChange={(e) => {
+                  const next = [...sowAssumptions];
+                  next[idx] = e.target.value;
+                  onUpdateField('sowAssumptions', next);
+                }}
+              />
+              <button
+                type="button"
+                className="del-item-btn"
+                style={{ marginTop: '4px' }}
+                title="Delete Assumption Bullet"
+                onClick={() => {
+                  const next = sowAssumptions.filter((_, i) => i !== idx);
+                  onUpdateField('sowAssumptions', next);
+                }}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
@@ -3248,14 +3476,46 @@ export function SectionEditor({
       </div>
 
       {/* Services Overview Pillars */}
-      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-        Integrated Platform Services Pillars (Page 2)
-      </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+          Integrated Platform Services Pillars (Page 2)
+        </h3>
+        <button
+          type="button"
+          className="secondary sm"
+          onClick={() => {
+            const newItem = {
+              id: `so-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+              title: 'New Service Pillar',
+              desc: 'Enter pillar description here...'
+            };
+            const updated = reindexServicesOverview([...servicesOverview, newItem]);
+            onUpdateField('servicesOverview', updated);
+          }}
+        >
+          ＋ Add Service Pillar
+        </button>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {servicesOverview.map((item, idx) => (
-          <div key={item.key || idx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+          <div key={item.id || item.key || idx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <span style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '13px' }}>Pillar {item.key || PILLAR_KEYS[idx] || (idx + 1)}</span>
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Service Pillar"
+                onClick={() => {
+                  const remaining = servicesOverview.filter((_, i) => i !== idx);
+                  const updated = reindexServicesOverview(remaining);
+                  onUpdateField('servicesOverview', updated);
+                }}
+              >
+                × Delete Pillar
+              </button>
+            </div>
             <label>
-              <span>{item.key}. Service Pillar Title</span>
+              <span>{item.key || PILLAR_KEYS[idx] || (idx + 1)}. Service Pillar Title</span>
               <input
                 value={item.title}
                 onChange={(e) => {
