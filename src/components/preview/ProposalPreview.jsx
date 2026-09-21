@@ -1467,15 +1467,22 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 {/* Part 1 Header & Section 1 */}
                 <div className="discovery-section-block">
                   <div style={{ background: '#0f2b6e', color: '#ffffff', padding: '6px 12px', borderRadius: '4px', fontWeight: '800', fontSize: '13px', letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                    PART 1: COMMERCIAL & TECHNICAL PROPOSAL
+                    {proposal.part1Badge || 'PART 1: COMMERCIAL & TECHNICAL PROPOSAL'}
                   </div>
-                  <h2 className="discovery-section-title" style={{ fontSize: '13px', marginBottom: '4px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
+                  <h2 className="discovery-section-title" style={{ fontSize: '13px', marginBottom: '4px' }}>
+                    {proposal.part1Title || '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION'}
+                  </h2>
                   <div className="discovery-section-text" style={{ marginBottom: '6px', fontSize: '11.5px', lineHeight: '1.45' }}>
-                    ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.
+                    {proposal.part1Description !== undefined
+                      ? proposal.part1Description
+                      : 'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.'}
                   </div>
 
                   <div className="ctp-callout-box" style={{ margin: '6px 0', padding: '6px 10px', fontSize: '11.5px' }}>
-                    <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+                    <strong>{proposal.designPrincipleLabel || 'Design Principle:'}</strong>{' '}
+                    {proposal.designPrincipleText !== undefined
+                      ? proposal.designPrincipleText
+                      : 'Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.'}
                   </div>
 
                   <div className="ctp-metrics-grid" style={{ margin: '8px 0', gap: '8px' }}>
@@ -2352,13 +2359,20 @@ export function ProposalPreview({ proposal: rawProposal }) {
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {/* Section 1 */}
               <div className="discovery-section-block">
-                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</h2>
+                <h2 className="discovery-section-title" style={{ fontSize: '12px', marginBottom: '2px' }}>
+                  {proposal.part1Title || '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION'}
+                </h2>
                 <div className="discovery-section-text" style={{ marginBottom: '4px', fontSize: '11px', lineHeight: '1.38' }}>
-                  ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.
+                  {proposal.part1Description !== undefined
+                    ? proposal.part1Description
+                    : 'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.'}
                 </div>
 
                 <div className="ctp-callout-box" style={{ margin: '4px 0', padding: '5px 8px', fontSize: '11px' }}>
-                  <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+                  <strong>{proposal.designPrincipleLabel || 'Design Principle:'}</strong>{' '}
+                  {proposal.designPrincipleText !== undefined
+                    ? proposal.designPrincipleText
+                    : 'Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.'}
                 </div>
 
                 <div className="ctp-metrics-grid" style={{ margin: '4px 0', gap: '5px' }}>

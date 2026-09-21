@@ -1365,6 +1365,57 @@ export function SectionEditor({
         </div>
 
         <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
+          Part 1: About Product & Services (Page 2)
+        </h3>
+        <div className="form-grid">
+          <label>
+            <span>Category Badge Title</span>
+            <input
+              value={proposal.part1Badge || 'PART 1: COMMERCIAL & TECHNICAL PROPOSAL'}
+              onChange={(e) => onUpdateField('part1Badge', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Section 1 Title</span>
+            <input
+              value={proposal.part1Title || '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION'}
+              onChange={(e) => onUpdateField('part1Title', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Section 1 Description Text</span>
+            <textarea
+              rows="3"
+              value={
+                proposal.part1Description !== undefined
+                  ? proposal.part1Description
+                  : 'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.'
+              }
+              onChange={(e) => onUpdateField('part1Description', e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Design Principle Label</span>
+            <input
+              value={proposal.designPrincipleLabel || 'Design Principle:'}
+              onChange={(e) => onUpdateField('designPrincipleLabel', e.target.value)}
+            />
+          </label>
+          <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+            <span>Design Principle Statement</span>
+            <textarea
+              rows="2"
+              value={
+                proposal.designPrincipleText !== undefined
+                  ? proposal.designPrincipleText
+                  : 'Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.'
+              }
+              onChange={(e) => onUpdateField('designPrincipleText', e.target.value)}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
           Key Metrics Highlights (Page 2)
         </h3>
         <div className="form-grid">
@@ -3544,36 +3595,6 @@ export function SectionEditor({
           />
         </label>
       </div>
-
-      {/* Additional Custom Sections if selected */}
-      {selectedSection && (
-        <div className="section-editor" style={{ marginTop: '24px' }}>
-          <div className="section-editor-head">
-            <h2>Edit Custom Section</h2>
-            <div className="small-actions">
-              <button type="button" className="ghost" onClick={() => onMoveSection(selectedSection.id, 'up')}>↑</button>
-              <button type="button" className="ghost" onClick={() => onMoveSection(selectedSection.id, 'down')}>↓</button>
-              <button type="button" className="ghost" onClick={() => onDuplicateSection(selectedSection.id)}>Duplicate</button>
-              <button type="button" className="danger" onClick={() => onDeleteSection(selectedSection.id)}>Delete</button>
-            </div>
-          </div>
-          <label>
-            <span>Section Title</span>
-            <input
-              value={selectedSection.title}
-              onChange={(e) => onUpdateSection(selectedSection.id, { title: e.target.value })}
-            />
-          </label>
-          <label>
-            <span>Section Content</span>
-            <textarea
-              rows="10"
-              value={selectedSection.content}
-              onChange={(e) => onUpdateSection(selectedSection.id, { content: e.target.value })}
-            />
-          </label>
-        </div>
-      )}
     </section>
   );
 }

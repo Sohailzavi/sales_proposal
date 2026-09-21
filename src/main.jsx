@@ -729,15 +729,7 @@ function App() {
           />
         ) : (
           <>
-            {!previewMode && !isInvoice && !isDiscovery && !isNda && !isMsa && !isCommercialProposal && !isSla && !isPo && !isHandover && !isClosure && (
-              <SectionSidebar
-                sections={activeProposal.sections || []}
-                selectedId={selectedId}
-                onSelectSection={setSelectedId}
-                onAddSection={addSection}
-                onResetSample={resetSample}
-              />
-            )}
+
 
             {!previewMode && (
               <SectionEditor

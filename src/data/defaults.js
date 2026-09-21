@@ -160,49 +160,49 @@ export const sampleProposal = {
   sections: [
     {
       id: 'sec-1',
-      title: '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION',
+      title: 'ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION',
       content:
         'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.\n\nDesign Principle: Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.\n\nIntegrated Platform Services Overview:\n• A. Centralized Real Estate CRM: Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.\n• B. Omnichannel Lead Ingestion: Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.\n• C. Closed-Loop Marketing Attribution: Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.\n• D. Executive CDR & Conversion Analytics: Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
     },
     {
       id: 'sec-2',
-      title: '2. AI CALLING SERVICES & COSTING',
+      title: 'AI CALLING SERVICES & COSTING',
       content:
         'ibunify AI Agent Calling delivers automated, natural human-like voice conversations to qualify prospects, re-engage cold leads, and eliminate call latency:\n• Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.\n• Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations, and budget ranges.\n• Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.\n• 24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.\n\nCommercial Schedule:\n• AI Voice Agent Engine: Included in Setup\n• AI Calling Usage: ₹7 / completed incoming or outgoing conversational call'
     },
     {
       id: 'sec-3',
-      title: '3. CLOUD TELEPHONY SERVICES & COSTING',
+      title: 'CLOUD TELEPHONY SERVICES & COSTING',
       content:
         'Enterprise cloud telephony infrastructure integrated directly into the CRM to give complete control over lead communication:\n• Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.\n• Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.\n• Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.\n• Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.\n\nCommercial Schedule:\n• Virtual Cloud Telephony Numbers: ₹1,500 / Number / month (with IVR & call recording)\n• Call-to-Lead Auto Ingestion Engine: Included in Setup'
     },
     {
       id: 'sec-4',
-      title: '4. WHATSAPP AUTOMATION SERVICES & COSTING',
+      title: 'WHATSAPP AUTOMATION SERVICES & COSTING',
       content:
         'Official Meta WhatsApp Business Platform integration turning chat conversations into high-converting customer journeys:\n• Instant Brochure & Price Sheet Dispatch: Automatically triggers WhatsApp brochures when leads submit inquiry forms.\n• Automated Nurture Sequences: Triggers site-visit reminders, location pins, video walkthroughs, and payment milestone alerts.\n• Unified Multi-Agent Inbox: Enables sales teams to chat with prospects from a single verified business number with full audit logs.\n• Interactive Chatbot & Quick Replies: Pre-configured menus for instant responses to common buyer FAQs and project details.\n\nCommercial Schedule:\n• WhatsApp Business Platform (API Engine): ₹15,000 for 6 Months\n• WhatsApp Message Wallet (Prepaid): ₹10,000 Prepaid (Utility: ₹0.18 | Marketing: ₹0.87)'
     },
     {
       id: 'sec-5',
-      title: '5. OVERALL COMMERCIAL INVESTMENT SCHEDULE',
+      title: 'OVERALL COMMERCIAL INVESTMENT SCHEDULE',
       content:
         'Consolidated commercial investment structure covering one-time setup, user licensing, and scalable consumption:\n• One-Time Setup & Onboarding: ₹50,000 (One-Time)\n• ibunify CRM User License: ₹2,500 / user / month\n• WhatsApp Business Platform: ₹15,000 for 6 Months\n• WhatsApp Message Wallet: ₹10,000 Prepaid\n• Cloud Telephony Virtual Numbers: ₹1,500 / Number / month\n• AI Agent Calling: ₹7 / call\n• Base Activation Package Total (Excl. Consumption & Lic.): ₹75,000 + Wallet / Lic.'
     },
     {
       id: 'sec-6',
-      title: '6. IMPLEMENTATION ROADMAP & SUPPORT SLA',
+      title: 'IMPLEMENTATION ROADMAP & SUPPORT SLA',
       content:
         '• Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.\n• Week 2 (Telephony & WhatsApp): Virtual numbers provisioning, WhatsApp Business API templates, and routing logic.\n• Week 3 (AI Agent & Testing): AI conversational script configuration, call-to-lead testing, and sandbox validation.\n• Week 4 (Training & Go-Live): Sales team enablement, admin runbooks, UAT sign-off, and live production rollout.\n• Support & SLA Commitment: Priority 1 (Critical) incidents resolved in < 30 minutes; dedicated Customer Success Lead.'
     },
     {
       id: 'sec-7',
-      title: '7. TERMS AND CONDITIONS',
+      title: 'TERMS AND CONDITIONS',
       content:
         '• All prices are exclusive of applicable statutory GST / taxes (18%).\n• Third-party usage (telephony minutes, WhatsApp message costs, AI calling) billed against actual wallet consumption.\n• Invoices are payable within 30 days from date of submission (NET 30).'
     },
     {
       id: 'sec-8',
-      title: '8. PROPOSAL ACCEPTANCE & SIGN-OFF',
+      title: 'PROPOSAL ACCEPTANCE & SIGN-OFF',
       content:
         'By signing below, the authorized representatives acknowledge and accept the scope, deliverables, and commercial terms set forth in this proposal.\n\nACCEPTED FOR: [CLIENT ENTERPRISE]\nName: ___________________________\nTitle: ____________________________\nDate: ____________________________\n\nACCEPTED FOR: ibunify (iGLOBUS)\nName: Pavan Chandra Duddilla\nTitle: Director\nDate: August 25, 2026'
     }
@@ -434,6 +434,13 @@ export const sampleCommercialProposalDoc = {
   footerAddress: 'Madhapur, Opp. Raheja Mindspace, Hyderabad, Telangana, India – 500081',
   footerWebsites: 'Websites: www.ibunify.com | www.iglobuscc.com',
   pageFootnote: 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.) | www.ibunify.com',
+  part1Badge: 'PART 1: COMMERCIAL & TECHNICAL PROPOSAL',
+  part1Title: '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION',
+  part1Description:
+    'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.',
+  designPrincipleLabel: 'Design Principle:',
+  designPrincipleText:
+    'Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.',
   metrics: [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },

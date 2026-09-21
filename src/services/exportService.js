@@ -1125,13 +1125,13 @@ export function commercialProposalToHtml(doc, forWord = false) {
         <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
           <div>
             <div style="background:#0f2b6e;color:#ffffff;padding:6px 12px;border-radius:4px;font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;">
-              PART 1: COMMERCIAL & TECHNICAL PROPOSAL
+              ${escapeHtml(proposal.part1Badge || 'PART 1: COMMERCIAL & TECHNICAL PROPOSAL')}
             </div>
-            <div class="sec-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</div>
-            <div class="sec-text">ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.</div>
+            <div class="sec-title">${escapeHtml(proposal.part1Title || '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION')}</div>
+            <div class="sec-text">${escapeHtml(proposal.part1Description !== undefined ? proposal.part1Description : 'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify unifies multi-channel lead ingestion, cloud telephony, WhatsApp Business messaging, and AI conversational calling into a single operating rhythm.')}</div>
             
             <div class="callout-box">
-              <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+              <strong>${escapeHtml(proposal.designPrincipleLabel || 'Design Principle:')}</strong> ${escapeHtml(proposal.designPrincipleText !== undefined ? proposal.designPrincipleText : 'Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.')}
             </div>
 
             <div class="metrics-grid">
@@ -2173,11 +2173,11 @@ export function customProposalToHtml(doc, forWord = false) {
         <div style="display:flex;flex-direction:column;gap:6px;">
           <!-- Section 1 -->
           <div>
-            <div class="sec-title">1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION</div>
-            <div class="sec-text">ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.</div>
+            <div class="sec-title">${escapeHtml(proposal.part1Title || '1. ABOUT PRODUCT & SERVICES: THE POWER OF UNIFICATION')}</div>
+            <div class="sec-text">${escapeHtml(proposal.part1Description !== undefined ? proposal.part1Description : 'ibunify is an enterprise-grade CRM, communication, and sales automation platform engineered by iGLOBUS Corporate Consulting. Built specifically for high-velocity sales and real estate operations, ibunify solves the fragmentation between disparate marketing channels, delayed lead responses, and lack of follow-up ownership.')}</div>
             
             <div class="callout-box">
-              <strong>Design Principle:</strong> Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.
+              <strong>${escapeHtml(proposal.designPrincipleLabel || 'Design Principle:')}</strong> ${escapeHtml(proposal.designPrincipleText !== undefined ? proposal.designPrincipleText : 'Connect the core before adding complexity. Ingest every lead, route every conversation instantly, automate follow-ups, and track conversions end-to-end.')}
             </div>
 
               <div class="metrics-grid" style="margin:5px 0;gap:6px;">

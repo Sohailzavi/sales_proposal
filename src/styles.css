@@ -191,22 +191,13 @@ button.full { width: 100%; margin-top: 10px; }
 .dropdown-menu button:active:not(:disabled) { transform: scale(0.99); background: #e2e8f0; }
 
 .workspace {
-  display: grid; grid-template-columns: 260px minmax(360px, 520px) minmax(600px, 1fr);
-  gap: 18px; padding: 20px; align-items: start;
-}
-.workspace.invoice-workspace,
-.workspace.discovery-workspace,
-.workspace.nda-workspace,
-.workspace.msa-workspace,
-.workspace.commercial-proposal-workspace,
-.workspace.sla-workspace,
-.workspace.po-workspace,
-.workspace.handover-workspace,
-.workspace.closure-workspace {
+  display: grid;
   grid-template-columns: minmax(480px, 1fr) minmax(794px, 1.35fr);
   max-width: 1720px;
   margin: 0 auto;
   gap: 24px;
+  padding: 20px;
+  align-items: start;
 }
 .workspace.preview-only { display: block; max-width: 980px; margin: 0 auto; }
 .workspace.official-library {
@@ -638,16 +629,7 @@ article h2 { color: #2e2a76; font-size: 21px; border-bottom: 1px solid #e1e3eb; 
 .proposal-paper footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #e2e5ed; color: #8a90a5; font-size: 12px; }
 
 @media (max-width: 1250px) {
-  .workspace { grid-template-columns: 240px 1fr; }
-  .workspace.invoice-workspace,
-  .workspace.discovery-workspace,
-  .workspace.nda-workspace,
-  .workspace.msa-workspace,
-  .workspace.commercial-proposal-workspace,
-  .workspace.sla-workspace,
-  .workspace.po-workspace,
-  .workspace.handover-workspace,
-  .workspace.closure-workspace { grid-template-columns: 1fr; }
+  .workspace { grid-template-columns: 1fr; }
   .proposal-paper,
   .invoice-paper,
   .invoice-pages-container,

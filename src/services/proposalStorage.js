@@ -112,6 +112,13 @@ export function loadProposalsFromStorage() {
             scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
           }));
         };
+        const cleanSections = (secs) => {
+          if (!Array.isArray(secs)) return secs;
+          return secs.map((sec) => ({
+            ...sec,
+            title: sec.title ? sec.title.replace(/^\d+[\.\)]\s*/, '') : sec.title
+          }));
+        };
         const cleaned = sanitizeProposalData(withoutCompact).map((p) => {
           let company = (p.company === 'I-Globus Corporate Consulting' || p.company === 'iGlobus Corporate Consulting') ? 'iGLOBUS Corporate Consulting' : p.company;
           if (company === 'ibunify (iGLOBUS Corporate Consulting Pvt. Ltd.)' || company === 'ibunify (iGLOBUS Corporate Consulting)') {
@@ -119,6 +126,7 @@ export function loadProposalsFromStorage() {
           }
           const sanitizedProposal = {
             ...p,
+            sections: cleanSections(p.sections),
             proposalNumber: cleanProposalNumber(p.proposalNumber, p.documentType),
             preparedFor: cleanPreparedFor(p.preparedFor),
             companyAddress: cleanAddress(p.companyAddress),
