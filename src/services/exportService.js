@@ -450,9 +450,36 @@ export function invoiceToHtml(doc, forWord = false) {
 }
 
 export function discoveryToHtml(doc, forWord = false) {
-  const pipelineStages = doc.pipelineStages || [];
+  const rawPipelineStages = doc.pipelineStages || [];
+  const pipelineStages = rawPipelineStages.filter(st => st && (st.stage?.trim() || st.objective?.trim() || st.action?.trim()));
   const useStructuredTable = doc.useStructuredTable !== false;
-  const sections = doc.sections || [];
+
+  const defaultDiscoverySections = [
+    {
+      id: 'sec-1',
+      title: '1. BUSINESS OBJECTIVES & OPERATIONAL SCOPE',
+      content: 'This Discovery Document establishes the functional and technical requirements for deploying the ibunify platform. It maps existing lead channels, sales team structures, and automation triggers.'
+    },
+    {
+      id: 'sec-2',
+      title: '2. LEAD INGESTION & CHANNEL ARCHITECTURE',
+      content: '• Digital Channels: Meta Ads (Facebook/Instagram), Google Search & Display Ads, Website Landing Page forms.\n• Portals: Automated webhook ingestion from 99acres, MagicBricks, Housing.com, and CommonFloor.\n• Inbound & Offline: Dedicated Cloud Telephony virtual numbers, QR code campaign scans, and property walk-in entries.'
+    },
+    {
+      id: 'sec-3',
+      title: '3. SALES HIERARCHY & PIPELINE STAGES',
+      content: 'Configured pipeline stage mapping and automated CRM actions upon lead state transitions.'
+    },
+    {
+      id: 'sec-4',
+      title: '4. SIGN-OFF FOR SCOPING BASELINE',
+      content: 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.',
+      isSignoff: true
+    }
+  ];
+
+  const rawSections = doc.sections !== undefined ? doc.sections : defaultDiscoverySections;
+  const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
   const stageRowsHtml = pipelineStages
     .map(
@@ -541,10 +568,14 @@ export function discoveryToHtml(doc, forWord = false) {
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
         <div>
-        ${sections.map((sec, idx) => `
+        ${activeSections.map((sec) => {
+          const isPipelineSec = sec.title?.toUpperCase().includes('PIPELINE') || sec.title?.includes('3.');
+          const isSignoffSec = sec.isSignoff || sec.title?.toUpperCase().includes('SIGN-OFF') || sec.title?.includes('4.');
+
+          return `
           <div>
-            <div class="sec-title">${escapeHtml(sec.title)}</div>
-            ${idx === 2 && useStructuredTable ? `
+            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
+            ${isPipelineSec && useStructuredTable && pipelineStages.length > 0 ? `
               <table class="pipe-table">
                 <thead>
                   <tr>
@@ -558,7 +589,7 @@ export function discoveryToHtml(doc, forWord = false) {
             ` : `
               <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
             `}
-            ${idx === 3 ? `
+            ${isSignoffSec ? `
               <div style="display:flex;gap:16px;margin-top:10px;">
                 <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
                   <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
@@ -581,7 +612,8 @@ export function discoveryToHtml(doc, forWord = false) {
               </div>
             ` : ''}
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         </div>
       </div>
     </div>
@@ -589,27 +621,35 @@ export function discoveryToHtml(doc, forWord = false) {
 }
 
 export function ndaToHtml(doc, forWord = false) {
-  const sections = doc.sections || [];
-  const sec1 = sections[0] || {
-    title: '1. PURPOSE OF ENGAGEMENT',
-    content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
-  };
-  const sec2 = sections[1] || {
-    title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
-    content:
-      '"Confidential Information" includes all technical data, customer leads, pricing matrices, source codes, AI prompts, marketing strategies, telephony records, and business workflows disclosed by either party.'
-  };
-  const sec3 = sections[2] || {
-    title: '3. OBLIGATIONS OF CONFIDENTIALITY',
-    content:
-      '• Both parties agree to hold all Confidential Information in strict trust and confidence using the same degree of care as for their own proprietary data (at minimum reasonable care).\n• Confidential Information shall not be disclosed to any third party without prior written authorization.\n• Full compliance with Indian Digital Personal Data Protection (DPDPA) Act 2023 regulations regarding Data Principal rights.'
-  };
-  const sec4 = sections[3] || {
-    title: '4. TERM & EXECUTION',
-    content:
-      'This Agreement remains in effect for a period of Three (3) Years from the Effective Date.'
-  };
-  const remainingSections = sections.slice(4);
+  const defaultNdaSections = [
+    {
+      id: 'sec-nda-1',
+      title: '1. PURPOSE OF ENGAGEMENT',
+      content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
+    },
+    {
+      id: 'sec-nda-2',
+      title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
+      content:
+        '"Confidential Information" includes all technical data, customer leads, pricing matrices, source codes, AI prompts, marketing strategies, telephony records, and business workflows disclosed by either party.'
+    },
+    {
+      id: 'sec-nda-3',
+      title: '3. OBLIGATIONS OF CONFIDENTIALITY',
+      content:
+        '• Both parties agree to hold all Confidential Information in strict trust and confidence using the same degree of care as for their own proprietary data (at minimum reasonable care).\n• Confidential Information shall not be disclosed to any third party without prior written authorization.\n• Full compliance with Indian Digital Personal Data Protection (DPDPA) Act 2023 regulations regarding Data Principal rights.'
+    },
+    {
+      id: 'sec-nda-4',
+      title: '4. TERM & EXECUTION',
+      content:
+        'This Agreement remains in effect for a period of Three (3) Years from the Effective Date.',
+      isExecution: true
+    }
+  ];
+
+  const rawSections = doc.sections !== undefined ? doc.sections : defaultNdaSections;
+  const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Mutual Non-Disclosure Agreement')}</title>
   <style>
@@ -678,52 +718,38 @@ export function ndaToHtml(doc, forWord = false) {
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
         <div>
-        <div>
-          <div class="sec-title">${escapeHtml(sec1.title)}</div>
-          <div class="sec-text">${escapeHtml(sec1.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
+        ${activeSections.map((sec) => {
+          const isExecutionSec = sec.isExecution || sec.title?.toUpperCase().includes('EXECUTION') || sec.title?.includes('4.');
 
-        <div>
-          <div class="sec-title">${escapeHtml(sec2.title)}</div>
-          <div class="sec-text">${escapeHtml(sec2.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec3.title)}</div>
-          <div class="sec-text">${escapeHtml(sec3.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec4.title)}</div>
-          <div class="sec-text">${escapeHtml(sec4.content || '').replaceAll('\n', '<br/>')}</div>
-          <div style="display:flex;gap:16px;margin-top:10px;">
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
-            </div>
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
-            </div>
-          </div>
-        </div>
-
-        ${remainingSections.map((sec) => `
+          return `
           <div>
-            <div class="sec-title">${escapeHtml(sec.title)}</div>
+            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
             <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
+            ${isExecutionSec ? `
+              <div style="display:flex;gap:16px;margin-top:10px;">
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                </div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
+                </div>
+              </div>
+            ` : ''}
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         </div>
       </div>
     </div>
@@ -731,32 +757,41 @@ export function ndaToHtml(doc, forWord = false) {
 }
 
 export function msaToHtml(doc, forWord = false) {
-  const sections = doc.sections || [];
-  const sec1 = sections[0] || {
-    title: '1. FRAMEWORK AGREEMENT & TERM',
-    content: `This Master Services Agreement ("MSA") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
-  };
-  const sec2 = sections[1] || {
-    title: '2. SCOPE OF PLATFORM SERVICES',
-    content:
-      'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
-  };
-  const sec3 = sections[2] || {
-    title: '3. INTELLECTUAL PROPERTY RIGHTS',
-    content:
-      '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
-  };
-  const sec4 = sections[3] || {
-    title: '4. PAYMENT TERMS & INVOICING',
-    content:
-      'All invoices are payable within 30 calendar days (NET 30). Late payments shall incur interest at 1.5% per month or the maximum rate permitted by law.'
-  };
-  const sec5 = sections[4] || {
-    title: '5. GOVERNING LAW & DISPUTE RESOLUTION',
-    content:
-      'This Agreement shall be governed by the laws of India with exclusive jurisdiction in Hyderabad, Telangana.'
-  };
-  const remainingSections = sections.slice(5);
+  const defaultMsaSections = [
+    {
+      id: 'sec-msa-1',
+      title: '1. FRAMEWORK AGREEMENT & TERM',
+      content: `This Master Services Agreement ("MSA") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
+    },
+    {
+      id: 'sec-msa-2',
+      title: '2. SCOPE OF PLATFORM SERVICES',
+      content:
+        'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
+    },
+    {
+      id: 'sec-msa-3',
+      title: '3. INTELLECTUAL PROPERTY RIGHTS',
+      content:
+        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
+    },
+    {
+      id: 'sec-msa-4',
+      title: '4. PAYMENT TERMS & INVOICING',
+      content:
+        'All invoices are payable within 30 calendar days (NET 30). Late payments shall incur interest at 1.5% per month or the maximum rate permitted by law.'
+    },
+    {
+      id: 'sec-msa-5',
+      title: '5. GOVERNING LAW & DISPUTE RESOLUTION',
+      content:
+        'This Agreement shall be governed by the laws of India with exclusive jurisdiction in Hyderabad, Telangana.',
+      isExecution: true
+    }
+  ];
+
+  const rawSections = doc.sections !== undefined ? doc.sections : defaultMsaSections;
+  const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Master Services Agreement (MSA)')}</title>
   <style>
@@ -788,18 +823,6 @@ export function msaToHtml(doc, forWord = false) {
     .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
     .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
-  </style>
-  </head>
-  <body>
-
-    .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
-    
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
-    .corp-box strong { color: #1e3a8a; }
   </style>
   </head>
   <body>
@@ -837,57 +860,38 @@ export function msaToHtml(doc, forWord = false) {
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
         <div>
-        <div>
-          <div class="sec-title">${escapeHtml(sec1.title)}</div>
-          <div class="sec-text">${escapeHtml(sec1.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
+        ${activeSections.map((sec) => {
+          const isExecutionSec = sec.isExecution || sec.title?.toUpperCase().includes('GOVERNING') || sec.title?.includes('5.');
 
-        <div>
-          <div class="sec-title">${escapeHtml(sec2.title)}</div>
-          <div class="sec-text">${escapeHtml(sec2.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec3.title)}</div>
-          <div class="sec-text">${escapeHtml(sec3.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec4.title)}</div>
-          <div class="sec-text">${escapeHtml(sec4.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec5.title)}</div>
-          <div class="sec-text">${escapeHtml(sec5.content || '').replaceAll('\n', '<br/>')}</div>
-          <div style="display:flex;gap:16px;margin-top:10px;">
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
-            </div>
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
-            </div>
-          </div>
-        </div>
-
-        ${remainingSections.map((sec) => `
+          return `
           <div>
-            <div class="sec-title">${escapeHtml(sec.title)}</div>
+            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
             <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
+            ${isExecutionSec ? `
+              <div style="display:flex;gap:16px;margin-top:10px;">
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                </div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
+                </div>
+              </div>
+            ` : ''}
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         </div>
       </div>
     </div>
@@ -895,44 +899,47 @@ export function msaToHtml(doc, forWord = false) {
 }
 
 export function commercialProposalToHtml(doc, forWord = false) {
-  const metrics = doc.metrics || [
+  const rawMetrics = doc.metrics || [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },
     { value: '3x', label: 'FOLLOW-UP VELOCITY' },
     { value: '24/7', label: 'AI VOICE & CHAT' }
   ];
+  const metrics = rawMetrics.filter(m => m && (m.value?.trim() || m.label?.trim()));
 
-  const serviceBreakdown = doc.serviceBreakdown || [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM & Pipeline Platform',
-      features:
-        '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
-      costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
-    },
-    {
-      key: 'B',
-      title: 'Conversational AI Agent Calling Service',
-      features:
-        'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
-      costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
-    },
-    {
-      key: 'C',
-      title: 'Integrated Cloud Telephony & Virtual Numbers',
-      features:
-        'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
-      costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
-    },
-    {
-      key: 'D',
-      title: 'Official WhatsApp Business Platform Automation',
-      features:
-        'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
-      costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
-    }
-  ];
-
+  const rawServiceBreakdown = doc.serviceBreakdown !== undefined
+    ? doc.serviceBreakdown
+    : [
+        {
+          key: 'A',
+          title: 'Centralized Real Estate CRM & Pipeline Platform',
+          features:
+            '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
+          costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
+        },
+        {
+          key: 'B',
+          title: 'Conversational AI Agent Calling Service',
+          features:
+            'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
+          costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
+        },
+        {
+          key: 'C',
+          title: 'Integrated Cloud Telephony & Virtual Numbers',
+          features:
+            'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
+          costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
+        },
+        {
+          key: 'D',
+          title: 'Official WhatsApp Business Platform Automation',
+          features:
+            'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
+          costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
+        }
+      ];
+  const serviceBreakdown = rawServiceBreakdown.filter(sb => sb && (sb.title?.trim() || sb.features?.trim() || sb.costing?.trim()));
 
   const rawCommercialItemsSow = doc.commercialScheduleItems || [
     {
@@ -973,35 +980,40 @@ export function commercialProposalToHtml(doc, forWord = false) {
     }
   ];
 
-  const commercialScheduleItems = rawCommercialItemsSow.map((item, idx) => ({
-    ...item,
-    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
-    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
-  }));
+  const commercialScheduleItems = rawCommercialItemsSow
+    .filter(item => item && (item.component?.trim() || item.scope?.trim() || item.investment?.trim()))
+    .map((item, idx) => ({
+      ...item,
+      component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+      scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+    }));
 
-  const sowScopeActivities = doc.sowScopeActivities || [
+  const rawSowScopeActivities = doc.sowScopeActivities || [
     'Requirement Discovery & Pipeline Architecture: Define project inventory structures, custom pipeline stages, lead scoring benchmarks, and sales role authorization tiers.',
     'Omnichannel Campaign Ingestion: Connect Meta Ads (CAPI API), Google Offline Conversion tracking, website webhooks, and portal lead connectors.',
     'Telephony & AI Calling Configuration: Provision dedicated virtual numbers, configure Call-to-Lead auto record triggers, and program conversational voice scripts.',
     'WhatsApp API Integration: Register official Business API templates, design automated brochure auto-responders, and configure multi-agent shared inboxes.',
     'UAT, Training & Rollout: Conduct sandbox functional testing, administrator runbook handover, and end-user sales executive onboarding sessions.'
   ];
+  const sowScopeActivities = rawSowScopeActivities.filter(act => act && (typeof act === 'string' ? act.trim() : act.activity?.trim()));
 
-  const sowDeliverables = doc.sowDeliverables || [
+  const rawSowDeliverables = doc.sowDeliverables || [
     'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
     'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
     'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
     'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
   ];
+  const sowDeliverables = rawSowDeliverables.filter(d => d && (typeof d === 'string' ? d.trim() : d.text?.trim()));
 
-  const sowTimelineMilestones = doc.sowTimelineMilestones || [
+  const rawSowTimelineMilestones = doc.sowTimelineMilestones || [
     { activity: 'Discovery, Role Hierarchy & Lead Ingestion Setup', activeWeek: 1 },
     { activity: 'Cloud Telephony & WhatsApp Business API Deployment', activeWeek: 2 },
     { activity: 'AI Agent Calling Configuration & Integration Testing', activeWeek: 3 },
     { activity: 'User Acceptance Testing (UAT), Training & Production Go-Live', activeWeek: 4 }
   ];
+  const sowTimelineMilestones = rawSowTimelineMilestones.filter(m => m && m.activity?.trim());
 
-  const sowInvoicingMilestones = doc.sowInvoicingMilestones || [
+  const rawSowInvoicingMilestones = doc.sowInvoicingMilestones || [
     {
       deliverable: 'Milestone 1: Contract Signing / Project Kick-off & Mobilization',
       percentage: '50%',
@@ -1013,12 +1025,14 @@ export function commercialProposalToHtml(doc, forWord = false) {
       amount: '₹25,000'
     }
   ];
+  const sowInvoicingMilestones = rawSowInvoicingMilestones.filter(m => m && (m.deliverable?.trim() || m.amount?.trim()));
 
-  const sowAssumptions = doc.sowAssumptions || [
+  const rawSowAssumptions = doc.sowAssumptions || [
     'Client will designate a Project Manager to provide timely feedback/approvals within 48 hours.',
     'Client will provide necessary API access keys (Meta Business Manager, WhatsApp Business Account, Google Ads) before configuration commences.',
     'Standard support SLA guarantees Priority 1 response within < 30 minutes. Invoices are payable NET 30.'
   ];
+  const sowAssumptions = rawSowAssumptions.filter(a => a && (typeof a === 'string' ? a.trim() : a.text?.trim()));
 
   const headerLeft = doc.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW';
   const headerRight = doc.headerRight || 'Standard Master Template';
@@ -1147,10 +1161,10 @@ export function commercialProposalToHtml(doc, forWord = false) {
           <div>
             <div class="sec-title">2. GRANULAR SERVICE BREAKDOWN, FEATURES & COSTING</div>
             <div style="display:flex;flex-direction:column;gap:8px;">
-              ${serviceBreakdown.map((item) => `
+              ${serviceBreakdown.map((item, idx) => `
                 <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;padding:8px 12px;">
                   <div style="font-weight:700;color:#1e3a8a;font-size:13px;margin-bottom:3px;">
-                    ${escapeHtml(item.key)}. ${escapeHtml(item.title)}
+                    ${escapeHtml(item.key || (['A','B','C','D','E','F','G','H','I','J'][idx] || (idx + 1)))}. ${escapeHtml(item.title)}
                   </div>
                   <div style="font-size:12px;color:#334155;line-height:1.4;">
                     <strong>Core Features:</strong> ${escapeHtml(item.features)}
@@ -1317,7 +1331,7 @@ export function commercialProposalToHtml(doc, forWord = false) {
 }
 
 export function slaToHtml(doc, forWord = false) {
-  const incidentBenchmarks = doc.incidentBenchmarks || [
+  const rawIncidentBenchmarks = doc.incidentBenchmarks || [
     {
       id: 'inc-1',
       level: 'P1 - Critical',
@@ -1347,12 +1361,14 @@ export function slaToHtml(doc, forWord = false) {
       resolutionTarget: '< 48 Hours'
     }
   ];
+  const incidentBenchmarks = rawIncidentBenchmarks.filter(inc => inc && (inc.level?.trim() || inc.impact?.trim()));
 
-  const escalationMatrix = doc.escalationMatrix || [
+  const rawEscalationMatrix = doc.escalationMatrix || [
     'Level 1 (Helpdesk): support@ibunify.com | Ticket Portal',
     'Level 2 (Technical Lead): Rama Krishna (ramakrishna@iglobus.com)',
     'Level 3 (Practice Lead): Rama Krishna (ramakrishna@iglobuscc.com)'
   ];
+  const escalationMatrix = rawEscalationMatrix.filter(esc => esc && (typeof esc === 'string' ? esc.trim() : esc.text?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Service Level Agreement (SLA)')}</title>
   <style>
@@ -1487,7 +1503,7 @@ export function slaToHtml(doc, forWord = false) {
 }
 
 export function poToHtml(doc, forWord = false) {
-  const orderScheduleItems = doc.orderScheduleItems || [
+  const rawOrderScheduleItems = doc.orderScheduleItems || [
     {
       id: 'po-item-1',
       description: 'One-Time Implementation & Setup Fee',
@@ -1524,6 +1540,7 @@ export function poToHtml(doc, forWord = false) {
       totalAmount: 'As Per Qty'
     }
   ];
+  const orderScheduleItems = rawOrderScheduleItems.filter(item => item && (item.description?.trim() || item.totalAmount?.trim() || item.unitPrice?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Purchase Order (PO Template)')}</title>
   <style>
@@ -1662,7 +1679,8 @@ export function poToHtml(doc, forWord = false) {
 }
 
 export function handoverToHtml(doc, forWord = false) {
-  const checklistItems = doc.handoverChecklistItems || [];
+  const rawChecklistItems = doc.handoverChecklistItems || [];
+  const checklistItems = rawChecklistItems.filter(item => item && (item.component?.trim() || item.feature?.trim()));
   const checklistRowsHtml = checklistItems
     .map(
       (item) => `
@@ -1783,7 +1801,8 @@ export function handoverToHtml(doc, forWord = false) {
 }
 
 export function closureToHtml(doc, forWord = false) {
-  const operationalMetrics = doc.operationalMetrics || [];
+  const rawOperationalMetrics = doc.operationalMetrics || [];
+  const operationalMetrics = rawOperationalMetrics.filter(item => item && (item.kpi?.trim() || item.target?.trim() || item.achieved?.trim()));
   const metricsRowsHtml = operationalMetrics
     .map(
       (item) => `
@@ -1909,44 +1928,49 @@ export function closureToHtml(doc, forWord = false) {
 }
 
 export function customProposalToHtml(doc, forWord = false) {
-  const metrics = doc.metrics || [
+  const rawMetrics = doc.metrics || [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },
     { value: '3x', label: 'FOLLOW-UP VELOCITY' },
     { value: '24/7', label: 'AI VOICE & CHAT' }
   ];
+  const metrics = rawMetrics.filter(m => m && (m.value?.trim() || m.label?.trim()));
 
-  const servicesOverview = doc.servicesOverview || [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM',
-      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
-    },
-    {
-      key: 'B',
-      title: 'Omnichannel Lead Ingestion',
-      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
-    },
-    {
-      key: 'C',
-      title: 'Closed-Loop Marketing Attribution',
-      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
-    },
-    {
-      key: 'D',
-      title: 'Executive CDR & Conversion Analytics',
-      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
-    }
-  ];
+  const rawServicesOverview = doc.servicesOverview !== undefined
+    ? doc.servicesOverview
+    : [
+        {
+          key: 'A',
+          title: 'Centralized Real Estate CRM',
+          desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
+        },
+        {
+          key: 'B',
+          title: 'Omnichannel Lead Ingestion',
+          desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
+        },
+        {
+          key: 'C',
+          title: 'Closed-Loop Marketing Attribution',
+          desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
+        },
+        {
+          key: 'D',
+          title: 'Executive CDR & Conversion Analytics',
+          desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
+        }
+      ];
+  const servicesOverview = rawServicesOverview.filter(s => s && (s.title?.trim() || s.desc?.trim()));
 
-  const aiCallingBullets = doc.aiCallingBullets || [
+  const rawAiCallingBullets = doc.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
     'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
+  const aiCallingBullets = rawAiCallingBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const aiCallingItems = doc.aiCallingItems || [
+  const rawAiCallingItems = doc.aiCallingItems || [
     {
       id: 'ai-1',
       component: 'AI Voice Agent Engine',
@@ -1960,15 +1984,17 @@ export function customProposalToHtml(doc, forWord = false) {
       investment: '₹7 / call'
     }
   ];
+  const aiCallingItems = rawAiCallingItems.filter(item => item && (item.component?.trim() || item.investment?.trim()));
 
-  const cloudTelephonyBullets = doc.cloudTelephonyBullets || [
+  const rawCloudTelephonyBullets = doc.cloudTelephonyBullets || [
     'Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.',
     'Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.',
     'Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.',
     'Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.'
   ];
+  const cloudTelephonyBullets = rawCloudTelephonyBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const cloudTelephonyItems = doc.cloudTelephonyItems || [
+  const rawCloudTelephonyItems = doc.cloudTelephonyItems || [
     {
       id: 'ct-1',
       component: 'Virtual Cloud Telephony Numbers',
@@ -1982,15 +2008,17 @@ export function customProposalToHtml(doc, forWord = false) {
       investment: 'Included in Setup'
     }
   ];
+  const cloudTelephonyItems = rawCloudTelephonyItems.filter(item => item && (item.component?.trim() || item.investment?.trim()));
 
-  const whatsappBullets = doc.whatsappBullets || [
+  const rawWhatsappBullets = doc.whatsappBullets || [
     'Instant Brochure & Price Sheet Dispatch: Automatically triggers WhatsApp brochures when leads submit inquiry forms.',
     'Automated Nurture Sequences: Triggers site-visit reminders, location pins, video walkthroughs, and payment milestone alerts.',
     'Unified Multi-Agent Inbox: Enables sales teams to chat with prospects from a single verified business number with full audit logs.',
     'Interactive Chatbot & Quick Replies: Pre-configured menus for instant responses to common buyer FAQs and project details.'
   ];
+  const whatsappBullets = rawWhatsappBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const whatsappItems = doc.whatsappItems || [
+  const rawWhatsappItems = doc.whatsappItems || [
     {
       id: 'wa-1',
       component: 'WhatsApp Business Platform (API Engine)',
@@ -2004,6 +2032,7 @@ export function customProposalToHtml(doc, forWord = false) {
       investment: '₹10,000 Prepaid\n(Usage-based)'
     }
   ];
+  const whatsappItems = rawWhatsappItems.filter(item => item && (item.component?.trim() || item.investment?.trim()));
 
   const rawCommercialItemsProp = doc.commercialScheduleItems || [
     {
@@ -2044,25 +2073,29 @@ export function customProposalToHtml(doc, forWord = false) {
     }
   ];
 
-  const commercialScheduleItems = rawCommercialItemsProp.map((item, idx) => ({
-    ...item,
-    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
-    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
-  }));
+  const commercialScheduleItems = rawCommercialItemsProp
+    .filter(item => item && (item.component?.trim() || item.scope?.trim() || item.investment?.trim()))
+    .map((item, idx) => ({
+      ...item,
+      component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+      scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+    }));
 
-  const roadmapBullets = doc.roadmapBullets || [
+  const rawRoadmapBullets = doc.roadmapBullets || [
     'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
     'Week 2 (Telephony & WhatsApp): Virtual numbers provisioning, WhatsApp Business API templates, and routing logic.',
     'Week 3 (AI Agent & Testing): AI conversational script configuration, call-to-lead testing, and sandbox validation.',
     'Week 4 (Training & Go-Live): Sales team enablement, admin runbooks, UAT sign-off, and live production rollout.',
     'Support & SLA Commitment: Priority 1 (Critical) incidents resolved in < 30 minutes; dedicated Customer Success Lead.'
   ];
+  const roadmapBullets = rawRoadmapBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const termsBullets = doc.termsBullets || [
+  const rawTermsBullets = doc.termsBullets || [
     'All prices are exclusive of applicable statutory GST / taxes (18%).',
     'Third-party usage (telephony minutes, WhatsApp message costs, AI calling) billed against actual wallet consumption.',
     'Invoices are payable within 30 days from date of submission (NET 30).'
   ];
+  const termsBullets = rawTermsBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
   const headerLeft = doc.headerLeft || 'ibunify CRM by iGLOBUS | Commercial & Services Proposal';
   const headerRight = doc.headerRight || 'www.ibunify.com';
@@ -2194,9 +2227,9 @@ export function customProposalToHtml(doc, forWord = false) {
             </div>
 
             <div class="breakdown-grid">
-              ${servicesOverview.map((s) => `
+              ${servicesOverview.map((s, idx) => `
                 <div class="breakdown-card">
-                  <div class="breakdown-title">${escapeHtml(s.key)}. ${escapeHtml(s.title)}</div>
+                  <div class="breakdown-title">${escapeHtml(s.key || (['A','B','C','D','E','F','G','H','I','J'][idx] || (idx + 1)))}. ${escapeHtml(s.title)}</div>
                   <div style="color:#334155;font-size:11px;line-height:1.35;">${escapeHtml(s.desc)}</div>
                 </div>
               `).join('')}

@@ -296,30 +296,38 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isDiscovery = proposal.documentType === 'discovery';
 
   if (isDiscovery) {
-    const pipelineStages = proposal.pipelineStages || [];
+    const rawPipelineStages = proposal.pipelineStages || [];
+    const pipelineStages = rawPipelineStages.filter(st => st && (st.stage?.trim() || st.objective?.trim() || st.action?.trim()));
     const useStructuredTable = proposal.useStructuredTable !== false;
-    const sections = proposal.sections || [];
 
-    const secObjectives = sections[0] || {
-      title: '1. BUSINESS OBJECTIVES & OPERATIONAL SCOPE',
-      content:
-        'This Discovery Document establishes the functional and technical requirements for deploying the ibunify platform. It maps existing lead channels, sales team structures, and automation triggers.'
-    };
-    const secIngestion = sections[1] || {
-      title: '2. LEAD INGESTION & CHANNEL ARCHITECTURE',
-      content:
-        '• Digital Channels: Meta Ads (Facebook/Instagram), Google Search & Display Ads, Website Landing Page forms.\n• Portals: Automated webhook ingestion from 99acres, MagicBricks, Housing.com, and CommonFloor.\n• Inbound & Offline: Dedicated Cloud Telephony virtual numbers, QR code campaign scans, and property walk-in entries.'
-    };
-    const secPipeline = sections[2] || {
-      title: '3. SALES HIERARCHY & PIPELINE STAGES',
-      content: 'Configured pipeline stage mapping and automated CRM actions upon lead state transitions.'
-    };
-    const secSignoff = sections[3] || {
-      title: '4. SIGN-OFF FOR SCOPING BASELINE',
-      content: 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.'
-    };
+    const defaultDiscoverySections = [
+      {
+        id: 'sec-1',
+        title: '1. BUSINESS OBJECTIVES & OPERATIONAL SCOPE',
+        content:
+          'This Discovery Document establishes the functional and technical requirements for deploying the ibunify platform. It maps existing lead channels, sales team structures, and automation triggers.'
+      },
+      {
+        id: 'sec-2',
+        title: '2. LEAD INGESTION & CHANNEL ARCHITECTURE',
+        content:
+          '• Digital Channels: Meta Ads (Facebook/Instagram), Google Search & Display Ads, Website Landing Page forms.\n• Portals: Automated webhook ingestion from 99acres, MagicBricks, Housing.com, and CommonFloor.\n• Inbound & Offline: Dedicated Cloud Telephony virtual numbers, QR code campaign scans, and property walk-in entries.'
+      },
+      {
+        id: 'sec-3',
+        title: '3. SALES HIERARCHY & PIPELINE STAGES',
+        content: 'Configured pipeline stage mapping and automated CRM actions upon lead state transitions.'
+      },
+      {
+        id: 'sec-4',
+        title: '4. SIGN-OFF FOR SCOPING BASELINE',
+        content: 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.',
+        isSignoff: true
+      }
+    ];
 
-    const remainingSections = sections.slice(4);
+    const rawSections = proposal.sections !== undefined ? proposal.sections : defaultDiscoverySections;
+    const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
     return (
       <div className="proposal-pages-container discovery-pages-container">
@@ -395,96 +403,78 @@ export function ProposalPreview({ proposal: rawProposal }) {
             <div className="letterhead-content-wrap">
               {/* Document Body Sections */}
               <div className="discovery-p2-body">
-                {/* Section 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secObjectives.title}</h2>
-                  <div className="discovery-section-text">{secObjectives.content}</div>
-                </div>
+                {activeSections.map((sec, sIdx) => {
+                  const isPipelineSec = sec.title?.toUpperCase().includes('PIPELINE') || sec.title?.includes('3.');
+                  const isSignoffSec = sec.isSignoff || sec.title?.toUpperCase().includes('SIGN-OFF') || sec.title?.includes('4.');
 
-                {/* Section 2 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secIngestion.title}</h2>
-                  <div className="discovery-section-text discovery-bullet-list">
-                    {secIngestion.content.split('\n').map((line, lIdx) => (
-                      <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Section 3 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secPipeline.title}</h2>
-                  {useStructuredTable ? (
-                    <div className="discovery-pipeline-table-wrap">
-                      <table className="discovery-pipeline-table">
-                        <thead>
-                          <tr>
-                            <th style={{ width: '28%' }}>PIPELINE STAGE</th>
-                            <th style={{ width: '32%' }}>PRIMARY OBJECTIVE</th>
-                            <th style={{ width: '40%' }}>AUTOMATED SYSTEM ACTION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pipelineStages.map((st) => (
-                            <tr key={st.id}>
-                              <td className="stage-name-cell"><strong>{st.stage}</strong></td>
-                              <td>{st.objective}</td>
-                              <td>{st.action}</td>
-                            </tr>
+                  return (
+                    <div key={sec.id || sIdx} className="discovery-section-block">
+                      {sec.title && <h2 className="discovery-section-title">{sec.title}</h2>}
+                      {isPipelineSec && useStructuredTable && pipelineStages.length > 0 ? (
+                        <div className="discovery-pipeline-table-wrap">
+                          <table className="discovery-pipeline-table">
+                            <thead>
+                              <tr>
+                                <th style={{ width: '28%' }}>PIPELINE STAGE</th>
+                                <th style={{ width: '32%' }}>PRIMARY OBJECTIVE</th>
+                                <th style={{ width: '40%' }}>AUTOMATED SYSTEM ACTION</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {pipelineStages.map((st, idx) => (
+                                <tr key={st.id || idx}>
+                                  <td className="stage-name-cell"><strong>{st.stage}</strong></td>
+                                  <td>{st.objective}</td>
+                                  <td>{st.action}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : isSignoffSec ? (
+                        <>
+                          {sec.content && <p className="discovery-signoff-desc">{sec.content}</p>}
+                          <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
+                            <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
+                              <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
+                                {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
+                              </div>
+                              <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
+                                {proposal.clientSignatorySub || 'Authorized Signatory'}
+                              </div>
+                              <div style={{ height: '42px' }}></div>
+                              <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
+                              <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                            </div>
+                            <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
+                              <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
+                                {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
+                              </div>
+                              <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
+                                {proposal.providerSignatorySub || 'Authorized Signatory'}
+                              </div>
+                              <div style={{ height: '42px' }}></div>
+                              <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
+                              <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="discovery-section-text discovery-bullet-list">
+                          {sec.content && sec.content.split('\n').filter(l => l.trim() !== '').map((line, lIdx) => (
+                            <div key={lIdx} className="discovery-bullet-item">{line}</div>
                           ))}
-                        </tbody>
-                      </table>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="discovery-section-text">{secPipeline.content}</div>
-                  )}
-                </div>
-
-                {/* Section 4: Sign-off Baseline */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{secSignoff.title}</h2>
-                  <p className="discovery-signoff-desc">{secSignoff.content}</p>
-
-                  <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                        {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
-                      </div>
-                      <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                        {proposal.clientSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div style={{ height: '42px' }}></div>
-                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
-                    </div>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                        {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
-                      </div>
-                      <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                        {proposal.providerSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div style={{ height: '42px' }}></div>
-                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Any user-added extra sections */}
-                {remainingSections.map((sec) => (
-                  <div key={sec.id} className="discovery-section-block">
-                    <h2 className="discovery-section-title">{sec.title}</h2>
-                    <div className="discovery-section-text">{sec.content}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
-
           </section>
         </div>
       </div>
@@ -494,28 +484,35 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isNda = proposal.documentType === 'nda';
 
   if (isNda) {
-    const sections = proposal.sections || [];
-    const sec1 = sections[0] || {
-      title: '1. PURPOSE OF ENGAGEMENT',
-      content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${proposal.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
-    };
-    const sec2 = sections[1] || {
-      title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
-      content:
-        '"Confidential Information" includes all technical data, customer leads, pricing matrices, source codes, AI prompts, marketing strategies, telephony records, and business workflows disclosed by either party.'
-    };
-    const sec3 = sections[2] || {
-      title: '3. OBLIGATIONS OF CONFIDENTIALITY',
-      content:
-        '• Both parties agree to hold all Confidential Information in strict trust and confidence using the same degree of care as for their own proprietary data (at minimum reasonable care).\n• Confidential Information shall not be disclosed to any third party without prior written authorization.\n• Full compliance with Indian Digital Personal Data Protection (DPDPA) Act 2023 regulations regarding Data Principal rights.'
-    };
-    const sec4 = sections[3] || {
-      title: '4. TERM & EXECUTION',
-      content:
-        'This Agreement remains in effect for a period of Three (3) Years from the Effective Date.'
-    };
+    const defaultNdaSections = [
+      {
+        id: 'sec-nda-1',
+        title: '1. PURPOSE OF ENGAGEMENT',
+        content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${proposal.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
+      },
+      {
+        id: 'sec-nda-2',
+        title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
+        content:
+          '"Confidential Information" includes all technical data, customer leads, pricing matrices, source codes, AI prompts, marketing strategies, telephony records, and business workflows disclosed by either party.'
+      },
+      {
+        id: 'sec-nda-3',
+        title: '3. OBLIGATIONS OF CONFIDENTIALITY',
+        content:
+          '• Both parties agree to hold all Confidential Information in strict trust and confidence using the same degree of care as for their own proprietary data (at minimum reasonable care).\n• Confidential Information shall not be disclosed to any third party without prior written authorization.\n• Full compliance with Indian Digital Personal Data Protection (DPDPA) Act 2023 regulations regarding Data Principal rights.'
+      },
+      {
+        id: 'sec-nda-4',
+        title: '4. TERM & EXECUTION',
+        content:
+          'This Agreement remains in effect for a period of Three (3) Years from the Effective Date.',
+        isExecution: true
+      }
+    ];
 
-    const remainingSections = sections.slice(4);
+    const rawSections = proposal.sections !== undefined ? proposal.sections : defaultNdaSections;
+    const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
     return (
       <div className="proposal-pages-container nda-pages-container">
@@ -594,71 +591,54 @@ export function ProposalPreview({ proposal: rawProposal }) {
             <div className="letterhead-content-wrap">
               {/* Document Clauses Flow */}
               <div className="discovery-p2-body">
-                {/* Clause 1 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec1.title}</h2>
-                  <div className="discovery-section-text">{sec1.content}</div>
-                </div>
+                {activeSections.map((sec, sIdx) => {
+                  const isExecutionSec = sec.isExecution || sec.title?.toUpperCase().includes('EXECUTION') || sec.title?.includes('4.');
 
-                {/* Clause 2 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec2.title}</h2>
-                  <div className="discovery-section-text">{sec2.content}</div>
-                </div>
-
-                {/* Clause 3 */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec3.title}</h2>
-                  <div className="discovery-section-text discovery-bullet-list">
-                    {sec3.content.split('\n').map((line, lIdx) => (
-                      <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                    ))}
-
-                  </div>
-                </div>
-
-                {/* Clause 4 & Execution Block */}
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec4.title}</h2>
-                  <p className="discovery-signoff-desc">{sec4.content}</p>
-
-                  <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                        {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
-                      </div>
-                      <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                        {proposal.clientSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div style={{ height: '42px' }}></div>
-                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                  return (
+                    <div key={sec.id || sIdx} className="discovery-section-block">
+                      {sec.title && <h2 className="discovery-section-title">{sec.title}</h2>}
+                      {isExecutionSec ? (
+                        <>
+                          {sec.content && <p className="discovery-signoff-desc">{sec.content}</p>}
+                          <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
+                            <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
+                              <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
+                                {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
+                              </div>
+                              <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
+                                {proposal.clientSignatorySub || 'Authorized Signatory'}
+                              </div>
+                              <div style={{ height: '42px' }}></div>
+                              <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
+                              <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                            </div>
+                            <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
+                              <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
+                                {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
+                              </div>
+                              <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
+                                {proposal.providerSignatorySub || 'Authorized Signatory'}
+                              </div>
+                              <div style={{ height: '42px' }}></div>
+                              <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
+                              <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="discovery-section-text discovery-bullet-list">
+                          {sec.content && sec.content.split('\n').filter(l => l.trim() !== '').map((line, lIdx) => (
+                            <div key={lIdx} className="discovery-bullet-item">{line}</div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                        {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
-                      </div>
-                      <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                        {proposal.providerSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div style={{ height: '42px' }}></div>
-                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Any user-added extra clauses */}
-                {remainingSections.map((sec) => (
-                  <div key={sec.id} className="discovery-section-block">
-                    <h2 className="discovery-section-title">{sec.title}</h2>
-                    <div className="discovery-section-text">{sec.content}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
             </div>
@@ -671,33 +651,41 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isMsa = proposal.documentType === 'msa';
 
   if (isMsa) {
-    const sections = proposal.sections || [];
-    const sec1 = sections[0] || {
-      title: '1. FRAMEWORK AGREEMENT & TERM',
-      content: `This Master Services Agreement ("MSA") is entered into as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${proposal.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
-    };
-    const sec2 = sections[1] || {
-      title: '2. SCOPE OF PLATFORM SERVICES',
-      content:
-        'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
-    };
-    const sec3 = sections[2] || {
-      title: '3. INTELLECTUAL PROPERTY RIGHTS',
-      content:
-        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
-    };
-    const sec4 = sections[3] || {
-      title: '4. PAYMENT TERMS & INVOICING',
-      content:
-        'All invoices are payable within 30 calendar days (NET 30). Late payments shall incur interest at 1.5% per month or the maximum rate permitted by law.'
-    };
-    const sec5 = sections[4] || {
-      title: '5. GOVERNING LAW & DISPUTE RESOLUTION',
-      content:
-        'This Agreement shall be governed by the laws of India with exclusive jurisdiction in Hyderabad, Telangana.'
-    };
+    const defaultMsaSections = [
+      {
+        id: 'sec-msa-1',
+        title: '1. FRAMEWORK AGREEMENT & TERM',
+        content: `This Master Services Agreement ("MSA") is entered into as of ${proposal.effectiveDate || proposal.date ? (proposal.effectiveDate || proposal.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${proposal.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
+      },
+      {
+        id: 'sec-msa-2',
+        title: '2. SCOPE OF PLATFORM SERVICES',
+        content:
+          'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
+      },
+      {
+        id: 'sec-msa-3',
+        title: '3. INTELLECTUAL PROPERTY RIGHTS',
+        content:
+          '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
+      },
+      {
+        id: 'sec-msa-4',
+        title: '4. PAYMENT TERMS & INVOICING',
+        content:
+          'All invoices are payable within 30 calendar days (NET 30). Late payments shall incur interest at 1.5% per month or the maximum rate permitted by law.'
+      },
+      {
+        id: 'sec-msa-5',
+        title: '5. GOVERNING LAW & DISPUTE RESOLUTION',
+        content:
+          'This Agreement shall be governed by the laws of India with exclusive jurisdiction in Hyderabad, Telangana.',
+        isExecution: true
+      }
+    ];
 
-    const remainingSections = sections.slice(5);
+    const rawSections = proposal.sections !== undefined ? proposal.sections : defaultMsaSections;
+    const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
     return (
       <div className="proposal-pages-container msa-pages-container">
@@ -770,76 +758,51 @@ export function ProposalPreview({ proposal: rawProposal }) {
             />
             <div className="letterhead-content-wrap">
               <div className="discovery-p2-body">
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec1.title}</h2>
-                  <div className="discovery-section-text">{sec1.content}</div>
-                </div>
+                {activeSections.map((sec, sIdx) => {
+                  const isExecutionSec = sec.isExecution || sec.title?.toUpperCase().includes('GOVERNING LAW') || sec.title?.includes('5.');
 
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec2.title}</h2>
-                  <div className="discovery-section-text">{sec2.content}</div>
-                </div>
-
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec3.title}</h2>
-                  <div className="discovery-section-text discovery-bullet-list">
-                    {sec3.content.split('\n').map((line, lIdx) => (
-                      <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                    ))}
-
-                  </div>
-                </div>
-
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec4.title}</h2>
-                  <div className="discovery-section-text">{sec4.content}</div>
-                </div>
-
-                <div className="discovery-section-block">
-                  <h2 className="discovery-section-title">{sec5.title}</h2>
-                  <div className="discovery-section-text">{sec5.content}</div>
-                </div>
-
-                {/* Execution Block */}
-                <div className="discovery-section-block">
-                  <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                        {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
+                  return (
+                    <div key={sec.id || sIdx} className="discovery-section-block">
+                      {sec.title && <h2 className="discovery-section-title">{sec.title}</h2>}
+                      <div className="discovery-section-text discovery-bullet-list">
+                        {sec.content && sec.content.split('\n').filter(l => l.trim() !== '').map((line, lIdx) => (
+                          <div key={lIdx} className="discovery-bullet-item">{line}</div>
+                        ))}
                       </div>
-                      <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                        {proposal.clientSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div style={{ height: '42px' }}></div>
-                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                      {isExecutionSec && (
+                        <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
+                          <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
+                            <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
+                              {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
+                            </div>
+                            <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
+                              {proposal.clientSignatorySub || 'Authorized Signatory'}
+                            </div>
+                            <div style={{ height: '42px' }}></div>
+                            <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
+                            <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
+                            <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
+                            <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+                          </div>
+
+                          <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
+                            <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
+                              {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
+                            </div>
+                            <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
+                              {proposal.providerSignatorySub || 'Authorized Signatory'}
+                            </div>
+                            <div style={{ height: '42px' }}></div>
+                            <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
+                            <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
+                            <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
+                            <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                      <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                        {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
-                      </div>
-                      <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                        {proposal.providerSignatorySub || 'Authorized Signatory'}
-                      </div>
-                      <div style={{ height: '42px' }}></div>
-                      <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
-                      <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
-                      <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Any user-added extra clauses */}
-                {remainingSections.map((sec) => (
-                  <div key={sec.id} className="discovery-section-block">
-                    <h2 className="discovery-section-title">{sec.title}</h2>
-                    <div className="discovery-section-text">{sec.content}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
             </div>
@@ -852,7 +815,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isSla = proposal.documentType === 'sla';
 
   if (isSla) {
-    const incidentBenchmarks = proposal.incidentBenchmarks || [
+    const rawIncidentBenchmarks = proposal.incidentBenchmarks || [
       {
         id: 'inc-1',
         level: 'P1 - Critical',
@@ -882,12 +845,14 @@ export function ProposalPreview({ proposal: rawProposal }) {
         resolutionTarget: '< 48 Hours'
       }
     ];
+    const incidentBenchmarks = rawIncidentBenchmarks.filter(inc => inc && (inc.level?.trim() || inc.impact?.trim()));
 
-    const escalationMatrix = proposal.escalationMatrix || [
+    const rawEscalationMatrix = proposal.escalationMatrix || [
       'Level 1 (Helpdesk): support@ibunify.com | Ticket Portal',
       'Level 2 (Technical Lead): Rama Krishna (ramakrishna@iglobus.com)',
       'Level 3 (Practice Lead): Rama Krishna (ramakrishna@iglobuscc.com)'
     ];
+    const escalationMatrix = rawEscalationMatrix.filter(esc => typeof esc === 'string' && esc.trim() !== '');
 
     return (
       <div className="proposal-pages-container sla-pages-container">
@@ -1046,7 +1011,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isPo = proposal.documentType === 'po';
 
   if (isPo) {
-    const orderScheduleItems = proposal.orderScheduleItems || [
+    const rawOrderScheduleItems = proposal.orderScheduleItems || [
       {
         id: 'po-item-1',
         description: 'One-Time Implementation & Setup Fee',
@@ -1083,6 +1048,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
         totalAmount: 'As Per Qty'
       }
     ];
+    const orderScheduleItems = rawOrderScheduleItems.filter(item => item && (item.description?.trim() || item.totalAmount?.trim() || item.unitPrice?.trim()));
 
     return (
       <div className="proposal-pages-container po-pages-container">
@@ -1271,36 +1237,43 @@ export function ProposalPreview({ proposal: rawProposal }) {
       { value: '24/7', label: 'AI VOICE & CHAT' }
     ];
 
-    const serviceBreakdown = proposal.serviceBreakdown || [
-      {
-        key: 'A',
-        title: 'Centralized Real Estate CRM & Pipeline Platform',
-        features:
-          '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
-        costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
-      },
-      {
-        key: 'B',
-        title: 'Conversational AI Agent Calling Service',
-        features:
-          'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
-        costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
-      },
-      {
-        key: 'C',
-        title: 'Integrated Cloud Telephony & Virtual Numbers',
-        features:
-          'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
-        costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
-      },
-      {
-        key: 'D',
-        title: 'Official WhatsApp Business Platform Automation',
-        features:
-          'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
-        costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
-      }
-    ];
+    const rawServiceBreakdown = proposal.serviceBreakdown !== undefined
+      ? proposal.serviceBreakdown
+      : [
+          {
+            id: 'sb-a',
+            key: 'A',
+            title: 'Centralized Real Estate CRM & Pipeline Platform',
+            features:
+              '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
+            costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
+          },
+          {
+            id: 'sb-b',
+            key: 'B',
+            title: 'Conversational AI Agent Calling Service',
+            features:
+              'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
+            costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
+          },
+          {
+            id: 'sb-c',
+            key: 'C',
+            title: 'Integrated Cloud Telephony & Virtual Numbers',
+            features:
+              'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
+            costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
+          },
+          {
+            id: 'sb-d',
+            key: 'D',
+            title: 'Official WhatsApp Business Platform Automation',
+            features:
+              'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
+            costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
+          }
+        ];
+    const serviceBreakdown = rawServiceBreakdown.filter(sb => sb && (sb.title?.trim() || sb.features?.trim() || sb.costing?.trim()));
 
     const rawCommercialItems = proposal.commercialScheduleItems || [
       {
@@ -1341,35 +1314,40 @@ export function ProposalPreview({ proposal: rawProposal }) {
       }
     ];
 
-    const commercialScheduleItems = rawCommercialItems.map((item, idx) => ({
-      ...item,
-      component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
-      scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
-    }));
+    const commercialScheduleItems = rawCommercialItems
+      .filter(item => item && (item.component?.trim() || item.scope?.trim() || item.deliverables?.trim() || item.investment?.trim()))
+      .map((item, idx) => ({
+        ...item,
+        component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+        scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+      }));
 
-    const sowScopeActivities = proposal.sowScopeActivities || [
+    const rawSowScopeActivities = proposal.sowScopeActivities || [
       'Requirement Discovery & Pipeline Architecture: Define project inventory structures, custom pipeline stages, lead scoring benchmarks, and sales role authorization tiers.',
       'Omnichannel Campaign Ingestion: Connect Meta Ads (CAPI API), Google Offline Conversion tracking, website webhooks, and portal lead connectors.',
       'Telephony & AI Calling Configuration: Provision dedicated virtual numbers, configure Call-to-Lead auto record triggers, and program conversational voice scripts.',
       'WhatsApp API Integration: Register official Business API templates, design automated brochure auto-responders, and configure multi-agent shared inboxes.',
       'UAT, Training & Rollout: Conduct sandbox functional testing, administrator runbook handover, and end-user sales executive onboarding sessions.'
     ];
+    const sowScopeActivities = rawSowScopeActivities.filter(act => typeof act === 'string' && act.trim() !== '');
 
-    const sowDeliverables = proposal.sowDeliverables || [
+    const rawSowDeliverables = proposal.sowDeliverables || [
       'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
       'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
       'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
       'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
     ];
+    const sowDeliverables = rawSowDeliverables.filter(del => typeof del === 'string' && del.trim() !== '');
 
-    const sowTimelineMilestones = proposal.sowTimelineMilestones || [
+    const rawSowTimelineMilestones = proposal.sowTimelineMilestones || [
       { activity: 'Discovery, Role Hierarchy & Lead Ingestion Setup', activeWeek: 1 },
       { activity: 'Cloud Telephony & WhatsApp Business API Deployment', activeWeek: 2 },
       { activity: 'AI Agent Calling Configuration & Integration Testing', activeWeek: 3 },
       { activity: 'User Acceptance Testing (UAT), Training & Production Go-Live', activeWeek: 4 }
     ];
+    const sowTimelineMilestones = rawSowTimelineMilestones.filter(m => m && m.activity?.trim());
 
-    const sowInvoicingMilestones = proposal.sowInvoicingMilestones || [
+    const rawSowInvoicingMilestones = proposal.sowInvoicingMilestones || [
       {
         deliverable: 'Milestone 1: Contract Signing / Project Kick-off & Mobilization',
         percentage: '50%',
@@ -1381,12 +1359,14 @@ export function ProposalPreview({ proposal: rawProposal }) {
         amount: '₹25,000'
       }
     ];
+    const sowInvoicingMilestones = rawSowInvoicingMilestones.filter(inv => inv && (inv.deliverable?.trim() || inv.percentage?.trim() || inv.amount?.trim()));
 
-    const sowAssumptions = proposal.sowAssumptions || [
+    const rawSowAssumptions = proposal.sowAssumptions || [
       'Client will designate a Project Manager to provide timely feedback/approvals within 48 hours.',
       'Client will provide necessary API access keys (Meta Business Manager, WhatsApp Business Account, Google Ads) before configuration commences.',
       'Standard support SLA guarantees Priority 1 response within < 30 minutes. Invoices are payable NET 30.'
     ];
+    const sowAssumptions = rawSowAssumptions.filter(ass => typeof ass === 'string' && ass.trim() !== '');
 
     const headerLeft = proposal.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW';
     const headerRight = proposal.headerRight || 'Standard Master Template';
@@ -1499,10 +1479,10 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 <div className="discovery-section-block">
                   <h2 className="discovery-section-title" style={{ fontSize: '14px', marginBottom: '6px' }}>2. GRANULAR SERVICE BREAKDOWN, FEATURES & COSTING</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {serviceBreakdown.map((item) => (
-                      <div key={item.key} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '8px 12px' }}>
+                    {serviceBreakdown.map((item, idx) => (
+                      <div key={item.id || item.key || idx} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '8px 12px' }}>
                         <div style={{ fontWeight: '700', color: '#1e3a8a', fontSize: '13px', marginBottom: '3px' }}>
-                          {item.key}. {item.title}
+                          {item.key || (['A','B','C','D','E','F','G','H','I','J'][idx] || (idx + 1))}. {item.title}
                         </div>
                         <div style={{ fontSize: '12px', color: '#334155', lineHeight: '1.4' }}>
                           <strong>Core Features:</strong> {item.features}
@@ -1726,7 +1706,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isHandover = proposal.documentType === 'handover';
 
   if (isHandover) {
-    const checklistItems = proposal.handoverChecklistItems || [
+    const rawChecklistItems = proposal.handoverChecklistItems || [
       {
         id: 'ho-item-1',
         component: 'CRM Pipeline',
@@ -1764,6 +1744,7 @@ export function ProposalPreview({ proposal: rawProposal }) {
         status: 'Delivered'
       }
     ];
+    const checklistItems = rawChecklistItems.filter(item => item && (item.component?.trim() || item.deliveredFeature?.trim() || item.feature?.trim()));
 
     return (
       <div className="handover-pages-container po-pages-container">
@@ -1935,12 +1916,13 @@ export function ProposalPreview({ proposal: rawProposal }) {
   const isClosure = proposal.documentType === 'closure';
 
   if (isClosure) {
-    const metrics = proposal.operationalMetrics || [
+    const rawMetrics = proposal.operationalMetrics || [
       { id: 'm1', value: '100%', label: 'REQUIREMENTS DELIVERED' },
       { id: 'm2', value: '100%', label: 'UAT SIGN-OFF' },
       { id: 'm3', value: '< 1 Min', label: 'AVG. RESPONSE TIME' },
       { id: 'm4', value: '24/7', label: 'SUPPORT ACTIVE' }
     ];
+    const metrics = rawMetrics.filter(m => m && (m.value?.trim() || m.label?.trim()));
 
     return (
       <div className="closure-pages-container po-pages-container">
@@ -2133,28 +2115,35 @@ export function ProposalPreview({ proposal: rawProposal }) {
     { value: '24/7', label: 'AI VOICE & CHAT' }
   ];
 
-  const servicesOverview = proposal.servicesOverview || [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM',
-      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
-    },
-    {
-      key: 'B',
-      title: 'Omnichannel Lead Ingestion',
-      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
-    },
-    {
-      key: 'C',
-      title: 'Closed-Loop Marketing Attribution',
-      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
-    },
-    {
-      key: 'D',
-      title: 'Executive CDR & Conversion Analytics',
-      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
-    }
-  ];
+  const rawServicesOverview = proposal.servicesOverview !== undefined
+    ? proposal.servicesOverview
+    : [
+        {
+          id: 'so-a',
+          key: 'A',
+          title: 'Centralized Real Estate CRM',
+          desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
+        },
+        {
+          id: 'so-b',
+          key: 'B',
+          title: 'Omnichannel Lead Ingestion',
+          desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
+        },
+        {
+          id: 'so-c',
+          key: 'C',
+          title: 'Closed-Loop Marketing Attribution',
+          desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
+        },
+        {
+          id: 'so-d',
+          key: 'D',
+          title: 'Executive CDR & Conversion Analytics',
+          desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
+        }
+      ];
+  const servicesOverview = rawServicesOverview.filter(s => s && (s.title?.trim() || s.desc?.trim()));
 
   const aiCallingBullets = proposal.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
@@ -2389,10 +2378,10 @@ export function ProposalPreview({ proposal: rawProposal }) {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
-                  {servicesOverview.map((item) => (
-                    <div key={item.key} className="ctp-breakdown-card" style={{ padding: '4px 6px', margin: 0 }}>
+                  {servicesOverview.map((item, idx) => (
+                    <div key={item.id || item.key || idx} className="ctp-breakdown-card" style={{ padding: '4px 6px', margin: 0 }}>
                       <div className="ctp-breakdown-title" style={{ fontSize: '11px' }}>
-                        {item.key}. {item.title}
+                        {item.key || (['A','B','C','D','E','F','G','H','I','J'][idx] || (idx + 1))}. {item.title}
                       </div>
                       <div className="ctp-breakdown-features" style={{ fontSize: '10px', lineHeight: '1.3' }}>
                         {item.desc}
