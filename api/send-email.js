@@ -54,33 +54,21 @@ export default async function handler(req, res) {
     const pass = process.env.SMTP_PASS || '';
     const from = process.env.SMTP_FROM || user || 'iBunify Sales <sohail@iglobuscc.com>';
 
-    let transporter;
-    let isEthereal = false;
-
-    if (user && pass && user !== 'your-email@gmail.com') {
-      transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure: port === 465,
-        auth: { user, pass },
-        tls: {
-          rejectUnauthorized: false
-        }
+    if (!user || !pass) {
+      return res.status(500).json({
+        error: `SMTP credentials missing on Vercel. Please set SMTP_USER and SMTP_PASS in Vercel Project Settings -> Environment Variables, then redeploy.`
       });
-    } else {
-      // Fallback to Ethereal test account if SMTP env vars are not configured on Vercel
-      const testAccount = await nodemailer.createTestAccount();
-      transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass
-        }
-      });
-      isEthereal = true;
     }
+
+    transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
 
     const attachments = [];
     if (attachmentBase64) {
@@ -106,15 +94,13 @@ export default async function handler(req, res) {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    const previewUrl = isEthereal ? nodemailer.getTestMessageUrl(info) : null;
 
-    console.log(`[Email API Vercel] Sent mail to ${to.trim()} via ${isEthereal ? 'Ethereal Sandbox' : `SMTP (${user})`}`);
+    console.log(`[Email API Vercel] Sent mail to ${to.trim()} via SMTP (${user})`);
 
     return res.status(200).json({
       success: true,
-      method: isEthereal ? 'ethereal' : 'smtp',
+      method: 'smtp',
       messageId: info.messageId,
-      previewUrl,
       recipient: to.trim()
     });
   } catch (err) {
