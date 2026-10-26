@@ -7,10 +7,18 @@ import {
   sampleSlaDoc,
   samplePoDoc,
   sampleHandoverDoc,
-  sampleClosureDoc
+  sampleClosureDoc,
+  sampleTaxInvoiceDoc
 } from './defaults.js';
 
 export const proposalTemplates = [
+  {
+    ...sampleTaxInvoiceDoc,
+    id: 'template-invoice-corporate-tax',
+    name: 'iGLOBUS Invoice (GST Format)',
+    description: 'Official Iglobus Corporate Consulting Invoice with PAN, HSN, Party GST, Term Advances, Bank Details & Director Seal.',
+    category: 'Invoice'
+  },
   {
     id: 'template-invoice-standard',
     name: 'Standard Invoice',

@@ -1,5 +1,12 @@
 import React from 'react';
-import { calculateCommercialTotals, calculateInvoiceTotals, paginateProposal, formatPortalsText } from '../../services/exportService.js';
+import {
+  calculateCommercialTotals,
+  calculateInvoiceTotals,
+  calculateTaxInvoiceTotals,
+  numberToIndianWords,
+  paginateProposal,
+  formatPortalsText
+} from '../../services/exportService.js';
 import { SAMPLE_LETTERHEAD_BASE64 } from '../../data/letterheadBase64.js';
 import { DEFAULT_COMMERCIAL_SCOPES } from '../../data/defaults.js';
 
@@ -21,12 +28,438 @@ function sanitizeProposalData(data) {
   return data;
 }
 
-export function ProposalPreview({ proposal: rawProposal }) {
+export function ProposalPreview({ proposal: rawProposal, previewMode, onTogglePreviewMode }) {
   const proposal = sanitizeProposalData(rawProposal) || {};
   const currencySymbol = proposal.currency === 'USD' ? '$' : '₹';
   const isInvoice = proposal.documentType === 'invoice';
 
   if (isInvoice) {
+    const isTaxInvoice = proposal.invoiceStyle === 'tax_invoice' || proposal.invoiceStyle === 'corporate_tax' || (!proposal.invoiceStyle && proposal.companyPan);
+
+    if (isTaxInvoice) {
+      const [zoomMode, setZoomMode] = React.useState('fit');
+      const [fitScale, setFitScale] = React.useState(0.85);
+      const [widthScale, setWidthScale] = React.useState(1.0);
+      const [paperHeight, setPaperHeight] = React.useState(880);
+      const containerRef = React.useRef(null);
+      const paperRef = React.useRef(null);
+
+      React.useLayoutEffect(() => {
+        const handleScale = () => {
+          if (containerRef.current && paperRef.current) {
+            const containerRect = containerRef.current.getBoundingClientRect();
+            // Available height from container top to window bottom (minus margins/padding)
+            const availableH = Math.max(320, window.innerHeight - containerRect.top - 65);
+            const availableW = Math.max(320, containerRef.current.clientWidth - 28);
+
+            const naturalH = paperRef.current.offsetHeight || 880;
+            const naturalW = 794;
+            setPaperHeight(naturalH);
+
+            const scaleH = availableH / naturalH;
+            const scaleW = availableW / naturalW;
+
+            // Fit scale ensures entire height & width fit without 1px of scrolling
+            const fit = Math.min(scaleH, scaleW, 1.0);
+            setFitScale(Number(Math.max(0.38, fit).toFixed(3)));
+            setWidthScale(Number(Math.min(1.25, Math.max(0.45, scaleW)).toFixed(3)));
+          }
+        };
+
+        handleScale();
+        const resizeObs = new ResizeObserver(handleScale);
+        if (containerRef.current) resizeObs.observe(containerRef.current);
+        if (paperRef.current) resizeObs.observe(paperRef.current);
+        window.addEventListener('resize', handleScale);
+
+        return () => {
+          resizeObs.disconnect();
+          window.removeEventListener('resize', handleScale);
+        };
+      }, [proposal, previewMode]);
+
+      React.useEffect(() => {
+        if (containerRef.current) {
+          containerRef.current.scrollTop = 0;
+        }
+      }, [proposal.id, zoomMode, previewMode]);
+
+      let activeScale = 1;
+      if (zoomMode === 'fit') activeScale = fitScale;
+      else if (zoomMode === 'width') activeScale = widthScale;
+      else activeScale = 1;
+
+      const totals = calculateTaxInvoiceTotals(proposal);
+      const formatTaxMoney = (val) => {
+        const n = Number(val) || 0;
+        return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      };
+
+      const words = (proposal.amountInWords && proposal.amountInWords !== 'Rupees Thirty Seven Thousand Fifty Two only/-')
+        ? proposal.amountInWords
+        : numberToIndianWords(totals.grandTotal);
+      const items = proposal.invoiceItems || [];
+
+      return (
+        <div
+          ref={containerRef}
+          className={`proposal-pages-container invoice-pages-container tax-invoice-container ${zoomMode !== 'fit' ? 'scrollable' : ''}`}
+          style={{ overflowY: zoomMode === 'fit' ? 'hidden' : 'auto' }}
+        >
+          {/* Zoom & Fit Toolbar */}
+          <div className="tax-inv-scale-bar">
+            <div className="tax-inv-scale-title">
+              <span className="tax-inv-badge-live">iGLOBUS INVOICE</span>
+              <span className="tax-inv-badge-sub">Official Iglobus Format</span>
+            </div>
+            <div className="tax-inv-scale-actions">
+              <button
+                type="button"
+                className={`scale-btn ${zoomMode === 'fit' ? 'active' : ''}`}
+                onClick={() => setZoomMode('fit')}
+                title="Scale to fit entire A4 invoice on screen without scrolling"
+              >
+                ⛶ Fit Entire Page
+              </button>
+              <button
+                type="button"
+                className={`scale-btn ${zoomMode === 'width' ? 'active' : ''}`}
+                onClick={() => setZoomMode('width')}
+                title="Fit width of preview panel"
+              >
+                ↔ Fit Width
+              </button>
+              <button
+                type="button"
+                className={`scale-btn ${zoomMode === '100' ? 'active' : ''}`}
+                onClick={() => setZoomMode('100')}
+                title="View at 100% full print resolution"
+              >
+                100% Size
+              </button>
+              {onTogglePreviewMode && (
+                <button
+                  type="button"
+                  className={`scale-btn scale-btn-highlight ${previewMode ? 'active' : ''}`}
+                  onClick={onTogglePreviewMode}
+                  title={previewMode ? 'Exit full screen and return to editor' : 'Expand preview to full screen'}
+                >
+                  {previewMode ? '✏ Edit Mode' : '👁 Full Screen'}
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div
+            className="tax-inv-scale-wrapper"
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              height: zoomMode === 'fit' ? `${Math.ceil((paperHeight || 880) * activeScale) + 12}px` : 'auto',
+              minHeight: zoomMode === 'fit' ? 'auto' : `${Math.ceil((paperHeight || 880) * activeScale) + 20}px`,
+              overflow: zoomMode === 'fit' ? 'hidden' : 'visible'
+            }}
+          >
+            <div
+              style={{
+                transform: `scale(${activeScale})`,
+                transformOrigin: 'top center',
+                transition: 'transform 0.15s ease',
+                width: '794px',
+                flexShrink: 0,
+                marginBottom: zoomMode === 'fit' ? 0 : '24px'
+              }}
+            >
+              <section ref={paperRef} className="invoice-paper tax-invoice-paper">
+                <div className="tax-inv-frame">
+                  {/* Top Contact Right */}
+                  <div className="tax-inv-top-contact">
+                    Contact: {proposal.companyContact || '+91 99598 57777'}
+                  </div>
+
+                  {/* Brand Header */}
+                  <div className="tax-inv-header">
+                    <div className="tax-inv-logo-wrap">
+                      <svg viewBox="0 0 94 80" className="tax-inv-logo-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="30" width="19" height="26" rx="1.5" fill="#38b6ff" />
+                        <circle cx="14.5" cy="42" r="3.2" fill="#ffffff" />
+                        <path d="M8.5 56 C8.5 50.5 11 47.8 14.5 47.8 C18 47.8 20.5 50.5 20.5 56 Z" fill="#ffffff" />
+                        <rect x="30" y="15" width="19" height="41" rx="1.5" fill="#38b6ff" />
+                        <circle cx="39.5" cy="42" r="3.2" fill="#ffffff" />
+                        <path d="M33.5 56 C33.5 50.5 36 47.8 39.5 47.8 C43 47.8 45.5 50.5 45.5 56 Z" fill="#ffffff" />
+                        <rect x="55" y="0" width="19" height="56" rx="1.5" fill="#38b6ff" />
+                        <circle cx="64.5" cy="42" r="3.2" fill="#ffffff" />
+                        <path d="M58.5 56 C58.5 50.5 61 47.8 64.5 47.8 C68 47.8 70.5 50.5 70.5 56 Z" fill="#ffffff" />
+                        <text x="39.5" y="74" textAnchor="middle" fill="#525252" fontFamily="Arial, 'Helvetica Neue', Helvetica, sans-serif" fontSize="14" fontWeight="700" letterSpacing="0.5">iGLOBUS</text>
+                      </svg>
+                    </div>
+
+                    <div className="tax-inv-company-center">
+                      <h1 className="tax-inv-company-name">
+                        {proposal.company || 'Iglobus Corporate Consulting Pvt Ltd'}
+                      </h1>
+                      <div className="tax-inv-underline" />
+                      <p className="tax-inv-company-address">
+                        {proposal.companyAddress || 'Plot no.21, Techno Enclave, Flat no. 503, Madhapur, Opp: Raheja Mind Space, Hyd-81'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Client & Invoice Meta Block */}
+                  <div className="tax-inv-meta-grid">
+                    <div className="tax-inv-client-cell">
+                      <div className="tax-inv-client-top-row">
+                        <span className="tax-inv-client-ms">{proposal.clientPrefix || 'M/S'}</span>
+                        <span className="tax-inv-client-name">{proposal.preparedFor || 'SHRI SAI ASSOCIATES'}</span>
+                      </div>
+                      <div className="tax-inv-client-bottom-box">
+                        <div className="tax-inv-client-address">
+                          {proposal.clientAddress || '6-2-9661/1, First Floor, Hill Colony, AC Guards, Khairatabad,\nHyderabad 500004.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="tax-inv-details-cell">
+                      <table className="tax-inv-details-table">
+                        <tbody>
+                          <tr>
+                            <td style={{ width: '52%', fontWeight: 700 }}>
+                              Invoice No. : &nbsp;{proposal.proposalNumber || '772/18-19'}
+                            </td>
+                            <td style={{ width: '48%', fontWeight: 700 }}>
+                              Date : &nbsp;{proposal.date || '22/10/2026'}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan={2} style={{ fontWeight: 700 }}>
+                              Pan No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {proposal.companyPan || 'AADCI8842E'}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan={2} style={{ fontWeight: 700 }}>
+                              HSN No : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {proposal.companyHsn || '9985'}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan={2} style={{ fontWeight: 700 }}>
+                              Party's GST No. : &nbsp; {proposal.partyGst || '36ADMFS8094F2ZG'}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Items Table */}
+                  <table className="tax-inv-items-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '10%', textAlign: 'center' }}>SR. NO</th>
+                        <th style={{ width: '56%', textAlign: 'center' }}>DESCRIPTION</th>
+                        <th style={{ width: '16%', textAlign: 'center' }}>RATE</th>
+                        <th style={{ width: '18%', textAlign: 'center' }}>AMOUNT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((item, index) => {
+                        const isNotLast = index < items.length - 1;
+                        const itemAmount = item.amount !== undefined && item.amount !== '' && !isNaN(Number(item.amount))
+                          ? Number(item.amount)
+                          : (Number(item.qty) || 1) * (Number(item.rate) || 0);
+
+                        const bullets = Array.isArray(item.bullets)
+                          ? item.bullets
+                          : typeof item.bullets === 'string'
+                          ? item.bullets.split('\n').filter(Boolean)
+                          : [];
+
+                        return (
+                          <tr key={item.id || index} className={`tax-inv-item-row ${isNotLast ? 'tax-inv-item-divider' : ''}`}>
+                            <td className="tax-inv-td-sr">
+                              {item.srNo || (index + 1)}
+                            </td>
+                            <td className="tax-inv-td-desc">
+                              <div className="tax-inv-item-title">
+                                {item.title || item.description || ''}
+                              </div>
+                              {item.termHeader && (
+                                <div className="tax-inv-term-header">
+                                  {item.termHeader}
+                                </div>
+                              )}
+                              {bullets.length > 0 && (
+                                <ul className="tax-inv-bullet-list">
+                                  {bullets.map((b, bIdx) => (
+                                    <li key={bIdx}>{b}</li>
+                                  ))}
+                                </ul>
+                              )}
+                            </td>
+                            <td className="tax-inv-td-rate">
+                              {item.rate !== undefined ? String(item.rate) : '50%'}
+                            </td>
+                            <td className="tax-inv-td-amount">
+                              <div className="tax-inv-top-amt">
+                                {formatTaxMoney(itemAmount)}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      {/* Subtotal row with twin split boxes in DESCRIPTION */}
+                      <tr className="tax-inv-subtotal-row">
+                        <td className="tax-inv-border-r tax-inv-border-t" />
+                        <td className="tax-inv-border-r tax-inv-border-t" style={{ padding: 0 }}>
+                          <div className="tax-inv-split-boxes">
+                            <div className="tax-inv-sub-box" />
+                            <div className="tax-inv-sub-box" style={{ borderRight: 'none' }} />
+                          </div>
+                        </td>
+                        <td className="tax-inv-border-r tax-inv-border-t" />
+                        <td className="tax-inv-td-amount-subtotal tax-inv-border-t">
+                          {formatTaxMoney(totals.subtotal)}
+                        </td>
+                      </tr>
+
+                      {/* Spacer row */}
+                      <tr className="tax-inv-spacer-row">
+                        <td className="tax-inv-border-r" />
+                        <td className="tax-inv-border-r" />
+                        <td className="tax-inv-border-r" />
+                        <td />
+                      </tr>
+
+                      {/* CGST Row */}
+                      <tr className="tax-inv-tax-row">
+                        <td className="tax-inv-border-r" />
+                        <td className="tax-inv-border-r" />
+                        <td className="tax-inv-tax-lbl">
+                          CGST {totals.cgstPct}%
+                        </td>
+                        <td className="tax-inv-tax-val">
+                          {formatTaxMoney(totals.cgstAmount)}
+                        </td>
+                      </tr>
+
+                      {/* SGST Row */}
+                      <tr className="tax-inv-tax-row">
+                        <td className="tax-inv-border-r" />
+                        <td className="tax-inv-border-r" />
+                        <td className="tax-inv-tax-lbl" style={{ borderTop: 'none' }}>
+                          SGST {totals.sgstPct}%
+                        </td>
+                        <td className="tax-inv-tax-val" style={{ borderTop: 'none' }}>
+                          {formatTaxMoney(totals.sgstAmount)}
+                        </td>
+                      </tr>
+
+                      {/* Rupees in Word Row */}
+                      <tr className="tax-inv-words-row">
+                        <td colSpan={4}>
+                          <span className="tax-inv-words-lbl">Rupees in word :</span>
+                          <span className="tax-inv-words-val">{words}</span>
+                        </td>
+                      </tr>
+
+                      {/* Grand Total Row */}
+                      <tr className="tax-inv-grand-row">
+                        <td colSpan={2} className="tax-inv-grand-left">
+                          <div className="tax-inv-gst-eoe-wrap">
+                            <span><strong>GST NO :</strong> &nbsp;{proposal.companyGst || '36AADCI8842E1ZI'}</span>
+                            <span className="tax-inv-eoe">{proposal.eoeText || 'E.&.O.E'}</span>
+                          </div>
+                        </td>
+                        <td className="tax-inv-grand-label-cell">
+                          Grand Total
+                        </td>
+                        <td className="tax-inv-grand-amount-cell">
+                          {formatTaxMoney(totals.grandTotal)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Bottom Section: Bank Details & Signatory */}
+                  <div className="tax-inv-bottom-section">
+                    <div className="tax-inv-bank-cell">
+                      <div className="tax-inv-bank-heading">BANK DETAILS</div>
+                      <table className="tax-inv-bank-table">
+                        <tbody>
+                          <tr>
+                            <td className="tax-inv-bank-k">BANK NAME</td>
+                            <td>: {proposal.bankName || 'Icici Bank Limited'}</td>
+                          </tr>
+                          <tr>
+                            <td className="tax-inv-bank-k">Bank A/c No</td>
+                            <td>: {proposal.bankAccountNo || '004005023167'}</td>
+                          </tr>
+                          <tr>
+                            <td className="tax-inv-bank-k">IFSC Code</td>
+                            <td>: {proposal.bankIfsc || 'ICIC0000040'}</td>
+                          </tr>
+                          <tr>
+                            <td className="tax-inv-bank-k">BRANCH</td>
+                            <td>: {proposal.bankBranch || 'Madhapur Branch'}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="tax-inv-sign-cell">
+                      <div className="tax-inv-for-company">
+                        {proposal.signatureForCompany || 'For Iglobus corporate consulting Pvt Ltd'}
+                      </div>
+
+                      <div className="tax-inv-seal-container">
+                        {proposal.signatureImageUrl ? (
+                          <img
+                            src={proposal.signatureImageUrl}
+                            alt="Director Signature"
+                            className="tax-inv-sig-img"
+                          />
+                        ) : (
+                          <div className="tax-inv-seal-card">
+                            <svg viewBox="0 0 200 85" className="tax-inv-seal-svg" xmlns="http://www.w3.org/2000/svg">
+                              <ellipse cx="100" cy="42" rx="92" ry="36" fill="none" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 2" opacity="0.9" />
+                              <ellipse cx="100" cy="42" rx="84" ry="29" fill="none" stroke="#2563eb" strokeWidth="1.2" opacity="0.9" />
+                              <path id="sealTopArcPreview" d="M 22 42 A 78 26 0 0 1 178 42" fill="none" />
+                              <text fill="#1d4ed8" fontSize="8" fontWeight="bold" fontFamily="'Inter', system-ui, sans-serif" letterSpacing="0.8">
+                                <textPath href="#sealTopArcPreview" startOffset="50%" textAnchor="middle">
+                                  IGLOBUS CORPORATE CONSULTING
+                                </textPath>
+                              </text>
+                              <path id="sealBottomArcPreview" d="M 26 44 A 74 22 0 0 0 174 44" fill="none" />
+                              <text fill="#1d4ed8" fontSize="7.5" fontWeight="bold" fontFamily="'Inter', system-ui, sans-serif" letterSpacing="1">
+                                <textPath href="#sealBottomArcPreview" startOffset="50%" textAnchor="middle">
+                                  ★ HYDERABAD (T.S.) ★
+                                </textPath>
+                              </text>
+                              {/* Dark flowing pen ink signature */}
+                              <path d="M 45 44 Q 68 18 88 42 T 125 36 Q 145 20 160 50 T 178 38" fill="none" stroke="#0f172a" strokeWidth="2.4" strokeLinecap="round" />
+                              <path d="M 62 52 Q 105 46 152 50" fill="none" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="tax-inv-director-title">
+                        {proposal.signatoryTitle || 'Director'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom empty margin spacer inside outer border */}
+                  <div className="tax-inv-bottom-spacer" />
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     const style = proposal.invoiceStyle === 'standard' ? 'standard' : 'compact';
     const items = proposal.invoiceItems || [];
     const { netSubtotal, totalDiscount, cgstAmount, sgstAmount, totalDue } = calculateInvoiceTotals(items, proposal.cgstPct, proposal.sgstPct);

@@ -54,6 +54,7 @@ export function OfficialProposalLibrary({
   setActiveDocumentFormat,
   onOpenBuilder,
   onOpenInvoice,
+  onCreateTaxInvoice,
   onOpenDiscovery,
   onOpenNda,
   onOpenMsa,
@@ -81,7 +82,7 @@ export function OfficialProposalLibrary({
                 if (format.id === 'proposal') {
                   onOpenBuilder();
                 } else if (format.id === 'invoice') {
-                  onOpenInvoice();
+                  setActiveDocumentFormat('invoice');
                 } else if (format.id === 'discovery') {
                   onOpenDiscovery();
                 } else if (format.id === 'nda') {
@@ -158,12 +159,15 @@ export function OfficialProposalLibrary({
           <div className="empty-file-icon">
             <IconInvoices size={34} />
           </div>
-          <h2>Interactive Invoice Studio</h2>
-          <p>Create, customize, and export professional invoices with itemized billing, taxes, discounts, and payment terms.</p>
-          <div className="invoice-action-buttons">
-            <button type="button" className="primary-blue-btn" onClick={onOpenInvoice}>
+          <h2>iGLOBUS Invoice Studio (GST Format)</h2>
+          <p>Create, customize, and export official iGLOBUS Invoices matching the exact Iglobus Corporate Consulting format with PAN, HSN, Term Advance milestones, Bank Details, and Director Ink Stamp & Seal.</p>
+          <div className="invoice-action-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button type="button" className="primary-blue-btn" onClick={onCreateTaxInvoice || onOpenInvoice}>
               <span className="btn-icon"><IconEdit size={14} /></span>
-              <span>Launch Invoice Studio</span>
+              <span>＋ Create New iGLOBUS Invoice</span>
+            </button>
+            <button type="button" className="secondary" onClick={onOpenInvoice}>
+              <span>Open Existing Invoices</span>
             </button>
           </div>
         </section>

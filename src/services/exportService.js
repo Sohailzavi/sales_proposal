@@ -71,6 +71,74 @@ export function calculateInvoiceTotals(items = [], cgstPct = 9, sgstPct = 9) {
   return { rawSubtotal, totalDiscount, netSubtotal, cgstAmount, sgstAmount, totalDue };
 }
 
+export function numberToIndianWords(num) {
+  if (num === null || num === undefined || isNaN(num)) return '';
+  const n = Math.floor(Math.abs(Number(num)));
+  if (n === 0) return 'Rupees Zero only/-';
+
+  const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+    'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  function convertTwoDigits(val) {
+    if (val < 20) return units[val];
+    const t = Math.floor(val / 10);
+    const u = val % 10;
+    return (tens[t] + (u > 0 ? ' ' + units[u] : '')).trim();
+  }
+
+  function convertThreeDigits(val) {
+    const h = Math.floor(val / 100);
+    const rest = val % 100;
+    let res = '';
+    if (h > 0) {
+      res += units[h] + ' Hundred';
+    }
+    if (rest > 0) {
+      if (res !== '') res += ' ';
+      res += convertTwoDigits(rest);
+    }
+    return res;
+  }
+
+  const crore = Math.floor(n / 10000000);
+  let remainder = n % 10000000;
+  const lakh = Math.floor(remainder / 100000);
+  remainder = remainder % 100000;
+  const thousand = Math.floor(remainder / 1000);
+  const lastThree = remainder % 1000;
+
+  const words = [];
+  if (crore > 0) words.push(convertThreeDigits(crore) + ' Crore');
+  if (lakh > 0) words.push(convertThreeDigits(lakh) + ' Lakh');
+  if (thousand > 0) words.push(convertThreeDigits(thousand) + ' Thousand');
+  if (lastThree > 0) words.push(convertThreeDigits(lastThree));
+
+  return `Rupees ${words.join(' ')} only/-`;
+}
+
+export function calculateTaxInvoiceTotals(doc) {
+  const items = doc.invoiceItems || [];
+  let subtotal = 0;
+  items.forEach((item) => {
+    if (item.amount !== undefined && item.amount !== '' && !isNaN(Number(item.amount))) {
+      subtotal += Number(item.amount);
+    } else {
+      const q = Number(item.qty) || 1;
+      const r = Number(item.rate) || 0;
+      subtotal += q * r;
+    }
+  });
+
+  const cgstPct = typeof doc.cgstPct === 'number' ? doc.cgstPct : 9;
+  const sgstPct = typeof doc.sgstPct === 'number' ? doc.sgstPct : 9;
+  const cgstAmount = Math.round(((subtotal * cgstPct) / 100) * 100) / 100;
+  const sgstAmount = Math.round(((subtotal * sgstPct) / 100) * 100) / 100;
+  const grandTotal = Math.round((subtotal + cgstAmount + sgstAmount) * 100) / 100;
+
+  return { subtotal, cgstPct, sgstPct, cgstAmount, sgstAmount, grandTotal };
+}
+
 export function paginateProposal(proposal) {
   const pages = [];
   const PAGE1_TOTAL_LINE_CAPACITY = 32;
@@ -183,6 +251,254 @@ export function paginateProposal(proposal) {
 }
 
 export function invoiceToHtml(doc, forWord = false) {
+  const isTaxInvoice = doc.invoiceStyle === 'tax_invoice' || doc.invoiceStyle === 'corporate_tax' || (!doc.invoiceStyle && doc.companyPan);
+
+  if (isTaxInvoice) {
+    const totals = calculateTaxInvoiceTotals(doc);
+    const formatTaxMoney = (val) => {
+      const n = Number(val) || 0;
+      return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const words = (doc.amountInWords && doc.amountInWords !== 'Rupees Thirty Seven Thousand Fifty Two only/-')
+      ? doc.amountInWords
+      : numberToIndianWords(totals.grandTotal);
+    const items = doc.invoiceItems || [];
+
+    const rowsHtml = items.map((item, index) => {
+      const isNotLast = index < items.length - 1;
+      const itemBorderBottom = isNotLast ? 'border-bottom:1px solid #000;' : '';
+      const itemAmount = item.amount !== undefined && item.amount !== '' && !isNaN(Number(item.amount))
+        ? Number(item.amount)
+        : (Number(item.qty) || 1) * (Number(item.rate) || 0);
+
+      const bullets = Array.isArray(item.bullets)
+        ? item.bullets
+        : typeof item.bullets === 'string'
+        ? item.bullets.split('\n').filter(Boolean)
+        : [];
+
+      return `
+        <tr>
+          <td style="text-align:center;vertical-align:top;font-weight:700;font-size:11.5px;padding:10px 4px;border-right:1px solid #000;${itemBorderBottom}font-family:Arial,sans-serif;">
+            ${item.srNo || (index + 1)}
+          </td>
+          <td style="vertical-align:top;padding:8px 10px 4px;border-right:1px solid #000;${itemBorderBottom}font-family:Arial,sans-serif;">
+            <div style="font-weight:700;font-size:11.5px;color:#000;margin-bottom:4px;">
+              ${escapeHtml(item.title || item.description || '')}
+            </div>
+            ${item.termHeader ? `
+              <div style="border-top:1px solid #000;border-bottom:1px solid #000;padding:3.5px 10px;margin:4px -10px 6px;font-weight:700;font-size:11px;color:#000;">
+                ${escapeHtml(item.termHeader)}
+              </div>
+            ` : ''}
+            ${bullets.length > 0 ? `
+              <ul style="margin:6px 0 6px 18px;padding:0;font-size:10.5px;color:#000;line-height:1.52;list-style-type:disc;font-weight:400;">
+                ${bullets.map(b => `<li style="margin-bottom:2px;">${escapeHtml(b)}</li>`).join('')}
+              </ul>
+            ` : ''}
+          </td>
+          <td style="text-align:center;vertical-align:top;font-weight:400;font-size:11.5px;padding:10px 4px;border-right:1px solid #000;${itemBorderBottom}font-family:Arial,sans-serif;">
+            ${escapeHtml(item.rate !== undefined ? String(item.rate) : '50%')}
+          </td>
+          <td style="vertical-align:top;padding:0;${itemBorderBottom}font-family:Arial,sans-serif;">
+            <div style="text-align:right;font-weight:700;font-size:11.5px;padding:10px 10px 4px;border-bottom:1px solid #000;">
+              ${formatTaxMoney(itemAmount)}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(doc.proposalTitle || 'iGLOBUS Invoice')} - ${escapeHtml(doc.proposalNumber || '')}</title>
+    <style>
+      @page { size: A4 portrait; margin: 8mm; }
+      body { margin: 0; padding: 15px; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; color: #000; background: #fff; }
+      .tax-container { max-width: 794px; margin: 0 auto; border: 1.5px solid #000; box-sizing: border-box; background: #fff; }
+      .tax-top-contact { text-align: right; font-weight: 700; font-size: 13.5px; padding: 6px 14px 2px; }
+      .tax-header { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 8px; gap: 14px; }
+      .tax-logo-wrap { width: 106px; flex-shrink: 0; }
+      .tax-company-center { flex: 1; text-align: center; }
+      .tax-company-name { font-size: 28px; font-weight: 800; color: #c84824; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; letter-spacing: -0.2px; line-height: 1.15; margin: 0; padding-bottom: 2px; }
+      .tax-header-line { border-bottom: 2px solid #000; margin: 3px 0 5px; width: 100%; }
+      .tax-company-addr { font-size: 11px; font-weight: 700; color: #000; margin: 0; line-height: 1.35; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; }
+      .tax-meta-grid { display: flex; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; }
+      .tax-client-cell { width: 53%; border-right: 1.5px solid #000; font-size: 11px; box-sizing: border-box; display: flex; flex-direction: column; padding: 0; }
+      .tax-client-top-row { display: flex; gap: 24px; align-items: baseline; padding: 3.5px 8px; border-bottom: 1px solid #000; font-family: "Times New Roman", Times, Georgia, serif; }
+      .tax-client-bottom-box { padding: 5px 8px; flex: 1; }
+      .tax-client-addr { white-space: pre-line; line-height: 1.45; font-size: 11px; font-weight: 400; font-family: Arial, sans-serif; }
+      .tax-details-cell { width: 47%; box-sizing: border-box; }
+      .tax-details-table { width: 100%; border-collapse: collapse; font-size: 11px; font-family: Arial, sans-serif; }
+      .tax-details-table td { padding: 3.5px 8px; border-bottom: 1px solid #000; }
+      .tax-details-table tr:last-child td { border-bottom: none; }
+      .tax-items-table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+      .tax-items-table th { border-bottom: 1.5px solid #000; border-right: 1px solid #000; padding: 6px 4px; font-weight: 700; font-size: 11.5px; letter-spacing: 0.4px; }
+      .tax-items-table th:last-child { border-right: none; }
+      .tax-bottom-section { display: flex; border-bottom: 1.5px solid #000; }
+      .tax-bank-cell { width: 50%; padding: 6px 12px 8px; border-right: 1.5px solid #000; font-size: 11px; box-sizing: border-box; }
+      .tax-sign-cell { width: 50%; padding: 6px 12px 6px; text-align: center; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+      @media print { body { padding: 0; } .tax-container { border: 1.5px solid #000; } }
+    </style>
+    </head><body>
+      <div class="tax-container">
+        <div class="tax-top-contact">Contact: ${escapeHtml(doc.companyContact || '+91 99598 57777')}</div>
+        <div class="tax-header">
+          <div class="tax-logo-wrap">
+            <svg viewBox="0 0 94 80" style="width:102px;height:78px;" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="30" width="19" height="26" rx="1.5" fill="#38b6ff"/>
+              <circle cx="14.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M8.5 56 C8.5 50.5 11 47.8 14.5 47.8 C18 47.8 20.5 50.5 20.5 56 Z" fill="#ffffff"/>
+              <rect x="30" y="15" width="19" height="41" rx="1.5" fill="#38b6ff"/>
+              <circle cx="39.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M33.5 56 C33.5 50.5 36 47.8 39.5 47.8 C43 47.8 45.5 50.5 45.5 56 Z" fill="#ffffff"/>
+              <rect x="55" y="0" width="19" height="56" rx="1.5" fill="#38b6ff"/>
+              <circle cx="64.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M58.5 56 C58.5 50.5 61 47.8 64.5 47.8 C68 47.8 70.5 50.5 70.5 56 Z" fill="#ffffff"/>
+              <text x="39.5" y="74" text-anchor="middle" fill="#525252" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="0.5">iGLOBUS</text>
+            </svg>
+          </div>
+          <div class="tax-company-center">
+            <h1 class="tax-company-name">${escapeHtml(doc.company || 'Iglobus Corporate Consulting Pvt Ltd')}</h1>
+            <div class="tax-header-line"></div>
+            <p class="tax-company-addr">${escapeHtml(doc.companyAddress || 'Plot no.21, Techno Enclave, Flat no. 503, Madhapur, Opp: Raheja Mind Space, Hyd-81')}</p>
+          </div>
+        </div>
+
+        <div class="tax-meta-grid">
+          <div class="tax-client-cell">
+            <div class="tax-client-top-row">
+              <span style="font-weight:700;min-width:36px;font-size:13px;">${escapeHtml(doc.clientPrefix || 'M/S')}</span>
+              <span style="font-weight:700;letter-spacing:0.3px;font-size:13px;">${escapeHtml(doc.preparedFor || 'SHRI SAI ASSOCIATES')}</span>
+            </div>
+            <div class="tax-client-bottom-box">
+              <div class="tax-client-addr">${escapeHtml(doc.clientAddress || '')}</div>
+            </div>
+          </div>
+          <div class="tax-details-cell">
+            <table class="tax-details-table">
+              <tr>
+                <td style="font-weight:700;width:52%;">Invoice No. : &nbsp;${escapeHtml(doc.proposalNumber || '772/18-19')}</td>
+                <td style="font-weight:700;width:48%;">Date : &nbsp;${escapeHtml(doc.date || '22/10/2026')}</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="font-weight:700;">Pan No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(doc.companyPan || 'AADCI8842E')}</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="font-weight:700;">HSN No : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(doc.companyHsn || '9985')}</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="font-weight:700;">Party's GST No. : &nbsp; ${escapeHtml(doc.partyGst || '36ADMFS8094F2ZG')}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <table class="tax-items-table">
+          <thead>
+            <tr>
+              <th style="width:10%;text-align:center;">SR. NO</th>
+              <th style="width:56%;text-align:center;">DESCRIPTION</th>
+              <th style="width:16%;text-align:center;">RATE</th>
+              <th style="width:18%;text-align:center;">AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr>
+              <td style="border-right:1px solid #000;border-top:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;border-top:1px solid #000;padding:0;">
+                <div style="display:flex;height:22px;width:100%;">
+                  <div style="flex:1;border-right:1px solid #000;height:100%;"></div>
+                  <div style="flex:1;height:100%;"></div>
+                </div>
+              </td>
+              <td style="border-right:1px solid #000;border-top:1px solid #000;"></td>
+              <td style="text-align:right;font-weight:700;font-size:11.5px;padding:3px 10px;border-top:1px solid #000;border-bottom:1px solid #000;">${formatTaxMoney(totals.subtotal)}</td>
+            </tr>
+            <tr style="height:20px;">
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="text-align:center;font-weight:700;padding:4px 6px;border-right:1px solid #000;border-top:1px solid #000;border-bottom:1px solid #000;font-size:11px;">CGST ${totals.cgstPct}%</td>
+              <td style="text-align:right;font-weight:700;padding:4px 10px;border-top:1px solid #000;border-bottom:1px solid #000;font-size:11.5px;">${formatTaxMoney(totals.cgstAmount)}</td>
+            </tr>
+            <tr>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="text-align:center;font-weight:700;padding:4px 6px;border-right:1px solid #000;border-bottom:1px solid #000;font-size:11px;">SGST ${totals.sgstPct}%</td>
+              <td style="text-align:right;font-weight:700;padding:4px 10px;border-bottom:1px solid #000;font-size:11.5px;">${formatTaxMoney(totals.sgstAmount)}</td>
+            </tr>
+            <tr>
+              <td colspan="4" style="border-top:1.5px solid #000;border-bottom:1.5px solid #000;padding:6px 10px;font-size:11px;">
+                <span style="font-weight:700;margin-right:22px;">Rupees in word :</span>
+                <span style="font-weight:700;">${escapeHtml(words)}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" style="border-bottom:1.5px solid #000;padding:5px 10px;font-size:11.5px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span><strong>GST NO :</strong> &nbsp;${escapeHtml(doc.companyGst || '36AADCI8842E1ZI')}</span>
+                  <span style="font-weight:800;letter-spacing:0.5px;">${escapeHtml(doc.eoeText || 'E.&.O.E')}</span>
+                </div>
+              </td>
+              <td style="border-bottom:1.5px solid #000;text-align:center;font-weight:800;padding:5px 6px;border-left:1px solid #000;border-right:1px solid #000;font-size:11.5px;">
+                Grand Total
+              </td>
+              <td style="border-bottom:1.5px solid #000;text-align:right;font-weight:800;padding:5px 10px;font-size:12.5px;">
+                ${formatTaxMoney(totals.grandTotal)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tax-bottom-section">
+          <div class="tax-bank-cell">
+            <div style="font-weight:800;font-size:11.5px;margin-bottom:3px;letter-spacing:0.4px;">BANK DETAILS</div>
+            <table style="border:none;font-size:10.5px;line-height:1.6;border-collapse:collapse;width:100%;">
+              <tr><td style="padding:0;font-weight:700;width:88px;">BANK NAME</td><td style="padding:0;">: ${escapeHtml(doc.bankName || 'Icici Bank Limited')}</td></tr>
+              <tr><td style="padding:0;font-weight:700;">Bank A/c No</td><td style="padding:0;">: ${escapeHtml(doc.bankAccountNo || '004005023167')}</td></tr>
+              <tr><td style="padding:0;font-weight:700;">IFSC Code</td><td style="padding:0;">: ${escapeHtml(doc.bankIfsc || 'ICIC0000040')}</td></tr>
+              <tr><td style="padding:0;font-weight:700;">BRANCH</td><td style="padding:0;">: ${escapeHtml(doc.bankBranch || 'Madhapur Branch')}</td></tr>
+            </table>
+          </div>
+          <div class="tax-sign-cell">
+            <div style="font-weight:800;font-size:13px;color:#0f2b6e;">${escapeHtml(doc.signatureForCompany || 'For Iglobus corporate consulting Pvt Ltd')}</div>
+            <div style="height:56px;display:flex;align-items:center;justify-content:center;margin:3px 0;">
+              ${doc.signatureImageUrl ? `
+                <img src="${escapeHtml(doc.signatureImageUrl)}" alt="Signature" style="max-height:52px;max-width:160px;object-fit:contain;" />
+              ` : `
+                <div style="background:#cbd5e1;border:1px solid #94a3b8;border-radius:4px;padding:2px 8px;width:175px;height:54px;display:flex;align-items:center;justify-content:center;">
+                  <svg viewBox="0 0 200 85" style="width:165px;height:52px;" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="100" cy="42" rx="92" ry="36" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 2" opacity="0.9"/>
+                    <ellipse cx="100" cy="42" rx="84" ry="29" fill="none" stroke="#2563eb" stroke-width="1.2" opacity="0.9"/>
+                    <path id="sealTopArcPrint" d="M 22 42 A 78 26 0 0 1 178 42" fill="none"/>
+                    <text fill="#1d4ed8" font-size="8" font-weight="bold" font-family="'Inter', sans-serif" letter-spacing="0.8">
+                      <textPath href="#sealTopArcPrint" startOffset="50%" text-anchor="middle">IGLOBUS CORPORATE CONSULTING</textPath>
+                    </text>
+                    <path id="sealBottomArcPrint" d="M 26 44 A 74 22 0 0 0 174 44" fill="none"/>
+                    <text fill="#1d4ed8" font-size="7.5" font-weight="bold" font-family="'Inter', sans-serif" letter-spacing="1">
+                      <textPath href="#sealBottomArcPrint" startOffset="50%" text-anchor="middle">★ HYDERABAD (T.S.) ★</textPath>
+                    </text>
+                    <path d="M 45 44 Q 68 18 88 42 T 125 36 Q 145 20 160 50 T 178 38" fill="none" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M 62 52 Q 105 46 152 50" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              `}
+            </div>
+            <div style="font-weight:800;font-size:11.5px;">${escapeHtml(doc.signatoryTitle || 'Director')}</div>
+          </div>
+        </div>
+
+        <div style="height:75px;background:#fff;"></div>
+      </div>
+    </body></html>`;
+  }
+
   const style = doc.invoiceStyle === 'standard' ? 'standard' : 'compact';
   const currencySymbol = doc.currency === 'USD' ? '$' : '₹';
   const items = doc.invoiceItems || [];

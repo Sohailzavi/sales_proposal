@@ -2296,3 +2296,684 @@ html::-webkit-scrollbar,
   height: 100%;
 }
 
+/* ==========================================================================
+   Corporate Tax Invoice Styles (Exact GST Reference Layout)
+   ========================================================================== */
+.tax-invoice-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.tax-inv-scale-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 12px;
+  background: #0f172a;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+.tax-inv-scale-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tax-inv-badge-live {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.tax-inv-badge-sub {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.tax-inv-scale-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tax-inv-scale-actions button,
+.scale-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: #1e293b !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
+  padding: 5px 12px !important;
+  border-radius: 6px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.tax-inv-scale-actions button:hover:not(:disabled),
+.scale-btn:hover:not(:disabled) {
+  background: #334155 !important;
+  color: #ffffff !important;
+  border-color: #64748b !important;
+}
+
+.tax-inv-scale-actions button.active,
+.scale-btn.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.tax-inv-scale-actions button.active:hover:not(:disabled),
+.scale-btn.active:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+  border-color: #60a5fa !important;
+}
+
+.tax-inv-scale-actions button.scale-btn-highlight,
+.scale-btn-highlight {
+  background: #0f2b6e !important;
+  border-color: #38b6ff !important;
+  color: #ffffff !important;
+}
+
+.tax-inv-scale-actions button.scale-btn-highlight:hover:not(:disabled),
+.scale-btn-highlight:hover:not(:disabled) {
+  background: #1e40af !important;
+  border-color: #60a5fa !important;
+  color: #ffffff !important;
+}
+
+/* Dedicated Signature Upload Button */
+button.select-sig-btn,
+.select-sig-btn {
+  background: #0f2b6e !important;
+  color: #ffffff !important;
+  border: 1px solid #38b6ff !important;
+  box-shadow: 0 1px 3px rgba(15, 43, 110, 0.25) !important;
+}
+
+button.select-sig-btn:hover:not(:disabled),
+.select-sig-btn:hover:not(:disabled) {
+  background: #1e40af !important;
+  color: #ffffff !important;
+  border-color: #60a5fa !important;
+  box-shadow: 0 3px 8px rgba(30, 64, 175, 0.35) !important;
+}
+
+button.reset-sig-btn,
+.reset-sig-btn {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+button.reset-sig-btn:hover:not(:disabled),
+.reset-sig-btn:hover:not(:disabled) {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border-color: #f87171 !important;
+}
+
+/* Percentage Quick Chip Buttons */
+button.pct-chip-btn,
+.pct-chip-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+button.pct-chip-btn:hover:not(:disabled),
+.pct-chip-btn:hover:not(:disabled) {
+  background: #f1f5f9 !important;
+  color: #0f2b6e !important;
+  border-color: #94a3b8 !important;
+}
+
+button.pct-chip-btn.active,
+.pct-chip-btn.active {
+  background: #0f2b6e !important;
+  color: #ffffff !important;
+  border-color: #0f2b6e !important;
+}
+
+button.pct-chip-btn.active:hover:not(:disabled),
+.pct-chip-btn.active:hover:not(:disabled) {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+  border-color: #1e3a8a !important;
+}
+
+.tax-invoice-container {
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.tax-invoice-container.scrollable {
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto !important;
+}
+
+.tax-invoice-container.scrollable::-webkit-scrollbar {
+  display: block !important;
+  width: 6px !important;
+}
+
+.tax-invoice-container.scrollable::-webkit-scrollbar-thumb {
+  background: #94a3b8 !important;
+  border-radius: 4px !important;
+}
+
+.tax-invoice-paper {
+  width: 794px;
+  max-width: 794px;
+  min-height: auto;
+  background: #ffffff;
+  padding: 16px 20px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12);
+  border-radius: 2px;
+  color: #000;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.tax-inv-frame {
+  border: 1.5px solid #000;
+  background: #fff;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.tax-inv-top-contact {
+  text-align: right;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #000;
+  padding: 6px 14px 2px;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px 8px;
+  gap: 14px;
+}
+
+.tax-inv-logo-wrap {
+  width: 106px;
+  flex-shrink: 0;
+}
+
+.tax-inv-logo-svg {
+  width: 102px;
+  height: 78px;
+}
+
+.tax-inv-company-center {
+  flex: 1;
+  text-align: center;
+}
+
+.tax-inv-company-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #c84824;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  letter-spacing: -0.2px;
+  line-height: 1.15;
+  margin: 0;
+  padding-bottom: 2px;
+}
+
+.tax-inv-underline {
+  border-bottom: 2px solid #000;
+  margin: 3px 0 5px;
+  width: 100%;
+}
+
+.tax-inv-company-address {
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  line-height: 1.35;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.tax-inv-meta-grid {
+  display: flex;
+  border-top: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+}
+
+.tax-inv-client-cell {
+  width: 53%;
+  border-right: 1.5px solid #000;
+  font-size: 11px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.tax-inv-client-top-row {
+  display: flex;
+  gap: 24px;
+  align-items: baseline;
+  padding: 3.5px 8px;
+  border-bottom: 1px solid #000;
+  font-family: "Times New Roman", Times, Georgia, serif;
+}
+
+.tax-inv-client-ms {
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #000;
+  min-width: 36px;
+}
+
+.tax-inv-client-name {
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #000;
+  letter-spacing: 0.3px;
+}
+
+.tax-inv-client-bottom-box {
+  padding: 5px 8px;
+  flex: 1;
+}
+
+.tax-inv-client-address {
+  white-space: pre-line;
+  line-height: 1.45;
+  font-size: 11px;
+  color: #000;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+
+.tax-inv-details-cell {
+  width: 47%;
+  box-sizing: border-box;
+}
+
+.tax-inv-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-details-table td {
+  padding: 3.5px 8px;
+  border-bottom: 1px solid #000;
+}
+
+.tax-inv-details-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tax-inv-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-items-table th {
+  border-bottom: 1.5px solid #000;
+  border-right: 1px solid #000;
+  padding: 6px 4px;
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
+  background: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-items-table th:last-child {
+  border-right: none;
+}
+
+.tax-inv-item-divider td {
+  border-bottom: 1px solid #000 !important;
+}
+
+.tax-inv-td-sr {
+  text-align: center;
+  vertical-align: top;
+  font-weight: 700;
+  font-size: 11.5px;
+  padding: 10px 4px;
+  border-right: 1px solid #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-td-desc {
+  vertical-align: top;
+  padding: 8px 10px 4px;
+  border-right: 1px solid #000;
+}
+
+.tax-inv-item-title {
+  font-weight: 700;
+  font-size: 11.5px;
+  color: #000;
+  margin-bottom: 4px;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-term-header {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 3.5px 10px;
+  margin: 4px -10px 6px;
+  font-weight: 700;
+  font-size: 11px;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-bullet-list {
+  margin: 6px 0 6px 18px;
+  padding: 0;
+  font-size: 10.5px;
+  color: #000;
+  line-height: 1.52;
+  list-style-type: disc;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+
+.tax-inv-td-rate {
+  text-align: center;
+  vertical-align: top;
+  font-weight: 400;
+  font-size: 11.5px;
+  padding: 10px 4px;
+  border-right: 1px solid #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-td-amount {
+  vertical-align: top;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-top-amt {
+  text-align: right;
+  font-weight: 700;
+  font-size: 11.5px;
+  padding: 10px 10px 4px;
+  border-bottom: 1px solid #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-split-boxes {
+  display: flex;
+  height: 22px;
+  width: 100%;
+}
+
+.tax-inv-sub-box {
+  flex: 1;
+  border-right: 1px solid #000;
+  height: 100%;
+}
+
+.tax-inv-td-amount-subtotal {
+  text-align: right;
+  font-weight: 700;
+  font-size: 11.5px;
+  padding: 3px 10px;
+  border-bottom: 1px solid #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-border-r {
+  border-right: 1px solid #000;
+}
+
+.tax-inv-border-t {
+  border-top: 1px solid #000 !important;
+}
+
+.tax-inv-spacer-row {
+  height: 20px;
+}
+
+.tax-inv-tax-row td {
+  padding: 4px 10px;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-tax-lbl {
+  text-align: center;
+  font-weight: 700;
+  border-right: 1px solid #000;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  font-size: 11px;
+  padding: 4px 6px !important;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-tax-val {
+  text-align: right;
+  font-weight: 700;
+  font-size: 11.5px;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 4px 10px !important;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-words-row td {
+  border-top: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-words-lbl {
+  font-weight: 700;
+  margin-right: 22px;
+}
+
+.tax-inv-words-val {
+  font-weight: 700;
+}
+
+.tax-inv-grand-row td {
+  border-bottom: 1.5px solid #000;
+  padding: 5px 6px;
+  font-size: 11.5px;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-grand-left {
+  padding: 5px 10px !important;
+}
+
+.tax-inv-gst-eoe-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tax-inv-eoe {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.tax-inv-grand-label-cell {
+  text-align: center;
+  font-weight: 800;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  font-size: 11.5px;
+}
+
+.tax-inv-grand-amount-cell {
+  text-align: right;
+  font-weight: 800;
+  font-size: 12.5px;
+  padding-right: 10px;
+}
+
+.tax-inv-bottom-section {
+  display: flex;
+  border-bottom: 1.5px solid #000;
+}
+
+.tax-inv-bank-cell {
+  width: 50%;
+  padding: 6px 12px 8px;
+  border-right: 1.5px solid #000;
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.tax-inv-bank-heading {
+  font-weight: 800;
+  font-size: 11.5px;
+  margin-bottom: 3px;
+  letter-spacing: 0.4px;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-bank-table {
+  border: none;
+  font-size: 10.5px;
+  line-height: 1.6;
+  border-collapse: collapse;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-bank-k {
+  font-weight: 700;
+  width: 88px;
+  padding: 0;
+}
+
+.tax-inv-sign-cell {
+  width: 50%;
+  padding: 6px 12px 6px;
+  text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tax-inv-for-company {
+  font-weight: 800;
+  font-size: 13px;
+  color: #0f2b6e;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-seal-container {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3px 0;
+}
+
+.tax-inv-seal-card {
+  background: #cbd5e1;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  padding: 2px 8px;
+  width: 175px;
+  height: 54px;
+  margin: 2px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tax-inv-seal-svg {
+  width: 165px;
+  height: 52px;
+}
+
+.tax-inv-sig-img {
+  max-height: 52px;
+  max-width: 160px;
+  object-fit: contain;
+}
+
+.tax-inv-director-title {
+  font-weight: 800;
+  font-size: 11.5px;
+  font-family: Arial, sans-serif;
+}
+
+.tax-inv-bottom-spacer {
+  height: 75px;
+  background: #fff;
+}
+
+@media print {
+  .tax-inv-scale-bar {
+    display: none !important;
+  }
+  .tax-invoice-paper {
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    min-height: auto !important;
+  }
+  .tax-inv-scale-wrapper {
+    min-height: auto !important;
+    height: auto !important;
+    display: block !important;
+  }
+  .tax-inv-scale-wrapper > div {
+    transform: none !important;
+    margin-bottom: 0 !important;
+  }
+  .tax-inv-frame {
+    border: 1.5px solid #000 !important;
+  }
+}
+

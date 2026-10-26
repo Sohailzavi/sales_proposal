@@ -821,3 +821,54 @@ export const sampleClosureDoc = {
   sections: []
 };
 
+export const sampleTaxInvoiceDoc = {
+  id: 'sample-tax-invoice-001',
+  documentType: 'invoice',
+  invoiceStyle: 'tax_invoice',
+  proposalTitle: 'iGLOBUS Invoice',
+  company: 'Iglobus Corporate Consulting Pvt Ltd',
+  companyContact: '+91 99598 57777',
+  companyAddress: 'Plot no.21, Techno Enclave, Flat no. 503, Madhapur, Opp: Raheja Mind Space, Hyd-81',
+  companyPan: 'AADCI8842E',
+  companyGst: '36AADCI8842E1ZI',
+  companyHsn: '9985',
+  preparedFor: 'SHRI SAI ASSOCIATES',
+  clientPrefix: 'M/S',
+  clientAddress: '6-2-9661/1, First Floor, Hill Colony, AC Guards, Khairatabad,\nHyderabad 500004.',
+  partyGst: '36ADMFS8094F2ZG',
+  proposalNumber: '772/18-19',
+  date: '22/10/2026',
+  eoeText: 'E.&.O.E',
+  invoiceItems: [
+    {
+      id: 'tax-item-1',
+      srNo: 1,
+      title: 'Loan Delight – iBunify CRM, AI Calling & WhatsApp Automation',
+      termHeader: 'Term 1 – 50% Advance for iBunify CRM & Integrated Services',
+      bullets: [
+        'iBunify CRM subscription for 1 Admin user – 12 months.',
+        'CRM setup, lead pipeline configuration, custom fields, onboarding and team training.',
+        'Meta CAPI and Google Ads integration.',
+        'WhatsApp Business API setup, message templates, automated follow-ups, shared inbox and management – 12 months.',
+        'WhatsApp prepaid messaging wallet.',
+        '2 AI calling virtual numbers – 12 months.',
+        'Setup of 2 AI calling agents support'
+      ],
+      basePrice: 62800.00,
+      rate: '50%',
+      amount: 31400.00
+    }
+  ],
+  cgstPct: 9,
+  sgstPct: 9,
+  amountInWords: '',
+  bankName: 'Icici Bank Limited',
+  bankAccountNo: '004005023167',
+  bankIfsc: 'ICIC0000040',
+  bankBranch: 'Madhapur Branch',
+  signatureForCompany: 'For Iglobus corporate consulting Pvt Ltd',
+  signatoryTitle: 'Director',
+  showSealSignature: true,
+  sections: []
+};
+

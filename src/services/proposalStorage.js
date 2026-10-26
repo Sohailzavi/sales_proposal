@@ -160,12 +160,12 @@ export function loadProposalsFromStorage() {
           if (p.documentType === 'invoice') {
             return {
               ...sanitizedProposal,
-              company: company || 'iGLOBUS Corporate Consulting',
+              company: p.company || company || 'Iglobus Corporate Consulting Pvt Ltd',
               currency: 'INR',
               cgstPct: typeof p.cgstPct === 'number' ? p.cgstPct : 9,
               sgstPct: typeof p.sgstPct === 'number' ? p.sgstPct : 9,
               taxRate: 18,
-              invoiceStyle: 'standard'
+              invoiceStyle: p.invoiceStyle || (p.companyPan ? 'tax_invoice' : 'standard')
             };
           }
           if (p.id === 'sample-custom-proposal-001' || p.id === 'sample-ibunify-proposal-001' || p.documentType === 'proposal') {
@@ -182,11 +182,21 @@ export function loadProposalsFromStorage() {
         const seen = new Set();
         const deduplicated = [];
         for (const p of cleaned) {
-          const key = `${p.documentType || 'proposal'}-${p.proposalTitle}-${p.preparedFor}`;
+          const key = `${p.documentType || 'proposal'}-${p.invoiceStyle || ''}-${p.proposalTitle}-${p.preparedFor}`;
           if (!seen.has(key)) {
             seen.add(key);
             deduplicated.push(p);
           }
+        }
+
+        const taxInvoiceTemplate = proposalTemplates.find((t) => t.id === 'template-invoice-corporate-tax');
+        const hasTaxInvoice = deduplicated.some((p) => p.documentType === 'invoice' && (p.invoiceStyle === 'tax_invoice' || p.invoiceStyle === 'corporate_tax'));
+        if (!hasTaxInvoice && taxInvoiceTemplate) {
+          const defaultTaxInvoice = { ...taxInvoiceTemplate, id: 'inv-tax-default' };
+          delete defaultTaxInvoice.name;
+          delete defaultTaxInvoice.description;
+          delete defaultTaxInvoice.category;
+          deduplicated.push(defaultTaxInvoice);
         }
 
         // Ensure at least one standard invoice is present
