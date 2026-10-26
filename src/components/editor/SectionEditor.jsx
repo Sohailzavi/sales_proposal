@@ -1,5 +1,29 @@
 import React from 'react';
-import { calculateCommercialTotals, calculateInvoiceTotals } from '../../services/exportService.js';
+import {
+  calculateCommercialTotals,
+  calculateInvoiceTotals,
+  calculateTaxInvoiceTotals,
+  numberToIndianWords
+} from '../../services/exportService.js';
+import { sampleCommercialProposalDoc } from '../../data/defaults.js';
+
+const PILLAR_KEYS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
+
+const reindexServiceBreakdown = (items = []) => {
+  return items.map((item, i) => ({
+    ...item,
+    id: item.id || `sb-${i}-${item.key || 'k'}-${Date.now()}`,
+    key: PILLAR_KEYS[i] || `Pillar ${i + 1}`
+  }));
+};
+
+const reindexServicesOverview = (items = []) => {
+  return items.map((item, i) => ({
+    ...item,
+    id: item.id || `so-${i}-${item.key || 'k'}-${Date.now()}`,
+    key: PILLAR_KEYS[i] || `Pillar ${i + 1}`
+  }));
+};
 
 export function SectionEditor({
   proposal,
@@ -15,6 +39,563 @@ export function SectionEditor({
   const isInvoice = proposal.documentType === 'invoice';
 
   if (isInvoice) {
+    const isTaxInvoice = proposal.invoiceStyle === 'tax_invoice' || proposal.invoiceStyle === 'corporate_tax' || (!proposal.invoiceStyle && proposal.companyPan);
+
+    if (isTaxInvoice) {
+      const items = proposal.invoiceItems || [];
+      const totals = calculateTaxInvoiceTotals(proposal);
+      const formatTaxMoney = (val) => {
+        const n = Number(val) || 0;
+        return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      };
+
+      const handleAddTaxItem = () => {
+        const newItem = {
+          id: `tax-item-${Date.now()}`,
+          srNo: items.length + 1,
+          title: 'New Service / Deliverable Package',
+          termHeader: 'Term 1 – Advance Milestone',
+          bullets: ['Scope item detail description.'],
+          basePrice: 50000.00,
+          rate: '50%',
+          amount: 25000.00
+        };
+        onUpdateField('invoiceItems', [...items, newItem]);
+      };
+
+      const handleUpdateTaxItem = (index, patch) => {
+        const updated = [...items];
+        updated[index] = { ...updated[index], ...patch };
+        onUpdateField('invoiceItems', updated);
+      };
+
+      const handleRateChange = (index, rawRate) => {
+        const targetItem = items[index] || {};
+        const oldPct = parseFloat(String(targetItem.rate !== undefined ? targetItem.rate : '50').replace(/[^0-9.]/g, '')) || 0;
+        const currentAmt = targetItem.amount !== undefined ? Number(targetItem.amount) : 31400;
+        const currentBase = targetItem.basePrice !== undefined
+          ? Number(targetItem.basePrice)
+          : (oldPct > 0 ? Math.round((currentAmt / (oldPct / 100)) * 100) / 100 : currentAmt);
+
+        const newPct = parseFloat(String(rawRate).replace(/[^0-9.]/g, ''));
+        const patch = { rate: rawRate, basePrice: currentBase };
+
+        if (!isNaN(newPct) && newPct >= 0) {
+          const calculatedAmount = Math.round(((currentBase * newPct) / 100) * 100) / 100;
+          patch.amount = calculatedAmount;
+
+          if (targetItem.termHeader && /\b\d+%/g.test(targetItem.termHeader)) {
+            patch.termHeader = targetItem.termHeader.replace(/\b\d+%/g, `${newPct}%`);
+          }
+        }
+
+        handleUpdateTaxItem(index, patch);
+      };
+
+      const handleBasePriceChange = (index, newBase) => {
+        const targetItem = items[index] || {};
+        const pct = parseFloat(String(targetItem.rate !== undefined ? targetItem.rate : '50').replace(/[^0-9.]/g, '')) || 0;
+        const base = Number(newBase) || 0;
+        const patch = { basePrice: base };
+        if (pct > 0) {
+          patch.amount = Math.round(((base * pct) / 100) * 100) / 100;
+        }
+        handleUpdateTaxItem(index, patch);
+      };
+
+      const handleAmountChange = (index, newAmt) => {
+        const targetItem = items[index] || {};
+        const pct = parseFloat(String(targetItem.rate !== undefined ? targetItem.rate : '50').replace(/[^0-9.]/g, '')) || 0;
+        const amt = Number(newAmt) || 0;
+        const patch = { amount: amt };
+        if (pct > 0) {
+          patch.basePrice = Math.round((amt / (pct / 100)) * 100) / 100;
+        }
+        handleUpdateTaxItem(index, patch);
+      };
+
+      const handleDeleteTaxItem = (index) => {
+        const updated = items.filter((_, i) => i !== index);
+        onUpdateField('invoiceItems', updated);
+      };
+
+      return (
+        <section className="editor panel">
+          <h2>iGLOBUS Invoice Details & Tax Settings (GST Format)</h2>
+
+          {/* Invoice & Registration Numbers */}
+          <h3 style={{ marginTop: '18px', fontSize: '15px', color: '#0f2b6e' }}>Invoice & Statutory Registrations</h3>
+          <div className="form-grid">
+            <label>
+              <span>Invoice Number</span>
+              <input
+                value={proposal.proposalNumber || '772/18-19'}
+                onChange={(e) => onUpdateField('proposalNumber', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Invoice Date</span>
+              <input
+                value={proposal.date || '22/10/2026'}
+                onChange={(e) => onUpdateField('date', e.target.value)}
+                placeholder="DD/MM/YYYY"
+              />
+            </label>
+
+            <label>
+              <span>Company PAN No.</span>
+              <input
+                value={proposal.companyPan || 'AADCI8842E'}
+                onChange={(e) => onUpdateField('companyPan', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>HSN / SAC Code</span>
+              <input
+                value={proposal.companyHsn || '9985'}
+                onChange={(e) => onUpdateField('companyHsn', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Company GST No.</span>
+              <input
+                value={proposal.companyGst || '36AADCI8842E1ZI'}
+                onChange={(e) => onUpdateField('companyGst', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Party's (Client) GST No.</span>
+              <input
+                value={proposal.partyGst || '36ADMFS8094F2ZG'}
+                onChange={(e) => onUpdateField('partyGst', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Company Contact Phone</span>
+              <input
+                value={proposal.companyContact || '+91 99598 57777'}
+                onChange={(e) => onUpdateField('companyContact', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Company Legal Name</span>
+              <input
+                value={proposal.company || 'Iglobus Corporate Consulting Pvt Ltd'}
+                onChange={(e) => onUpdateField('company', e.target.value)}
+              />
+            </label>
+
+            <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+              <span>Company Registered Office Address</span>
+              <input
+                value={proposal.companyAddress || 'Plot no.21, Techno Enclave, Flat no. 503, Madhapur, Opp: Raheja Mind Space, Hyd-81'}
+                onChange={(e) => onUpdateField('companyAddress', e.target.value)}
+              />
+            </label>
+          </div>
+
+          {/* Client Details */}
+          <h3 style={{ marginTop: '24px', fontSize: '15px', color: '#0f2b6e' }}>Client (Billed To) Details</h3>
+          <div className="form-grid">
+            <label style={{ maxWidth: '100px' }}>
+              <span>Prefix</span>
+              <input
+                value={proposal.clientPrefix || 'M/S'}
+                onChange={(e) => onUpdateField('clientPrefix', e.target.value)}
+              />
+            </label>
+
+            <label style={{ gridColumn: 'span 2' }}>
+              <span>Client Entity Name</span>
+              <input
+                value={proposal.preparedFor || 'SHRI SAI ASSOCIATES'}
+                onChange={(e) => onUpdateField('preparedFor', e.target.value)}
+              />
+            </label>
+
+            <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+              <span>Client Full Address</span>
+              <textarea
+                rows="2"
+                value={proposal.clientAddress || ''}
+                onChange={(e) => onUpdateField('clientAddress', e.target.value)}
+                placeholder="Address line 1&#10;City, State PIN"
+              />
+            </label>
+          </div>
+
+          {/* Itemized Services Table */}
+          <div className="structured-commercials-editor" style={{ marginTop: '28px' }}>
+            <div className="commercials-editor-head">
+              <h3 style={{ margin: 0, fontSize: '15px', color: '#0f2b6e' }}>iGLOBUS Invoice Line Items & Milestone</h3>
+              <button type="button" className="secondary sm" onClick={handleAddTaxItem}>
+                ＋ Add Line Item
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '14px' }}>
+              {items.map((item, index) => {
+                const bullets = Array.isArray(item.bullets)
+                  ? item.bullets
+                  : typeof item.bullets === 'string'
+                  ? item.bullets.split('\n').filter(Boolean)
+                  : [];
+
+                const itemRatePct = parseFloat(String(item.rate !== undefined ? item.rate : '50').replace(/[^0-9.]/g, '')) || 0;
+                const itemAmount = item.amount !== undefined && item.amount !== '' && !isNaN(Number(item.amount))
+                  ? Number(item.amount)
+                  : 31400;
+                const itemBasePrice = item.basePrice !== undefined && item.basePrice !== '' && !isNaN(Number(item.basePrice))
+                  ? Number(item.basePrice)
+                  : (itemRatePct > 0 ? Math.round((itemAmount / (itemRatePct / 100)) * 100) / 100 : itemAmount);
+
+                return (
+                  <div
+                    key={item.id || index}
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '16px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 700, color: '#0f2b6e', fontSize: '14px' }}>
+                        Line Item #{index + 1}
+                      </span>
+                      {items.length > 1 && (
+                        <button
+                          type="button"
+                          className="del-item-btn"
+                          onClick={() => handleDeleteTaxItem(index)}
+                        >
+                          × Delete Item
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="form-grid">
+                      <label style={{ gridColumn: '1 / -1' }}>
+                        <span>Item Main Description / Title</span>
+                        <input
+                          value={item.title || item.description || ''}
+                          onChange={(e) => handleUpdateTaxItem(index, { title: e.target.value, description: e.target.value })}
+                          placeholder="e.g. Loan Delight – iBunify CRM, AI Calling & WhatsApp Automation"
+                        />
+                      </label>
+
+                      <label style={{ gridColumn: '1 / -1' }}>
+                        <span>Milestone / Term Subheading (Box)</span>
+                        <input
+                          value={item.termHeader || ''}
+                          onChange={(e) => handleUpdateTaxItem(index, { termHeader: e.target.value })}
+                          placeholder="e.g. Term 1 – 50% Advance for iBunify CRM & Integrated Services"
+                        />
+                      </label>
+
+                      <label style={{ gridColumn: '1 / -1' }}>
+                        <span>Scope & Deliverable Bullets (one bullet per line)</span>
+                        <textarea
+                          rows="6"
+                          value={bullets.join('\n')}
+                          onChange={(e) => handleUpdateTaxItem(index, { bullets: e.target.value.split('\n') })}
+                          placeholder="Enter deliverable bullets here..."
+                        />
+                      </label>
+
+                      <label>
+                        <span>Total Package / Contract Value (₹)</span>
+                        <input
+                          type="number"
+                          value={itemBasePrice}
+                          onChange={(e) => handleBasePriceChange(index, e.target.value)}
+                          placeholder="e.g. 62800"
+                        />
+                      </label>
+
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '4px' }}>
+                          <span>Rate / Percentage</span>
+                          <input
+                            value={item.rate !== undefined ? item.rate : '50%'}
+                            onChange={(e) => handleRateChange(index, e.target.value)}
+                            onBlur={(e) => {
+                              const val = e.target.value.trim();
+                              if (val && !val.endsWith('%') && !isNaN(Number(val))) {
+                                handleRateChange(index, `${val}%`);
+                              }
+                            }}
+                            placeholder="e.g. 50%"
+                          />
+                        </label>
+                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
+                          {['100%', '50%', '40%', '30%', '25%', '20%', '10%'].map((chipPct) => {
+                            const isSelected = item.rate === chipPct || String(item.rate).trim() === chipPct;
+                            return (
+                              <button
+                                key={chipPct}
+                                type="button"
+                                className={`pct-chip-btn ${isSelected ? 'active' : ''}`}
+                                onClick={() => handleRateChange(index, chipPct)}
+                              >
+                                {chipPct}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <label>
+                        <span>Calculated Milestone Amount (₹)</span>
+                        <input
+                          type="number"
+                          value={itemAmount}
+                          onChange={(e) => handleAmountChange(index, e.target.value)}
+                          placeholder="31400.00"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Calculations & Summary Bar */}
+            <h3 style={{ marginTop: '24px', fontSize: '15px', color: '#0f2b6e' }}>Taxes & Totals</h3>
+            <div className="form-grid">
+              <label>
+                <span>CGST %</span>
+                <input
+                  type="number"
+                  value={proposal.cgstPct !== undefined ? proposal.cgstPct : 9}
+                  onChange={(e) => onUpdateField('cgstPct', Number(e.target.value))}
+                />
+              </label>
+
+              <label>
+                <span>SGST %</span>
+                <input
+                  type="number"
+                  value={proposal.sgstPct !== undefined ? proposal.sgstPct : 9}
+                  onChange={(e) => onUpdateField('sgstPct', Number(e.target.value))}
+                />
+              </label>
+
+              <label>
+                <span>E.&.O.E Disclaimer Text</span>
+                <input
+                  value={proposal.eoeText || 'E.&.O.E'}
+                  onChange={(e) => onUpdateField('eoeText', e.target.value)}
+                />
+              </label>
+
+              <label className="full-width-label" style={{ gridColumn: '1 / -1' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span>Rupees In Words</span>
+                  <button
+                    type="button"
+                    onClick={() => onUpdateField('amountInWords', '')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#0284c7',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      padding: 0,
+                      fontWeight: 600
+                    }}
+                    title="Clear override to auto-generate from current grand total"
+                  >
+                    ↺ Auto-generate from Grand Total
+                  </button>
+                </div>
+                <input
+                  value={
+                    (proposal.amountInWords && proposal.amountInWords !== 'Rupees Thirty Seven Thousand Fifty Two only/-')
+                      ? proposal.amountInWords
+                      : numberToIndianWords(totals.grandTotal)
+                  }
+                  onChange={(e) => onUpdateField('amountInWords', e.target.value)}
+                  placeholder="Auto-generated Indian English words"
+                />
+              </label>
+            </div>
+
+            <div className="commercial-summary-bar" style={{ marginTop: '16px', background: '#0f2b6e', color: '#fff', borderRadius: '8px', padding: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span>Subtotal:</span>
+                <strong>{formatTaxMoney(totals.subtotal)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span>CGST ({totals.cgstPct}%):</span>
+                <strong>{formatTaxMoney(totals.cgstAmount)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span>SGST ({totals.sgstPct}%):</span>
+                <strong>{formatTaxMoney(totals.sgstAmount)}</strong>
+              </div>
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.3)', paddingTop: '8px', marginTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '16px' }}>
+                <span>Grand Total:</span>
+                <strong style={{ color: '#38b6ff' }}>{formatTaxMoney(totals.grandTotal)}</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Bank Details */}
+          <h3 style={{ marginTop: '28px', fontSize: '15px', color: '#0f2b6e' }}>Bank Details (For Remittance)</h3>
+          <div className="form-grid">
+            <label>
+              <span>Bank Name</span>
+              <input
+                value={proposal.bankName || 'Icici Bank Limited'}
+                onChange={(e) => onUpdateField('bankName', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Bank Account Number</span>
+              <input
+                value={proposal.bankAccountNo || '004005023167'}
+                onChange={(e) => onUpdateField('bankAccountNo', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>IFSC Code</span>
+              <input
+                value={proposal.bankIfsc || 'ICIC0000040'}
+                onChange={(e) => onUpdateField('bankIfsc', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Branch</span>
+              <input
+                value={proposal.bankBranch || 'Madhapur Branch'}
+                onChange={(e) => onUpdateField('bankBranch', e.target.value)}
+              />
+            </label>
+          </div>
+
+          {/* Signatory & Corporate Seal */}
+          <h3 style={{ marginTop: '28px', fontSize: '15px', color: '#0f2b6e' }}>Authorization & Director Seal</h3>
+          <div className="form-grid">
+            <label>
+              <span>Signatory Company Header</span>
+              <input
+                value={proposal.signatureForCompany || 'For Iglobus corporate consulting Pvt Ltd'}
+                onChange={(e) => onUpdateField('signatureForCompany', e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>Signatory Designation / Title</span>
+              <input
+                value={proposal.signatoryTitle || 'Director'}
+                onChange={(e) => onUpdateField('signatoryTitle', e.target.value)}
+              />
+            </label>
+
+            <div className="full-width-label" style={{ gridColumn: '1 / -1', marginTop: '4px' }}>
+              <span style={{ fontWeight: 700, fontSize: '13px', color: '#1e293b', display: 'block', marginBottom: '8px' }}>
+                Director Signature & Corporate Seal Stamp
+              </span>
+              <div style={{
+                border: '1.5px dashed #cbd5e1',
+                borderRadius: '10px',
+                padding: '16px',
+                background: '#f8fafc',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>
+                      {proposal.signatureImageUrl ? 'Custom Signature Image Active' : 'Official Corporate Seal & Ink Signature Active (Default)'}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
+                      {proposal.signatureImageUrl
+                        ? 'Image loaded from your local system.'
+                        : 'Using the authentic official Iglobus seal and director ink signature.'}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <input
+                      id="signature-file-input"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          onUpdateField('signatureImageUrl', event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="scale-btn scale-btn-highlight select-sig-btn"
+                      onClick={() => document.getElementById('signature-file-input')?.click()}
+                      style={{ cursor: 'pointer', padding: '7px 14px', fontSize: '12.5px' }}
+                    >
+                      📁 Select from System
+                    </button>
+
+                    {proposal.signatureImageUrl && (
+                      <button
+                        type="button"
+                        className="scale-btn reset-sig-btn"
+                        onClick={() => onUpdateField('signatureImageUrl', '')}
+                        style={{ cursor: 'pointer', padding: '7px 12px', fontSize: '12px' }}
+                        title="Revert back to default official corporate seal stamp"
+                      >
+                        ✕ Reset to Default Seal
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {proposal.signatureImageUrl && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '14px',
+                    background: '#ffffff',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <img
+                      src={proposal.signatureImageUrl}
+                      alt="Selected Signature"
+                      style={{ maxHeight: '48px', maxWidth: '140px', objectFit: 'contain', background: '#f8fafc', padding: '4px', borderRadius: '4px', border: '1px solid #e2e8f0' }}
+                    />
+                    <span style={{ fontSize: '12px', color: '#059669', fontWeight: 600 }}>
+                      ✓ Image successfully selected from computer
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
     const items = proposal.invoiceItems || [];
     const { netSubtotal, totalDiscount, cgstAmount, sgstAmount, totalDue } = calculateInvoiceTotals(items, proposal.cgstPct, proposal.sgstPct);
 
@@ -1225,8 +1806,9 @@ export function SectionEditor({
   const isCommercialProposal = proposal.documentType === 'commercial_proposal';
 
   if (isCommercialProposal) {
-    const metrics = proposal.metrics || [];
-    const serviceBreakdown = proposal.serviceBreakdown || [];
+    const metrics = proposal.metrics !== undefined ? proposal.metrics : (sampleCommercialProposalDoc.metrics || []);
+    const rawServiceBreakdown = proposal.serviceBreakdown !== undefined ? proposal.serviceBreakdown : (sampleCommercialProposalDoc.serviceBreakdown || []);
+    const serviceBreakdown = reindexServiceBreakdown(rawServiceBreakdown);
     const commercialScheduleItems = proposal.commercialScheduleItems || [];
     const sowScopeActivities = proposal.sowScopeActivities || [];
     const sowDeliverables = proposal.sowDeliverables || [];
@@ -1415,12 +1997,38 @@ export function SectionEditor({
           </label>
         </div>
 
-        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-          Key Metrics Highlights (Page 2)
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+            Key Metrics Highlights (Page 2)
+          </h3>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('metrics', [...metrics, { value: '100%', label: 'NEW METRIC' }]);
+            }}
+          >
+            ＋ Add Metric Card
+          </button>
+        </div>
         <div className="form-grid">
           {metrics.map((m, mIdx) => (
-            <div key={mIdx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <div key={mIdx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0', position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <span style={{ fontSize: '11px', fontWeight: '700', color: '#0f2b6e' }}>Metric #{mIdx + 1}</span>
+                <button
+                  type="button"
+                  className="del-item-btn"
+                  style={{ width: '22px', height: '22px', fontSize: '14px', lineHeight: '1' }}
+                  title="Delete Metric"
+                  onClick={() => {
+                    const next = metrics.filter((_, i) => i !== mIdx);
+                    onUpdateField('metrics', next);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
               <label>
                 <span style={{ fontSize: '11px' }}>Metric Value</span>
                 <input
@@ -1447,14 +2055,47 @@ export function SectionEditor({
           ))}
         </div>
 
-        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-          Section 2: Granular Service Breakdown & Costing (Page 2)
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+            Section 2: Granular Service Breakdown & Costing (Page 2)
+          </h3>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              const newItem = {
+                id: `sb-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+                title: 'New Service Pillar',
+                features: 'Enter core features scope here...',
+                costing: 'Enter pricing details here...'
+              };
+              const updated = reindexServiceBreakdown([...serviceBreakdown, newItem]);
+              onUpdateField('serviceBreakdown', updated);
+            }}
+          >
+            ＋ Add Service Pillar
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {serviceBreakdown.map((item, idx) => (
-            <div key={item.key || idx} style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <div key={item.id || item.key || idx} style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '13px' }}>Pillar {item.key || PILLAR_KEYS[idx] || (idx + 1)}</span>
+                <button
+                  type="button"
+                  className="del-item-btn"
+                  title="Delete Service Pillar"
+                  onClick={() => {
+                    const remaining = serviceBreakdown.filter((_, i) => i !== idx);
+                    const updated = reindexServiceBreakdown(remaining);
+                    onUpdateField('serviceBreakdown', updated);
+                  }}
+                >
+                  × Delete Pillar
+                </button>
+              </div>
               <label>
-                <span>{item.key}. Service Pillar Title</span>
+                <span>{item.key || PILLAR_KEYS[idx] || (idx + 1)}. Service Pillar Title</span>
                 <input
                   value={item.title}
                   onChange={(e) => {
@@ -1480,12 +2121,29 @@ export function SectionEditor({
           ))}
         </div>
 
-        <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-          Section 3: Overall Costing & Commercial Schedule (Page 2 & 3)
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+            Section 3: Overall Costing & Commercial Schedule (Page 2 & 3)
+          </h3>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              const newItem = {
+                id: `cs-${Date.now()}`,
+                component: 'New Service Component',
+                scope: 'Scope & Deliverables description',
+                investment: '₹0'
+              };
+              onUpdateField('commercialScheduleItems', [...commercialScheduleItems, newItem]);
+            }}
+          >
+            ＋ Add Commercial Item
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {commercialScheduleItems.map((item, idx) => (
-            <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <div key={item.id || idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr 1fr auto', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', alignItems: 'center' }}>
               <input
                 value={item.component}
                 placeholder="Service Component"
@@ -1513,6 +2171,17 @@ export function SectionEditor({
                   onUpdateField('commercialScheduleItems', next);
                 }}
               />
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Row"
+                onClick={() => {
+                  const next = commercialScheduleItems.filter((_, i) => i !== idx);
+                  onUpdateField('commercialScheduleItems', next);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <label style={{ marginTop: '8px' }}>
@@ -1536,47 +2205,107 @@ export function SectionEditor({
           />
         </label>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          1. Scope Activities (5 Bullets)
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            1. Scope Activities Bullets
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowScopeActivities', [...sowScopeActivities, 'New scope activity description...']);
+            }}
+          >
+            ＋ Add Activity Bullet
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {sowScopeActivities.map((act, idx) => (
-            <textarea
-              key={idx}
-              rows="2"
-              value={act}
-              onChange={(e) => {
-                const next = [...sowScopeActivities];
-                next[idx] = e.target.value;
-                onUpdateField('sowScopeActivities', next);
-              }}
-            />
+            <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <textarea
+                rows="2"
+                style={{ flex: 1 }}
+                value={act}
+                onChange={(e) => {
+                  const next = [...sowScopeActivities];
+                  next[idx] = e.target.value;
+                  onUpdateField('sowScopeActivities', next);
+                }}
+              />
+              <button
+                type="button"
+                className="del-item-btn"
+                style={{ marginTop: '4px' }}
+                title="Delete Activity Bullet"
+                onClick={() => {
+                  const next = sowScopeActivities.filter((_, i) => i !== idx);
+                  onUpdateField('sowScopeActivities', next);
+                }}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          2. Deliverables Matrix (4 Bullets)
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            2. Deliverables Matrix Bullets
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowDeliverables', [...sowDeliverables, `Deliverable ${sowDeliverables.length + 1}: New deliverable description.`]);
+            }}
+          >
+            ＋ Add Deliverable Bullet
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {sowDeliverables.map((del, idx) => (
-            <input
-              key={idx}
-              value={del}
-              onChange={(e) => {
-                const next = [...sowDeliverables];
-                next[idx] = e.target.value;
-                onUpdateField('sowDeliverables', next);
-              }}
-            />
+            <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input
+                style={{ flex: 1 }}
+                value={del}
+                onChange={(e) => {
+                  const next = [...sowDeliverables];
+                  next[idx] = e.target.value;
+                  onUpdateField('sowDeliverables', next);
+                }}
+              />
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Deliverable Bullet"
+                onClick={() => {
+                  const next = sowDeliverables.filter((_, i) => i !== idx);
+                  onUpdateField('sowDeliverables', next);
+                }}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          3. Timeline Schedule (Gantt Matrix)
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            3. Timeline Schedule (Gantt Matrix)
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowTimelineMilestones', [...sowTimelineMilestones, { activity: 'New Timeline Milestone', activeWeek: 1 }]);
+            }}
+          >
+            ＋ Add Timeline Milestone
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {sowTimelineMilestones.map((m, idx) => (
-            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr auto', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', alignItems: 'center' }}>
               <input
                 value={m.activity}
                 onChange={(e) => {
@@ -1598,16 +2327,41 @@ export function SectionEditor({
                 <option value={3}>Active in Week 3</option>
                 <option value={4}>Active in Week 4</option>
               </select>
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Timeline Milestone"
+                onClick={() => {
+                  const next = sowTimelineMilestones.filter((_, i) => i !== idx);
+                  onUpdateField('sowTimelineMilestones', next);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          4. Milestone Invoicing Schedule
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            4. Milestone Invoicing Schedule
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowInvoicingMilestones', [
+                ...sowInvoicingMilestones,
+                { deliverable: `Milestone ${sowInvoicingMilestones.length + 1}: Description`, percentage: '50%', amount: '₹0' }
+              ]);
+            }}
+          >
+            ＋ Add Invoicing Milestone
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {sowInvoicingMilestones.map((inv, idx) => (
-            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px' }}>
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', alignItems: 'center' }}>
               <input
                 value={inv.deliverable}
                 onChange={(e) => {
@@ -1632,6 +2386,17 @@ export function SectionEditor({
                   onUpdateField('sowInvoicingMilestones', next);
                 }}
               />
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Invoicing Milestone"
+                onClick={() => {
+                  const next = sowInvoicingMilestones.filter((_, i) => i !== idx);
+                  onUpdateField('sowInvoicingMilestones', next);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <label style={{ marginTop: '6px' }}>
@@ -1643,21 +2408,46 @@ export function SectionEditor({
           </label>
         </div>
 
-        <h4 style={{ fontSize: '13px', color: '#1e3a8a', marginTop: '16px', marginBottom: '8px' }}>
-          5. Engagement Assumptions & SLAs
-        </h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', marginBottom: '8px' }}>
+          <h4 style={{ fontSize: '13px', color: '#1e3a8a', margin: 0 }}>
+            5. Engagement Assumptions & SLAs
+          </h4>
+          <button
+            type="button"
+            className="secondary sm"
+            onClick={() => {
+              onUpdateField('sowAssumptions', [...sowAssumptions, 'New Engagement Assumption statement...']);
+            }}
+          >
+            ＋ Add Assumption Bullet
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {sowAssumptions.map((assump, idx) => (
-            <textarea
-              key={idx}
-              rows="2"
-              value={assump}
-              onChange={(e) => {
-                const next = [...sowAssumptions];
-                next[idx] = e.target.value;
-                onUpdateField('sowAssumptions', next);
-              }}
-            />
+            <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <textarea
+                rows="2"
+                style={{ flex: 1 }}
+                value={assump}
+                onChange={(e) => {
+                  const next = [...sowAssumptions];
+                  next[idx] = e.target.value;
+                  onUpdateField('sowAssumptions', next);
+                }}
+              />
+              <button
+                type="button"
+                className="del-item-btn"
+                style={{ marginTop: '4px' }}
+                title="Delete Assumption Bullet"
+                onClick={() => {
+                  const next = sowAssumptions.filter((_, i) => i !== idx);
+                  onUpdateField('sowAssumptions', next);
+                }}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
@@ -3248,14 +4038,46 @@ export function SectionEditor({
       </div>
 
       {/* Services Overview Pillars */}
-      <h3 style={{ fontSize: '15px', color: '#0f2b6e', marginTop: '24px', marginBottom: '12px' }}>
-        Integrated Platform Services Pillars (Page 2)
-      </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', marginBottom: '12px' }}>
+        <h3 style={{ fontSize: '15px', color: '#0f2b6e', margin: 0 }}>
+          Integrated Platform Services Pillars (Page 2)
+        </h3>
+        <button
+          type="button"
+          className="secondary sm"
+          onClick={() => {
+            const newItem = {
+              id: `so-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+              title: 'New Service Pillar',
+              desc: 'Enter pillar description here...'
+            };
+            const updated = reindexServicesOverview([...servicesOverview, newItem]);
+            onUpdateField('servicesOverview', updated);
+          }}
+        >
+          ＋ Add Service Pillar
+        </button>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {servicesOverview.map((item, idx) => (
-          <div key={item.key || idx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+          <div key={item.id || item.key || idx} style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <span style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '13px' }}>Pillar {item.key || PILLAR_KEYS[idx] || (idx + 1)}</span>
+              <button
+                type="button"
+                className="del-item-btn"
+                title="Delete Service Pillar"
+                onClick={() => {
+                  const remaining = servicesOverview.filter((_, i) => i !== idx);
+                  const updated = reindexServicesOverview(remaining);
+                  onUpdateField('servicesOverview', updated);
+                }}
+              >
+                × Delete Pillar
+              </button>
+            </div>
             <label>
-              <span>{item.key}. Service Pillar Title</span>
+              <span>{item.key || PILLAR_KEYS[idx] || (idx + 1)}. Service Pillar Title</span>
               <input
                 value={item.title}
                 onChange={(e) => {

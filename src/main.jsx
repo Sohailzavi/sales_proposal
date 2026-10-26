@@ -16,7 +16,8 @@ import {
   sampleClosureDoc,
   documentFormats,
   LOGIN_EMAIL,
-  LOGIN_PASSWORD
+  LOGIN_PASSWORD,
+  sampleTaxInvoiceDoc
 } from './data/defaults.js';
 import { proposalTemplates } from './data/templates.js';
 import { loadProposalsFromStorage, saveProposalsToStorage } from './services/proposalStorage.js';
@@ -397,21 +398,33 @@ function App() {
     return <Login onLogin={login} />;
   }
 
+  const handleCreateTaxInvoice = () => {
+    const template = proposalTemplates.find((t) => t.id === 'template-invoice-corporate-tax') || sampleTaxInvoiceDoc;
+    const newInvoice = {
+      ...template,
+      id: `inv-tax-${Date.now()}`,
+      proposalNumber: '772/18-19',
+      date: '22/10/2026',
+      sections: []
+    };
+    delete newInvoice.name;
+    delete newInvoice.description;
+    delete newInvoice.category;
+
+    setProposals((prev) => [...prev, newInvoice]);
+    setActiveProposalId(newInvoice.id);
+    setSelectedId(null);
+    pushAppState(false, false, newInvoice.id);
+  };
+
   const handleOpenInvoice = () => {
-    let target = proposals.find((p) => p.documentType === 'invoice');
+    let target = proposals.find((p) => p.documentType === 'invoice' && (p.invoiceStyle === 'tax_invoice' || p.invoiceStyle === 'corporate_tax'));
     if (!target) {
-      const template = proposalTemplates.find((t) => t.id === 'template-invoice-standard') || proposalTemplates[0];
-      target = {
-        ...template,
-        id: `inv-${Date.now()}`,
-        proposalNumber: template.proposalNumber || 'INV-2026-0148',
-        date: '',
-        sections: []
-      };
-      delete target.name;
-      delete target.description;
-      delete target.category;
-      setProposals((prev) => [...prev, target]);
+      target = proposals.find((p) => p.documentType === 'invoice');
+    }
+    if (!target) {
+      handleCreateTaxInvoice();
+      return;
     }
     setActiveProposalId(target.id);
     setSelectedId(target.sections?.[0]?.id || null);
@@ -683,6 +696,7 @@ function App() {
           onSelectProposal={setActiveProposalId}
           onBack={handleGoBack}
           onDeleteProposal={handleDeleteProposal}
+          onCreateTaxInvoice={handleCreateTaxInvoice}
         />
       )}
 
@@ -717,6 +731,7 @@ function App() {
             setActiveDocumentFormat={setActiveDocumentFormat}
             onOpenBuilder={handleOpenBuilder}
             onOpenInvoice={handleOpenInvoice}
+            onCreateTaxInvoice={handleCreateTaxInvoice}
             onOpenDiscovery={handleOpenDiscovery}
             onOpenNda={handleOpenNda}
             onOpenMsa={handleOpenMsa}
@@ -744,7 +759,11 @@ function App() {
               />
             )}
 
-            <ProposalPreview proposal={activeProposal} />
+            <ProposalPreview
+              proposal={activeProposal}
+              previewMode={previewMode}
+              onTogglePreviewMode={() => setPreviewMode((prev) => !prev)}
+            />
           </>
         )}
       </main>

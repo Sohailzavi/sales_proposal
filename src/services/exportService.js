@@ -71,6 +71,74 @@ export function calculateInvoiceTotals(items = [], cgstPct = 9, sgstPct = 9) {
   return { rawSubtotal, totalDiscount, netSubtotal, cgstAmount, sgstAmount, totalDue };
 }
 
+export function numberToIndianWords(num) {
+  if (num === null || num === undefined || isNaN(num)) return '';
+  const n = Math.floor(Math.abs(Number(num)));
+  if (n === 0) return 'Rupees Zero only/-';
+
+  const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+    'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  function convertTwoDigits(val) {
+    if (val < 20) return units[val];
+    const t = Math.floor(val / 10);
+    const u = val % 10;
+    return (tens[t] + (u > 0 ? ' ' + units[u] : '')).trim();
+  }
+
+  function convertThreeDigits(val) {
+    const h = Math.floor(val / 100);
+    const rest = val % 100;
+    let res = '';
+    if (h > 0) {
+      res += units[h] + ' Hundred';
+    }
+    if (rest > 0) {
+      if (res !== '') res += ' ';
+      res += convertTwoDigits(rest);
+    }
+    return res;
+  }
+
+  const crore = Math.floor(n / 10000000);
+  let remainder = n % 10000000;
+  const lakh = Math.floor(remainder / 100000);
+  remainder = remainder % 100000;
+  const thousand = Math.floor(remainder / 1000);
+  const lastThree = remainder % 1000;
+
+  const words = [];
+  if (crore > 0) words.push(convertThreeDigits(crore) + ' Crore');
+  if (lakh > 0) words.push(convertThreeDigits(lakh) + ' Lakh');
+  if (thousand > 0) words.push(convertThreeDigits(thousand) + ' Thousand');
+  if (lastThree > 0) words.push(convertThreeDigits(lastThree));
+
+  return `Rupees ${words.join(' ')} only/-`;
+}
+
+export function calculateTaxInvoiceTotals(doc) {
+  const items = doc.invoiceItems || [];
+  let subtotal = 0;
+  items.forEach((item) => {
+    if (item.amount !== undefined && item.amount !== '' && !isNaN(Number(item.amount))) {
+      subtotal += Number(item.amount);
+    } else {
+      const q = Number(item.qty) || 1;
+      const r = Number(item.rate) || 0;
+      subtotal += q * r;
+    }
+  });
+
+  const cgstPct = typeof doc.cgstPct === 'number' ? doc.cgstPct : 9;
+  const sgstPct = typeof doc.sgstPct === 'number' ? doc.sgstPct : 9;
+  const cgstAmount = Math.round(((subtotal * cgstPct) / 100) * 100) / 100;
+  const sgstAmount = Math.round(((subtotal * sgstPct) / 100) * 100) / 100;
+  const grandTotal = Math.round((subtotal + cgstAmount + sgstAmount) * 100) / 100;
+
+  return { subtotal, cgstPct, sgstPct, cgstAmount, sgstAmount, grandTotal };
+}
+
 export function paginateProposal(proposal) {
   const pages = [];
   const PAGE1_TOTAL_LINE_CAPACITY = 32;
@@ -183,6 +251,254 @@ export function paginateProposal(proposal) {
 }
 
 export function invoiceToHtml(doc, forWord = false) {
+  const isTaxInvoice = doc.invoiceStyle === 'tax_invoice' || doc.invoiceStyle === 'corporate_tax' || (!doc.invoiceStyle && doc.companyPan);
+
+  if (isTaxInvoice) {
+    const totals = calculateTaxInvoiceTotals(doc);
+    const formatTaxMoney = (val) => {
+      const n = Number(val) || 0;
+      return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const words = (doc.amountInWords && doc.amountInWords !== 'Rupees Thirty Seven Thousand Fifty Two only/-')
+      ? doc.amountInWords
+      : numberToIndianWords(totals.grandTotal);
+    const items = doc.invoiceItems || [];
+
+    const rowsHtml = items.map((item, index) => {
+      const isNotLast = index < items.length - 1;
+      const itemBorderBottom = isNotLast ? 'border-bottom:1px solid #000;' : '';
+      const itemAmount = item.amount !== undefined && item.amount !== '' && !isNaN(Number(item.amount))
+        ? Number(item.amount)
+        : (Number(item.qty) || 1) * (Number(item.rate) || 0);
+
+      const bullets = Array.isArray(item.bullets)
+        ? item.bullets
+        : typeof item.bullets === 'string'
+        ? item.bullets.split('\n').filter(Boolean)
+        : [];
+
+      return `
+        <tr>
+          <td style="text-align:center;vertical-align:top;font-weight:700;font-size:11.5px;padding:10px 4px;border-right:1px solid #000;${itemBorderBottom}font-family:Arial,sans-serif;">
+            ${item.srNo || (index + 1)}
+          </td>
+          <td style="vertical-align:top;padding:8px 10px 4px;border-right:1px solid #000;${itemBorderBottom}font-family:Arial,sans-serif;">
+            <div style="font-weight:700;font-size:11.5px;color:#000;margin-bottom:4px;">
+              ${escapeHtml(item.title || item.description || '')}
+            </div>
+            ${item.termHeader ? `
+              <div style="border-top:1px solid #000;border-bottom:1px solid #000;padding:3.5px 10px;margin:4px -10px 6px;font-weight:700;font-size:11px;color:#000;">
+                ${escapeHtml(item.termHeader)}
+              </div>
+            ` : ''}
+            ${bullets.length > 0 ? `
+              <ul style="margin:6px 0 6px 18px;padding:0;font-size:10.5px;color:#000;line-height:1.52;list-style-type:disc;font-weight:400;">
+                ${bullets.map(b => `<li style="margin-bottom:2px;">${escapeHtml(b)}</li>`).join('')}
+              </ul>
+            ` : ''}
+          </td>
+          <td style="text-align:center;vertical-align:top;font-weight:400;font-size:11.5px;padding:10px 4px;border-right:1px solid #000;${itemBorderBottom}font-family:Arial,sans-serif;">
+            ${escapeHtml(item.rate !== undefined ? String(item.rate) : '50%')}
+          </td>
+          <td style="vertical-align:top;padding:0;${itemBorderBottom}font-family:Arial,sans-serif;">
+            <div style="text-align:right;font-weight:700;font-size:11.5px;padding:10px 10px 4px;border-bottom:1px solid #000;">
+              ${formatTaxMoney(itemAmount)}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(doc.proposalTitle || 'iGLOBUS Invoice')} - ${escapeHtml(doc.proposalNumber || '')}</title>
+    <style>
+      @page { size: A4 portrait; margin: 8mm; }
+      body { margin: 0; padding: 15px; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; color: #000; background: #fff; }
+      .tax-container { max-width: 794px; margin: 0 auto; border: 1.5px solid #000; box-sizing: border-box; background: #fff; }
+      .tax-top-contact { text-align: right; font-weight: 700; font-size: 13.5px; padding: 6px 14px 2px; }
+      .tax-header { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 8px; gap: 14px; }
+      .tax-logo-wrap { width: 106px; flex-shrink: 0; }
+      .tax-company-center { flex: 1; text-align: center; }
+      .tax-company-name { font-size: 28px; font-weight: 800; color: #c84824; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; letter-spacing: -0.2px; line-height: 1.15; margin: 0; padding-bottom: 2px; }
+      .tax-header-line { border-bottom: 2px solid #000; margin: 3px 0 5px; width: 100%; }
+      .tax-company-addr { font-size: 11px; font-weight: 700; color: #000; margin: 0; line-height: 1.35; font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; }
+      .tax-meta-grid { display: flex; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; }
+      .tax-client-cell { width: 53%; border-right: 1.5px solid #000; font-size: 11px; box-sizing: border-box; display: flex; flex-direction: column; padding: 0; }
+      .tax-client-top-row { display: flex; gap: 24px; align-items: baseline; padding: 3.5px 8px; border-bottom: 1px solid #000; font-family: "Times New Roman", Times, Georgia, serif; }
+      .tax-client-bottom-box { padding: 5px 8px; flex: 1; }
+      .tax-client-addr { white-space: pre-line; line-height: 1.45; font-size: 11px; font-weight: 400; font-family: Arial, sans-serif; }
+      .tax-details-cell { width: 47%; box-sizing: border-box; }
+      .tax-details-table { width: 100%; border-collapse: collapse; font-size: 11px; font-family: Arial, sans-serif; }
+      .tax-details-table td { padding: 3.5px 8px; border-bottom: 1px solid #000; }
+      .tax-details-table tr:last-child td { border-bottom: none; }
+      .tax-items-table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+      .tax-items-table th { border-bottom: 1.5px solid #000; border-right: 1px solid #000; padding: 6px 4px; font-weight: 700; font-size: 11.5px; letter-spacing: 0.4px; }
+      .tax-items-table th:last-child { border-right: none; }
+      .tax-bottom-section { display: flex; border-bottom: 1.5px solid #000; }
+      .tax-bank-cell { width: 50%; padding: 6px 12px 8px; border-right: 1.5px solid #000; font-size: 11px; box-sizing: border-box; }
+      .tax-sign-cell { width: 50%; padding: 6px 12px 6px; text-align: center; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+      @media print { body { padding: 0; } .tax-container { border: 1.5px solid #000; } }
+    </style>
+    </head><body>
+      <div class="tax-container">
+        <div class="tax-top-contact">Contact: ${escapeHtml(doc.companyContact || '+91 99598 57777')}</div>
+        <div class="tax-header">
+          <div class="tax-logo-wrap">
+            <svg viewBox="0 0 94 80" style="width:102px;height:78px;" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="30" width="19" height="26" rx="1.5" fill="#38b6ff"/>
+              <circle cx="14.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M8.5 56 C8.5 50.5 11 47.8 14.5 47.8 C18 47.8 20.5 50.5 20.5 56 Z" fill="#ffffff"/>
+              <rect x="30" y="15" width="19" height="41" rx="1.5" fill="#38b6ff"/>
+              <circle cx="39.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M33.5 56 C33.5 50.5 36 47.8 39.5 47.8 C43 47.8 45.5 50.5 45.5 56 Z" fill="#ffffff"/>
+              <rect x="55" y="0" width="19" height="56" rx="1.5" fill="#38b6ff"/>
+              <circle cx="64.5" cy="42" r="3.2" fill="#ffffff"/>
+              <path d="M58.5 56 C58.5 50.5 61 47.8 64.5 47.8 C68 47.8 70.5 50.5 70.5 56 Z" fill="#ffffff"/>
+              <text x="39.5" y="74" text-anchor="middle" fill="#525252" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="0.5">iGLOBUS</text>
+            </svg>
+          </div>
+          <div class="tax-company-center">
+            <h1 class="tax-company-name">${escapeHtml(doc.company || 'Iglobus Corporate Consulting Pvt Ltd')}</h1>
+            <div class="tax-header-line"></div>
+            <p class="tax-company-addr">${escapeHtml(doc.companyAddress || 'Plot no.21, Techno Enclave, Flat no. 503, Madhapur, Opp: Raheja Mind Space, Hyd-81')}</p>
+          </div>
+        </div>
+
+        <div class="tax-meta-grid">
+          <div class="tax-client-cell">
+            <div class="tax-client-top-row">
+              <span style="font-weight:700;min-width:36px;font-size:13px;">${escapeHtml(doc.clientPrefix || 'M/S')}</span>
+              <span style="font-weight:700;letter-spacing:0.3px;font-size:13px;">${escapeHtml(doc.preparedFor || 'SHRI SAI ASSOCIATES')}</span>
+            </div>
+            <div class="tax-client-bottom-box">
+              <div class="tax-client-addr">${escapeHtml(doc.clientAddress || '')}</div>
+            </div>
+          </div>
+          <div class="tax-details-cell">
+            <table class="tax-details-table">
+              <tr>
+                <td style="font-weight:700;width:52%;">Invoice No. : &nbsp;${escapeHtml(doc.proposalNumber || '772/18-19')}</td>
+                <td style="font-weight:700;width:48%;">Date : &nbsp;${escapeHtml(doc.date || '22/10/2026')}</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="font-weight:700;">Pan No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(doc.companyPan || 'AADCI8842E')}</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="font-weight:700;">HSN No : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(doc.companyHsn || '9985')}</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="font-weight:700;">Party's GST No. : &nbsp; ${escapeHtml(doc.partyGst || '36ADMFS8094F2ZG')}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <table class="tax-items-table">
+          <thead>
+            <tr>
+              <th style="width:10%;text-align:center;">SR. NO</th>
+              <th style="width:56%;text-align:center;">DESCRIPTION</th>
+              <th style="width:16%;text-align:center;">RATE</th>
+              <th style="width:18%;text-align:center;">AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr>
+              <td style="border-right:1px solid #000;border-top:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;border-top:1px solid #000;padding:0;">
+                <div style="display:flex;height:22px;width:100%;">
+                  <div style="flex:1;border-right:1px solid #000;height:100%;"></div>
+                  <div style="flex:1;height:100%;"></div>
+                </div>
+              </td>
+              <td style="border-right:1px solid #000;border-top:1px solid #000;"></td>
+              <td style="text-align:right;font-weight:700;font-size:11.5px;padding:3px 10px;border-top:1px solid #000;border-bottom:1px solid #000;">${formatTaxMoney(totals.subtotal)}</td>
+            </tr>
+            <tr style="height:20px;">
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="text-align:center;font-weight:700;padding:4px 6px;border-right:1px solid #000;border-top:1px solid #000;border-bottom:1px solid #000;font-size:11px;">CGST ${totals.cgstPct}%</td>
+              <td style="text-align:right;font-weight:700;padding:4px 10px;border-top:1px solid #000;border-bottom:1px solid #000;font-size:11.5px;">${formatTaxMoney(totals.cgstAmount)}</td>
+            </tr>
+            <tr>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="border-right:1px solid #000;"></td>
+              <td style="text-align:center;font-weight:700;padding:4px 6px;border-right:1px solid #000;border-bottom:1px solid #000;font-size:11px;">SGST ${totals.sgstPct}%</td>
+              <td style="text-align:right;font-weight:700;padding:4px 10px;border-bottom:1px solid #000;font-size:11.5px;">${formatTaxMoney(totals.sgstAmount)}</td>
+            </tr>
+            <tr>
+              <td colspan="4" style="border-top:1.5px solid #000;border-bottom:1.5px solid #000;padding:6px 10px;font-size:11px;">
+                <span style="font-weight:700;margin-right:22px;">Rupees in word :</span>
+                <span style="font-weight:700;">${escapeHtml(words)}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" style="border-bottom:1.5px solid #000;padding:5px 10px;font-size:11.5px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span><strong>GST NO :</strong> &nbsp;${escapeHtml(doc.companyGst || '36AADCI8842E1ZI')}</span>
+                  <span style="font-weight:800;letter-spacing:0.5px;">${escapeHtml(doc.eoeText || 'E.&.O.E')}</span>
+                </div>
+              </td>
+              <td style="border-bottom:1.5px solid #000;text-align:center;font-weight:800;padding:5px 6px;border-left:1px solid #000;border-right:1px solid #000;font-size:11.5px;">
+                Grand Total
+              </td>
+              <td style="border-bottom:1.5px solid #000;text-align:right;font-weight:800;padding:5px 10px;font-size:12.5px;">
+                ${formatTaxMoney(totals.grandTotal)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tax-bottom-section">
+          <div class="tax-bank-cell">
+            <div style="font-weight:800;font-size:11.5px;margin-bottom:3px;letter-spacing:0.4px;">BANK DETAILS</div>
+            <table style="border:none;font-size:10.5px;line-height:1.6;border-collapse:collapse;width:100%;">
+              <tr><td style="padding:0;font-weight:700;width:88px;">BANK NAME</td><td style="padding:0;">: ${escapeHtml(doc.bankName || 'Icici Bank Limited')}</td></tr>
+              <tr><td style="padding:0;font-weight:700;">Bank A/c No</td><td style="padding:0;">: ${escapeHtml(doc.bankAccountNo || '004005023167')}</td></tr>
+              <tr><td style="padding:0;font-weight:700;">IFSC Code</td><td style="padding:0;">: ${escapeHtml(doc.bankIfsc || 'ICIC0000040')}</td></tr>
+              <tr><td style="padding:0;font-weight:700;">BRANCH</td><td style="padding:0;">: ${escapeHtml(doc.bankBranch || 'Madhapur Branch')}</td></tr>
+            </table>
+          </div>
+          <div class="tax-sign-cell">
+            <div style="font-weight:800;font-size:13px;color:#0f2b6e;">${escapeHtml(doc.signatureForCompany || 'For Iglobus corporate consulting Pvt Ltd')}</div>
+            <div style="height:56px;display:flex;align-items:center;justify-content:center;margin:3px 0;">
+              ${doc.signatureImageUrl ? `
+                <img src="${escapeHtml(doc.signatureImageUrl)}" alt="Signature" style="max-height:52px;max-width:160px;object-fit:contain;" />
+              ` : `
+                <div style="background:#cbd5e1;border:1px solid #94a3b8;border-radius:4px;padding:2px 8px;width:175px;height:54px;display:flex;align-items:center;justify-content:center;">
+                  <svg viewBox="0 0 200 85" style="width:165px;height:52px;" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="100" cy="42" rx="92" ry="36" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 2" opacity="0.9"/>
+                    <ellipse cx="100" cy="42" rx="84" ry="29" fill="none" stroke="#2563eb" stroke-width="1.2" opacity="0.9"/>
+                    <path id="sealTopArcPrint" d="M 22 42 A 78 26 0 0 1 178 42" fill="none"/>
+                    <text fill="#1d4ed8" font-size="8" font-weight="bold" font-family="'Inter', sans-serif" letter-spacing="0.8">
+                      <textPath href="#sealTopArcPrint" startOffset="50%" text-anchor="middle">IGLOBUS CORPORATE CONSULTING</textPath>
+                    </text>
+                    <path id="sealBottomArcPrint" d="M 26 44 A 74 22 0 0 0 174 44" fill="none"/>
+                    <text fill="#1d4ed8" font-size="7.5" font-weight="bold" font-family="'Inter', sans-serif" letter-spacing="1">
+                      <textPath href="#sealBottomArcPrint" startOffset="50%" text-anchor="middle">★ HYDERABAD (T.S.) ★</textPath>
+                    </text>
+                    <path d="M 45 44 Q 68 18 88 42 T 125 36 Q 145 20 160 50 T 178 38" fill="none" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M 62 52 Q 105 46 152 50" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              `}
+            </div>
+            <div style="font-weight:800;font-size:11.5px;">${escapeHtml(doc.signatoryTitle || 'Director')}</div>
+          </div>
+        </div>
+
+        <div style="height:75px;background:#fff;"></div>
+      </div>
+    </body></html>`;
+  }
+
   const style = doc.invoiceStyle === 'standard' ? 'standard' : 'compact';
   const currencySymbol = doc.currency === 'USD' ? '$' : '₹';
   const items = doc.invoiceItems || [];
@@ -450,9 +766,36 @@ export function invoiceToHtml(doc, forWord = false) {
 }
 
 export function discoveryToHtml(doc, forWord = false) {
-  const pipelineStages = doc.pipelineStages || [];
+  const rawPipelineStages = doc.pipelineStages || [];
+  const pipelineStages = rawPipelineStages.filter(st => st && (st.stage?.trim() || st.objective?.trim() || st.action?.trim()));
   const useStructuredTable = doc.useStructuredTable !== false;
-  const sections = doc.sections || [];
+
+  const defaultDiscoverySections = [
+    {
+      id: 'sec-1',
+      title: '1. BUSINESS OBJECTIVES & OPERATIONAL SCOPE',
+      content: 'This Discovery Document establishes the functional and technical requirements for deploying the ibunify platform. It maps existing lead channels, sales team structures, and automation triggers.'
+    },
+    {
+      id: 'sec-2',
+      title: '2. LEAD INGESTION & CHANNEL ARCHITECTURE',
+      content: '• Digital Channels: Meta Ads (Facebook/Instagram), Google Search & Display Ads, Website Landing Page forms.\n• Portals: Automated webhook ingestion from 99acres, MagicBricks, Housing.com, and CommonFloor.\n• Inbound & Offline: Dedicated Cloud Telephony virtual numbers, QR code campaign scans, and property walk-in entries.'
+    },
+    {
+      id: 'sec-3',
+      title: '3. SALES HIERARCHY & PIPELINE STAGES',
+      content: 'Configured pipeline stage mapping and automated CRM actions upon lead state transitions.'
+    },
+    {
+      id: 'sec-4',
+      title: '4. SIGN-OFF FOR SCOPING BASELINE',
+      content: 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.',
+      isSignoff: true
+    }
+  ];
+
+  const rawSections = doc.sections !== undefined ? doc.sections : defaultDiscoverySections;
+  const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
   const stageRowsHtml = pipelineStages
     .map(
@@ -541,10 +884,14 @@ export function discoveryToHtml(doc, forWord = false) {
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
         <div>
-        ${sections.map((sec, idx) => `
+        ${activeSections.map((sec) => {
+          const isPipelineSec = sec.title?.toUpperCase().includes('PIPELINE') || sec.title?.includes('3.');
+          const isSignoffSec = sec.isSignoff || sec.title?.toUpperCase().includes('SIGN-OFF') || sec.title?.includes('4.');
+
+          return `
           <div>
-            <div class="sec-title">${escapeHtml(sec.title)}</div>
-            ${idx === 2 && useStructuredTable ? `
+            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
+            ${isPipelineSec && useStructuredTable && pipelineStages.length > 0 ? `
               <table class="pipe-table">
                 <thead>
                   <tr>
@@ -558,7 +905,7 @@ export function discoveryToHtml(doc, forWord = false) {
             ` : `
               <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
             `}
-            ${idx === 3 ? `
+            ${isSignoffSec ? `
               <div style="display:flex;gap:16px;margin-top:10px;">
                 <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
                   <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
@@ -581,7 +928,8 @@ export function discoveryToHtml(doc, forWord = false) {
               </div>
             ` : ''}
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         </div>
       </div>
     </div>
@@ -589,27 +937,35 @@ export function discoveryToHtml(doc, forWord = false) {
 }
 
 export function ndaToHtml(doc, forWord = false) {
-  const sections = doc.sections || [];
-  const sec1 = sections[0] || {
-    title: '1. PURPOSE OF ENGAGEMENT',
-    content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
-  };
-  const sec2 = sections[1] || {
-    title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
-    content:
-      '"Confidential Information" includes all technical data, customer leads, pricing matrices, source codes, AI prompts, marketing strategies, telephony records, and business workflows disclosed by either party.'
-  };
-  const sec3 = sections[2] || {
-    title: '3. OBLIGATIONS OF CONFIDENTIALITY',
-    content:
-      '• Both parties agree to hold all Confidential Information in strict trust and confidence using the same degree of care as for their own proprietary data (at minimum reasonable care).\n• Confidential Information shall not be disclosed to any third party without prior written authorization.\n• Full compliance with Indian Digital Personal Data Protection (DPDPA) Act 2023 regulations regarding Data Principal rights.'
-  };
-  const sec4 = sections[3] || {
-    title: '4. TERM & EXECUTION',
-    content:
-      'This Agreement remains in effect for a period of Three (3) Years from the Effective Date.'
-  };
-  const remainingSections = sections.slice(4);
+  const defaultNdaSections = [
+    {
+      id: 'sec-nda-1',
+      title: '1. PURPOSE OF ENGAGEMENT',
+      content: `This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client") to protect proprietary technical, commercial, and customer information.`
+    },
+    {
+      id: 'sec-nda-2',
+      title: '2. DEFINITION OF CONFIDENTIAL INFORMATION',
+      content:
+        '"Confidential Information" includes all technical data, customer leads, pricing matrices, source codes, AI prompts, marketing strategies, telephony records, and business workflows disclosed by either party.'
+    },
+    {
+      id: 'sec-nda-3',
+      title: '3. OBLIGATIONS OF CONFIDENTIALITY',
+      content:
+        '• Both parties agree to hold all Confidential Information in strict trust and confidence using the same degree of care as for their own proprietary data (at minimum reasonable care).\n• Confidential Information shall not be disclosed to any third party without prior written authorization.\n• Full compliance with Indian Digital Personal Data Protection (DPDPA) Act 2023 regulations regarding Data Principal rights.'
+    },
+    {
+      id: 'sec-nda-4',
+      title: '4. TERM & EXECUTION',
+      content:
+        'This Agreement remains in effect for a period of Three (3) Years from the Effective Date.',
+      isExecution: true
+    }
+  ];
+
+  const rawSections = doc.sections !== undefined ? doc.sections : defaultNdaSections;
+  const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Mutual Non-Disclosure Agreement')}</title>
   <style>
@@ -678,52 +1034,38 @@ export function ndaToHtml(doc, forWord = false) {
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
         <div>
-        <div>
-          <div class="sec-title">${escapeHtml(sec1.title)}</div>
-          <div class="sec-text">${escapeHtml(sec1.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
+        ${activeSections.map((sec) => {
+          const isExecutionSec = sec.isExecution || sec.title?.toUpperCase().includes('EXECUTION') || sec.title?.includes('4.');
 
-        <div>
-          <div class="sec-title">${escapeHtml(sec2.title)}</div>
-          <div class="sec-text">${escapeHtml(sec2.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec3.title)}</div>
-          <div class="sec-text">${escapeHtml(sec3.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec4.title)}</div>
-          <div class="sec-text">${escapeHtml(sec4.content || '').replaceAll('\n', '<br/>')}</div>
-          <div style="display:flex;gap:16px;margin-top:10px;">
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
-            </div>
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
-            </div>
-          </div>
-        </div>
-
-        ${remainingSections.map((sec) => `
+          return `
           <div>
-            <div class="sec-title">${escapeHtml(sec.title)}</div>
+            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
             <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
+            ${isExecutionSec ? `
+              <div style="display:flex;gap:16px;margin-top:10px;">
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                </div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
+                </div>
+              </div>
+            ` : ''}
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         </div>
       </div>
     </div>
@@ -731,32 +1073,41 @@ export function ndaToHtml(doc, forWord = false) {
 }
 
 export function msaToHtml(doc, forWord = false) {
-  const sections = doc.sections || [];
-  const sec1 = sections[0] || {
-    title: '1. FRAMEWORK AGREEMENT & TERM',
-    content: `This Master Services Agreement ("MSA") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
-  };
-  const sec2 = sections[1] || {
-    title: '2. SCOPE OF PLATFORM SERVICES',
-    content:
-      'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
-  };
-  const sec3 = sections[2] || {
-    title: '3. INTELLECTUAL PROPERTY RIGHTS',
-    content:
-      '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
-  };
-  const sec4 = sections[3] || {
-    title: '4. PAYMENT TERMS & INVOICING',
-    content:
-      'All invoices are payable within 30 calendar days (NET 30). Late payments shall incur interest at 1.5% per month or the maximum rate permitted by law.'
-  };
-  const sec5 = sections[4] || {
-    title: '5. GOVERNING LAW & DISPUTE RESOLUTION',
-    content:
-      'This Agreement shall be governed by the laws of India with exclusive jurisdiction in Hyderabad, Telangana.'
-  };
-  const remainingSections = sections.slice(5);
+  const defaultMsaSections = [
+    {
+      id: 'sec-msa-1',
+      title: '1. FRAMEWORK AGREEMENT & TERM',
+      content: `This Master Services Agreement ("MSA") is entered into as of ${(doc.effectiveDate || doc.date) ? (doc.effectiveDate || doc.date) : '______________________'} by and between iGLOBUS Corporate Consulting Private Limited ("ibunify") and ${doc.preparedFor || '[Client Company Name]'} ("Client"). This MSA governs all Statements of Work (SOW) executed between the parties for a term of 12 months with automatic annual renewal.`
+    },
+    {
+      id: 'sec-msa-2',
+      title: '2. SCOPE OF PLATFORM SERVICES',
+      content:
+        'ibunify agrees to provide SaaS licensing, AI Calling agents, Cloud Telephony, WhatsApp Business API integrations, and ongoing technical support as set forth in applicable SOWs.'
+    },
+    {
+      id: 'sec-msa-3',
+      title: '3. INTELLECTUAL PROPERTY RIGHTS',
+      content:
+        '• Client Ownership: Client exclusively owns all customer records, prospect leads, call recordings, and corporate data stored within the platform.\n• Service Provider Ownership: ibunify exclusively owns the software platform, source code, AI voice models, API connectors, and system enhancements.'
+    },
+    {
+      id: 'sec-msa-4',
+      title: '4. PAYMENT TERMS & INVOICING',
+      content:
+        'All invoices are payable within 30 calendar days (NET 30). Late payments shall incur interest at 1.5% per month or the maximum rate permitted by law.'
+    },
+    {
+      id: 'sec-msa-5',
+      title: '5. GOVERNING LAW & DISPUTE RESOLUTION',
+      content:
+        'This Agreement shall be governed by the laws of India with exclusive jurisdiction in Hyderabad, Telangana.',
+      isExecution: true
+    }
+  ];
+
+  const rawSections = doc.sections !== undefined ? doc.sections : defaultMsaSections;
+  const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Master Services Agreement (MSA)')}</title>
   <style>
@@ -788,18 +1139,6 @@ export function msaToHtml(doc, forWord = false) {
     .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
     .corp-box strong { color: #1e3a8a; }
     .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
-  </style>
-  </head>
-  <body>
-
-    .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
-    
-    .page-2 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; }
-    .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; }
-    .corp-box strong { color: #1e3a8a; }
   </style>
   </head>
   <body>
@@ -837,57 +1176,38 @@ export function msaToHtml(doc, forWord = false) {
       ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
       <div class="inner-content">
         <div>
-        <div>
-          <div class="sec-title">${escapeHtml(sec1.title)}</div>
-          <div class="sec-text">${escapeHtml(sec1.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
+        ${activeSections.map((sec) => {
+          const isExecutionSec = sec.isExecution || sec.title?.toUpperCase().includes('GOVERNING') || sec.title?.includes('5.');
 
-        <div>
-          <div class="sec-title">${escapeHtml(sec2.title)}</div>
-          <div class="sec-text">${escapeHtml(sec2.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec3.title)}</div>
-          <div class="sec-text">${escapeHtml(sec3.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec4.title)}</div>
-          <div class="sec-text">${escapeHtml(sec4.content || '').replaceAll('\n', '<br/>')}</div>
-        </div>
-
-        <div>
-          <div class="sec-title">${escapeHtml(sec5.title)}</div>
-          <div class="sec-text">${escapeHtml(sec5.content || '').replaceAll('\n', '<br/>')}</div>
-          <div style="display:flex;gap:16px;margin-top:10px;">
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
-            </div>
-            <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-              <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
-              <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
-              <div style="height:42px;"></div>
-              <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-              <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
-              <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
-              <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
-            </div>
-          </div>
-        </div>
-
-        ${remainingSections.map((sec) => `
+          return `
           <div>
-            <div class="sec-title">${escapeHtml(sec.title)}</div>
+            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
             <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
+            ${isExecutionSec ? `
+              <div style="display:flex;gap:16px;margin-top:10px;">
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+                </div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
+                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:42px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
+                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
+                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
+                </div>
+              </div>
+            ` : ''}
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         </div>
       </div>
     </div>
@@ -895,44 +1215,47 @@ export function msaToHtml(doc, forWord = false) {
 }
 
 export function commercialProposalToHtml(doc, forWord = false) {
-  const metrics = doc.metrics || [
+  const rawMetrics = doc.metrics || [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },
     { value: '3x', label: 'FOLLOW-UP VELOCITY' },
     { value: '24/7', label: 'AI VOICE & CHAT' }
   ];
+  const metrics = rawMetrics.filter(m => m && (m.value?.trim() || m.label?.trim()));
 
-  const serviceBreakdown = doc.serviceBreakdown || [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM & Pipeline Platform',
-      features:
-        '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
-      costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
-    },
-    {
-      key: 'B',
-      title: 'Conversational AI Agent Calling Service',
-      features:
-        'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
-      costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
-    },
-    {
-      key: 'C',
-      title: 'Integrated Cloud Telephony & Virtual Numbers',
-      features:
-        'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
-      costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
-    },
-    {
-      key: 'D',
-      title: 'Official WhatsApp Business Platform Automation',
-      features:
-        'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
-      costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
-    }
-  ];
-
+  const rawServiceBreakdown = doc.serviceBreakdown !== undefined
+    ? doc.serviceBreakdown
+    : [
+        {
+          key: 'A',
+          title: 'Centralized Real Estate CRM & Pipeline Platform',
+          features:
+            '360-degree lead view, pipeline stage management (Inquiry → Site Visit → Negotiation → Booking), multi-project inventory mapping, automated round-robin lead assignment, Meta CAPI and Google Offline Conversions sync, real-time agent activity tracking, and executive dashboards.',
+          costing: '₹2,500 / user / month (Platform License) | ₹50,000 One-Time Setup (Pipeline mapping, integrations & onboarding).'
+        },
+        {
+          key: 'B',
+          title: 'Conversational AI Agent Calling Service',
+          features:
+            'Natural human-like conversational voice agent, instant automated outbound dialer for new digital leads, budget and timeline qualification (2BHK/3BHK preferences), re-engagement dialer for unresponsive leads, live agent transfer, and automated conversation summaries synced directly to lead cards.',
+          costing: '₹7 / connected conversational call (Voice Engine included in base setup).'
+        },
+        {
+          key: 'C',
+          title: 'Integrated Cloud Telephony & Virtual Numbers',
+          features:
+            'Intelligent Call-to-Lead automated CRM record generation upon answering, dedicated campaign tracking virtual numbers (Meta, Google, Portals, Hoardings), after-hours hybrid mobile forwarding, IVR routing, secure cloud call recordings, and comprehensive CDR analytics.',
+          costing: '₹1,500 / virtual number / month (Call-to-Lead routing engine included in base setup).'
+        },
+        {
+          key: 'D',
+          title: 'Official WhatsApp Business Platform Automation',
+          features:
+            'Official Meta WhatsApp Business API integration, automated brochure and price-sheet dispatch on lead capture, site-visit reminder sequences, location pins, unified multi-agent shared team inbox, and interactive quick-reply FAQ bot.',
+          costing: '₹15,000 for 6 Months (API Engine & Setup) | ₹10,000 Prepaid Message Wallet (Utility: ₹0.18/msg | Marketing: ₹0.87/msg).'
+        }
+      ];
+  const serviceBreakdown = rawServiceBreakdown.filter(sb => sb && (sb.title?.trim() || sb.features?.trim() || sb.costing?.trim()));
 
   const rawCommercialItemsSow = doc.commercialScheduleItems || [
     {
@@ -973,35 +1296,40 @@ export function commercialProposalToHtml(doc, forWord = false) {
     }
   ];
 
-  const commercialScheduleItems = rawCommercialItemsSow.map((item, idx) => ({
-    ...item,
-    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
-    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
-  }));
+  const commercialScheduleItems = rawCommercialItemsSow
+    .filter(item => item && (item.component?.trim() || item.scope?.trim() || item.investment?.trim()))
+    .map((item, idx) => ({
+      ...item,
+      component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+      scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+    }));
 
-  const sowScopeActivities = doc.sowScopeActivities || [
+  const rawSowScopeActivities = doc.sowScopeActivities || [
     'Requirement Discovery & Pipeline Architecture: Define project inventory structures, custom pipeline stages, lead scoring benchmarks, and sales role authorization tiers.',
     'Omnichannel Campaign Ingestion: Connect Meta Ads (CAPI API), Google Offline Conversion tracking, website webhooks, and portal lead connectors.',
     'Telephony & AI Calling Configuration: Provision dedicated virtual numbers, configure Call-to-Lead auto record triggers, and program conversational voice scripts.',
     'WhatsApp API Integration: Register official Business API templates, design automated brochure auto-responders, and configure multi-agent shared inboxes.',
     'UAT, Training & Rollout: Conduct sandbox functional testing, administrator runbook handover, and end-user sales executive onboarding sessions.'
   ];
+  const sowScopeActivities = rawSowScopeActivities.filter(act => act && (typeof act === 'string' ? act.trim() : act.activity?.trim()));
 
-  const sowDeliverables = doc.sowDeliverables || [
+  const rawSowDeliverables = doc.sowDeliverables || [
     'Deliverable 1: System Architecture Blueprint & Lead Flow Process Mapping Document.',
     'Deliverable 2: Fully configured ibunify instance integrated with Meta CAPI, Google Ads, and WhatsApp API.',
     'Deliverable 3: Operational Cloud Telephony & AI Calling Engine with real-time CDR analytics.',
     'Deliverable 4: User Acceptance Testing (UAT) Sign-off Certificate & Admin Runbooks.'
   ];
+  const sowDeliverables = rawSowDeliverables.filter(d => d && (typeof d === 'string' ? d.trim() : d.text?.trim()));
 
-  const sowTimelineMilestones = doc.sowTimelineMilestones || [
+  const rawSowTimelineMilestones = doc.sowTimelineMilestones || [
     { activity: 'Discovery, Role Hierarchy & Lead Ingestion Setup', activeWeek: 1 },
     { activity: 'Cloud Telephony & WhatsApp Business API Deployment', activeWeek: 2 },
     { activity: 'AI Agent Calling Configuration & Integration Testing', activeWeek: 3 },
     { activity: 'User Acceptance Testing (UAT), Training & Production Go-Live', activeWeek: 4 }
   ];
+  const sowTimelineMilestones = rawSowTimelineMilestones.filter(m => m && m.activity?.trim());
 
-  const sowInvoicingMilestones = doc.sowInvoicingMilestones || [
+  const rawSowInvoicingMilestones = doc.sowInvoicingMilestones || [
     {
       deliverable: 'Milestone 1: Contract Signing / Project Kick-off & Mobilization',
       percentage: '50%',
@@ -1013,12 +1341,14 @@ export function commercialProposalToHtml(doc, forWord = false) {
       amount: '₹25,000'
     }
   ];
+  const sowInvoicingMilestones = rawSowInvoicingMilestones.filter(m => m && (m.deliverable?.trim() || m.amount?.trim()));
 
-  const sowAssumptions = doc.sowAssumptions || [
+  const rawSowAssumptions = doc.sowAssumptions || [
     'Client will designate a Project Manager to provide timely feedback/approvals within 48 hours.',
     'Client will provide necessary API access keys (Meta Business Manager, WhatsApp Business Account, Google Ads) before configuration commences.',
     'Standard support SLA guarantees Priority 1 response within < 30 minutes. Invoices are payable NET 30.'
   ];
+  const sowAssumptions = rawSowAssumptions.filter(a => a && (typeof a === 'string' ? a.trim() : a.text?.trim()));
 
   const headerLeft = doc.headerLeft || 'ibunify CRM by iGLOBUS | Commercial Proposal & SOW';
   const headerRight = doc.headerRight || 'Standard Master Template';
@@ -1147,10 +1477,10 @@ export function commercialProposalToHtml(doc, forWord = false) {
           <div>
             <div class="sec-title">2. GRANULAR SERVICE BREAKDOWN, FEATURES & COSTING</div>
             <div style="display:flex;flex-direction:column;gap:8px;">
-              ${serviceBreakdown.map((item) => `
+              ${serviceBreakdown.map((item, idx) => `
                 <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;padding:8px 12px;">
                   <div style="font-weight:700;color:#1e3a8a;font-size:13px;margin-bottom:3px;">
-                    ${escapeHtml(item.key)}. ${escapeHtml(item.title)}
+                    ${escapeHtml(item.key || (['A','B','C','D','E','F','G','H','I','J'][idx] || (idx + 1)))}. ${escapeHtml(item.title)}
                   </div>
                   <div style="font-size:12px;color:#334155;line-height:1.4;">
                     <strong>Core Features:</strong> ${escapeHtml(item.features)}
@@ -1317,7 +1647,7 @@ export function commercialProposalToHtml(doc, forWord = false) {
 }
 
 export function slaToHtml(doc, forWord = false) {
-  const incidentBenchmarks = doc.incidentBenchmarks || [
+  const rawIncidentBenchmarks = doc.incidentBenchmarks || [
     {
       id: 'inc-1',
       level: 'P1 - Critical',
@@ -1347,12 +1677,14 @@ export function slaToHtml(doc, forWord = false) {
       resolutionTarget: '< 48 Hours'
     }
   ];
+  const incidentBenchmarks = rawIncidentBenchmarks.filter(inc => inc && (inc.level?.trim() || inc.impact?.trim()));
 
-  const escalationMatrix = doc.escalationMatrix || [
+  const rawEscalationMatrix = doc.escalationMatrix || [
     'Level 1 (Helpdesk): support@ibunify.com | Ticket Portal',
     'Level 2 (Technical Lead): Rama Krishna (ramakrishna@iglobus.com)',
     'Level 3 (Practice Lead): Rama Krishna (ramakrishna@iglobuscc.com)'
   ];
+  const escalationMatrix = rawEscalationMatrix.filter(esc => esc && (typeof esc === 'string' ? esc.trim() : esc.text?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Service Level Agreement (SLA)')}</title>
   <style>
@@ -1487,7 +1819,7 @@ export function slaToHtml(doc, forWord = false) {
 }
 
 export function poToHtml(doc, forWord = false) {
-  const orderScheduleItems = doc.orderScheduleItems || [
+  const rawOrderScheduleItems = doc.orderScheduleItems || [
     {
       id: 'po-item-1',
       description: 'One-Time Implementation & Setup Fee',
@@ -1524,6 +1856,7 @@ export function poToHtml(doc, forWord = false) {
       totalAmount: 'As Per Qty'
     }
   ];
+  const orderScheduleItems = rawOrderScheduleItems.filter(item => item && (item.description?.trim() || item.totalAmount?.trim() || item.unitPrice?.trim()));
 
   return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(doc.proposalTitle || 'Purchase Order (PO Template)')}</title>
   <style>
@@ -1662,7 +1995,8 @@ export function poToHtml(doc, forWord = false) {
 }
 
 export function handoverToHtml(doc, forWord = false) {
-  const checklistItems = doc.handoverChecklistItems || [];
+  const rawChecklistItems = doc.handoverChecklistItems || [];
+  const checklistItems = rawChecklistItems.filter(item => item && (item.component?.trim() || item.feature?.trim()));
   const checklistRowsHtml = checklistItems
     .map(
       (item) => `
@@ -1783,7 +2117,8 @@ export function handoverToHtml(doc, forWord = false) {
 }
 
 export function closureToHtml(doc, forWord = false) {
-  const operationalMetrics = doc.operationalMetrics || [];
+  const rawOperationalMetrics = doc.operationalMetrics || [];
+  const operationalMetrics = rawOperationalMetrics.filter(item => item && (item.kpi?.trim() || item.target?.trim() || item.achieved?.trim()));
   const metricsRowsHtml = operationalMetrics
     .map(
       (item) => `
@@ -1909,44 +2244,49 @@ export function closureToHtml(doc, forWord = false) {
 }
 
 export function customProposalToHtml(doc, forWord = false) {
-  const metrics = doc.metrics || [
+  const rawMetrics = doc.metrics || [
     { value: '< 1 Min', label: 'FIRST RESPONSE SPEED' },
     { value: '100%', label: 'LEAD ATTRIBUTION' },
     { value: '3x', label: 'FOLLOW-UP VELOCITY' },
     { value: '24/7', label: 'AI VOICE & CHAT' }
   ];
+  const metrics = rawMetrics.filter(m => m && (m.value?.trim() || m.label?.trim()));
 
-  const servicesOverview = doc.servicesOverview || [
-    {
-      key: 'A',
-      title: 'Centralized Real Estate CRM',
-      desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
-    },
-    {
-      key: 'B',
-      title: 'Omnichannel Lead Ingestion',
-      desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
-    },
-    {
-      key: 'C',
-      title: 'Closed-Loop Marketing Attribution',
-      desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
-    },
-    {
-      key: 'D',
-      title: 'Executive CDR & Conversion Analytics',
-      desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
-    }
-  ];
+  const rawServicesOverview = doc.servicesOverview !== undefined
+    ? doc.servicesOverview
+    : [
+        {
+          key: 'A',
+          title: 'Centralized Real Estate CRM',
+          desc: 'Complete lead lifecycle tracking from Inquiry → Qualification → Site Visit → Negotiation → Booking & Closure.'
+        },
+        {
+          key: 'B',
+          title: 'Omnichannel Lead Ingestion',
+          desc: 'Direct API ingestion from Meta Ads (CAPI), Google Ads, property portals (99acres/Housing), website forms, and walk-ins.'
+        },
+        {
+          key: 'C',
+          title: 'Closed-Loop Marketing Attribution',
+          desc: 'Syncs qualified offline leads and site visits back to Google & Meta to continuously optimize ad spend and lower acquisition costs.'
+        },
+        {
+          key: 'D',
+          title: 'Executive CDR & Conversion Analytics',
+          desc: 'Real-time team dashboards, call recordings, agent talk-time metrics, and pipeline conversion velocity reports.'
+        }
+      ];
+  const servicesOverview = rawServicesOverview.filter(s => s && (s.title?.trim() || s.desc?.trim()));
 
-  const aiCallingBullets = doc.aiCallingBullets || [
+  const rawAiCallingBullets = doc.aiCallingBullets || [
     'Instant Inbound & Outbound Follow-up: Automatically dials new digital inquiries within seconds or follows up on missed calls.',
     'Lead Qualification & Budget Mapping: Identifies project preferences, purchase timelines, unit configurations (2BHK/3BHK), and budget ranges.',
     'Intelligent Agent Handoff: Transfers hot, qualified prospects directly to human sales executives with full conversation transcripts.',
     '24/7 Availability & Multi-lingual Support: Ensures no inquiry goes unattended during late evenings, weekends, or holidays.'
   ];
+  const aiCallingBullets = rawAiCallingBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const aiCallingItems = doc.aiCallingItems || [
+  const rawAiCallingItems = doc.aiCallingItems || [
     {
       id: 'ai-1',
       component: 'AI Voice Agent Engine',
@@ -1960,15 +2300,17 @@ export function customProposalToHtml(doc, forWord = false) {
       investment: '₹7 / call'
     }
   ];
+  const aiCallingItems = rawAiCallingItems.filter(item => item && (item.component?.trim() || item.investment?.trim()));
 
-  const cloudTelephonyBullets = doc.cloudTelephonyBullets || [
+  const rawCloudTelephonyBullets = doc.cloudTelephonyBullets || [
     'Intelligent Call-to-Lead System: Inbound calls route to available agents first. Answering instantly triggers a lead profile in CRM.',
     'Dedicated Project Virtual Numbers: Assign unique tracking numbers for Meta Ads, Google Ads, hoardings, and portals.',
     'Hybrid After-Hours Routing: Automatically switches calls from the web system to sales agents\' mobile phones during non-office hours.',
     'Call Recording & CDR Analytics: Complete audit trail with secure storage, agent talk-time analytics, and disposition tagging.'
   ];
+  const cloudTelephonyBullets = rawCloudTelephonyBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const cloudTelephonyItems = doc.cloudTelephonyItems || [
+  const rawCloudTelephonyItems = doc.cloudTelephonyItems || [
     {
       id: 'ct-1',
       component: 'Virtual Cloud Telephony Numbers',
@@ -1982,15 +2324,17 @@ export function customProposalToHtml(doc, forWord = false) {
       investment: 'Included in Setup'
     }
   ];
+  const cloudTelephonyItems = rawCloudTelephonyItems.filter(item => item && (item.component?.trim() || item.investment?.trim()));
 
-  const whatsappBullets = doc.whatsappBullets || [
+  const rawWhatsappBullets = doc.whatsappBullets || [
     'Instant Brochure & Price Sheet Dispatch: Automatically triggers WhatsApp brochures when leads submit inquiry forms.',
     'Automated Nurture Sequences: Triggers site-visit reminders, location pins, video walkthroughs, and payment milestone alerts.',
     'Unified Multi-Agent Inbox: Enables sales teams to chat with prospects from a single verified business number with full audit logs.',
     'Interactive Chatbot & Quick Replies: Pre-configured menus for instant responses to common buyer FAQs and project details.'
   ];
+  const whatsappBullets = rawWhatsappBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const whatsappItems = doc.whatsappItems || [
+  const rawWhatsappItems = doc.whatsappItems || [
     {
       id: 'wa-1',
       component: 'WhatsApp Business Platform (API Engine)',
@@ -2004,6 +2348,7 @@ export function customProposalToHtml(doc, forWord = false) {
       investment: '₹10,000 Prepaid\n(Usage-based)'
     }
   ];
+  const whatsappItems = rawWhatsappItems.filter(item => item && (item.component?.trim() || item.investment?.trim()));
 
   const rawCommercialItemsProp = doc.commercialScheduleItems || [
     {
@@ -2044,25 +2389,29 @@ export function customProposalToHtml(doc, forWord = false) {
     }
   ];
 
-  const commercialScheduleItems = rawCommercialItemsProp.map((item, idx) => ({
-    ...item,
-    component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
-    scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
-  }));
+  const commercialScheduleItems = rawCommercialItemsProp
+    .filter(item => item && (item.component?.trim() || item.scope?.trim() || item.investment?.trim()))
+    .map((item, idx) => ({
+      ...item,
+      component: item.component === 'One-Time Setup & Onboarding' ? 'One-Time Setup & Implementation' : item.component,
+      scope: (item.scope && item.scope.trim()) ? item.scope : ((item.deliverables && item.deliverables.trim()) ? item.deliverables : (DEFAULT_COMMERCIAL_SCOPES[idx] || ''))
+    }));
 
-  const roadmapBullets = doc.roadmapBullets || [
+  const rawRoadmapBullets = doc.roadmapBullets || [
     'Week 1 (Kick-off & Ingestion): Account creation, role hierarchy setup, Meta CAPI & Google Ads integration.',
     'Week 2 (Telephony & WhatsApp): Virtual numbers provisioning, WhatsApp Business API templates, and routing logic.',
     'Week 3 (AI Agent & Testing): AI conversational script configuration, call-to-lead testing, and sandbox validation.',
     'Week 4 (Training & Go-Live): Sales team enablement, admin runbooks, UAT sign-off, and live production rollout.',
     'Support & SLA Commitment: Priority 1 (Critical) incidents resolved in < 30 minutes; dedicated Customer Success Lead.'
   ];
+  const roadmapBullets = rawRoadmapBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
-  const termsBullets = doc.termsBullets || [
+  const rawTermsBullets = doc.termsBullets || [
     'All prices are exclusive of applicable statutory GST / taxes (18%).',
     'Third-party usage (telephony minutes, WhatsApp message costs, AI calling) billed against actual wallet consumption.',
     'Invoices are payable within 30 days from date of submission (NET 30).'
   ];
+  const termsBullets = rawTermsBullets.filter(b => b && (typeof b === 'string' ? b.trim() : b.text?.trim()));
 
   const headerLeft = doc.headerLeft || 'ibunify CRM by iGLOBUS | Commercial & Services Proposal';
   const headerRight = doc.headerRight || 'www.ibunify.com';
@@ -2194,9 +2543,9 @@ export function customProposalToHtml(doc, forWord = false) {
             </div>
 
             <div class="breakdown-grid">
-              ${servicesOverview.map((s) => `
+              ${servicesOverview.map((s, idx) => `
                 <div class="breakdown-card">
-                  <div class="breakdown-title">${escapeHtml(s.key)}. ${escapeHtml(s.title)}</div>
+                  <div class="breakdown-title">${escapeHtml(s.key || (['A','B','C','D','E','F','G','H','I','J'][idx] || (idx + 1)))}. ${escapeHtml(s.title)}</div>
                   <div style="color:#334155;font-size:11px;line-height:1.35;">${escapeHtml(s.desc)}</div>
                 </div>
               `).join('')}

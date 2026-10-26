@@ -5,7 +5,8 @@ export function ProposalSelector({
   activeProposalId,
   onSelectProposal,
   onBack,
-  onDeleteProposal
+  onDeleteProposal,
+  onCreateTaxInvoice
 }) {
   const activeProposal = proposals.find((p) => p.id === activeProposalId) || proposals[0];
   const isInvoice = activeProposal?.documentType === 'invoice';
@@ -97,6 +98,17 @@ export function ProposalSelector({
             </option>
           ))}
         </select>
+        {isInvoice && onCreateTaxInvoice && (
+          <button
+            type="button"
+            className="primary-blue-btn sm"
+            onClick={onCreateTaxInvoice}
+            style={{ marginLeft: '10px', whiteSpace: 'nowrap', padding: '5px 12px', fontSize: '12px' }}
+            title="Create a new official iGLOBUS Invoice without affecting other documents"
+          >
+            ＋ New iGLOBUS Invoice
+          </button>
+        )}
       </div>
 
       <div className="selector-actions">
