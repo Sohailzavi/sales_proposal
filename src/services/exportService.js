@@ -481,13 +481,68 @@ export function discoveryToHtml(doc, forWord = false) {
   const rawSections = doc.sections !== undefined ? doc.sections : defaultDiscoverySections;
   const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
-  const stageRowsHtml = pipelineStages
+  const prePipelineSections = activeSections.filter(s => {
+    const isPipeline = s.title?.toUpperCase().includes('PIPELINE') || s.title?.includes('3.');
+    const isSignoff = s.isSignoff || s.title?.toUpperCase().includes('SIGN-OFF') || s.title?.includes('4.');
+    return !isPipeline && !isSignoff;
+  });
+
+  const pipelineSection = activeSections.find(s => s.title?.toUpperCase().includes('PIPELINE') || s.title?.includes('3.'));
+  const signoffSection = activeSections.find(s => s.isSignoff || s.title?.toUpperCase().includes('SIGN-OFF') || s.title?.includes('4.'));
+
+  // Multi-page chunking matching live preview
+  const STAGES_PER_PAGE_P2 = 3;
+  const STAGES_PER_PAGE_SUBSEQUENT = 6;
+  const stagePages = [];
+
+  if (pipelineStages.length <= STAGES_PER_PAGE_P2) {
+    stagePages.push({
+      startIndex: 0,
+      stages: pipelineStages,
+      isFirstContentPage: true,
+      hasSignoff: true
+    });
+  } else {
+    stagePages.push({
+      startIndex: 0,
+      stages: pipelineStages.slice(0, STAGES_PER_PAGE_P2),
+      isFirstContentPage: true,
+      hasSignoff: false
+    });
+
+    let remaining = pipelineStages.slice(STAGES_PER_PAGE_P2);
+    let currStart = STAGES_PER_PAGE_P2;
+    while (remaining.length > 0) {
+      if (remaining.length <= 4) {
+        stagePages.push({
+          startIndex: currStart,
+          stages: remaining,
+          isFirstContentPage: false,
+          hasSignoff: true
+        });
+        remaining = [];
+      } else {
+        const sliceCount = STAGES_PER_PAGE_SUBSEQUENT;
+        const chunk = remaining.slice(0, sliceCount);
+        remaining = remaining.slice(sliceCount);
+        stagePages.push({
+          startIndex: currStart,
+          stages: chunk,
+          isFirstContentPage: false,
+          hasSignoff: remaining.length === 0
+        });
+        currStart += sliceCount;
+      }
+    }
+  }
+
+  const renderStageRows = (stages) => stages
     .map(
       (st) => `
     <tr>
-      <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:700;color:#1e3a8a;font-size:13px;">${escapeHtml(st.stage)}</td>
-      <td style="padding:10px 12px;border:1px solid #e2e8f0;color:#334155;font-size:13px;">${escapeHtml(st.objective)}</td>
-      <td style="padding:10px 12px;border:1px solid #e2e8f0;color:#334155;font-size:13px;">${escapeHtml(st.action)}</td>
+      <td style="padding:8px 10px;border:1px solid #cbd5e1;font-weight:700;color:#1e3a8a;font-size:12px;">${escapeHtml(st.stage)}</td>
+      <td style="padding:8px 10px;border:1px solid #cbd5e1;color:#334155;font-size:12px;">${escapeHtml(st.objective)}</td>
+      <td style="padding:8px 10px;border:1px solid #cbd5e1;color:#334155;font-size:12px;">${escapeHtml(st.action)}</td>
     </tr>
   `
     )
@@ -500,9 +555,6 @@ export function discoveryToHtml(doc, forWord = false) {
     .page-1 { width: 210mm; height: 297mm; box-sizing: border-box; padding: 135px 48px 145px 48px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
     .page-1 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
     .page-1 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
-    .p1-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0f2b6e; }
-    .p1-sublogo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #2563eb; margin-top: 2px; }
-    .p1-badge { display: inline-block; padding: 6px 14px; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; background: #f0f7ff; color: #1e3a8a; }
     .p1-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; color: #0f2b6e; }
     .p1-subtitle { font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 16px; }
     .p1-desc { font-size: 14px; line-height: 1.6; color: #334155; max-width: 90%; }
@@ -511,26 +563,18 @@ export function discoveryToHtml(doc, forWord = false) {
     .p1-meta-val { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #0f2b6e; }
     .p1-meta-sub { font-size: 12.5px; color: #475569; line-height: 1.5; }
     
-    .page-2 { width: 210mm; min-height: 297mm; box-sizing: border-box; padding: 120px 44px 140px 44px; background: #fff; color: #1e293b; page-break-after: auto; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; page-break-inside: avoid; break-inside: avoid; }
-    .page-2 .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
-    .page-2 .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
-    .p2-top { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
-    .p2-subbar { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 14px; }
-    .sec-title { font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin: 12px 0 6px; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; display: inline-block; page-break-inside: avoid; break-inside: avoid; }
+    .page-content { width: 210mm; height: 297mm; box-sizing: border-box; padding: 120px 44px 135px 44px; background: #fff; color: #1e293b; page-break-after: always; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .page-content .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+    .page-content .inner-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; }
+    .sec-title { font-size: 13px; font-weight: 800; color: #1e3a8a; margin: 0 0 6px 0; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 2px; display: inline-block; }
     .sec-text { font-size: 12px; line-height: 1.5; color: #334155; margin-bottom: 10px; }
-    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; page-break-inside: avoid; break-inside: avoid; }
-    .pipe-table tr { page-break-inside: avoid; break-inside: avoid; }
-    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; text-align: left; letter-spacing: 0.04em; }
-    .pipe-table td { padding: 5px 8px; font-size: 11px; line-height: 1.35; color: #334155; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; vertical-align: top; word-break: break-word; overflow-wrap: break-word; }
-    .sign-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 8px; font-size: 11.5px; page-break-inside: avoid; break-inside: avoid; }
-    .corp-box { text-align: center; font-size: 10.5px; color: #475569; padding: 8px 12px; background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 6px; margin-top: 10px; page-break-inside: avoid; break-inside: avoid; }
-    .corp-box strong { color: #1e3a8a; }
-    .p2-foot { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; padding-top: 6px; border-top: 1px solid #cbd5e1; margin-top: 8px; }
+    .pipe-table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; table-layout: fixed; }
+    .pipe-table th { background: #0f2b6e; color: #fff; font-size: 10.5px; font-weight: 700; padding: 6px 10px; text-align: left; }
+    .pipe-table td { padding: 6px 10px; font-size: 11.5px; line-height: 1.35; color: #334155; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; vertical-align: top; word-break: break-word; }
     @media print {
       @page { size: A4 portrait; margin: 0; }
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .page-2 { page-break-inside: avoid; break-inside: avoid; }
-      .pipe-table, .sign-box, tr, .sec-title { page-break-inside: avoid; break-inside: avoid; }
+      .page-content { page-break-inside: avoid; break-inside: avoid; }
     }
   </style>
   </head>
@@ -538,7 +582,6 @@ export function discoveryToHtml(doc, forWord = false) {
     <div class="page-1">
       <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
       <div class="inner-content">
-
         <div>
           <h1 class="p1-title">${escapeHtml(doc.proposalTitle || 'Discovery — Requirement Gathering & Scoping')}</h1>
           <div class="p1-subtitle">${escapeHtml(doc.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting')}</div>
@@ -564,59 +607,75 @@ export function discoveryToHtml(doc, forWord = false) {
       </div>
     </div>
 
-    <div class="page-2">
-      ${SAMPLE_LETTERHEAD_BASE64 ? `<img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="Letterhead" />` : ''}
+    ${stagePages.map((pageChunk, pIdx) => `
+    <div class="page-content">
+      <img src="${SAMPLE_LETTERHEAD_BASE64}" class="bg-img" alt="" />
       <div class="inner-content">
-        <div>
-        ${activeSections.map((sec) => {
-          const isPipelineSec = sec.title?.toUpperCase().includes('PIPELINE') || sec.title?.includes('3.');
-          const isSignoffSec = sec.isSignoff || sec.title?.toUpperCase().includes('SIGN-OFF') || sec.title?.includes('4.');
+        <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+          ${!pageChunk.isFirstContentPage ? `
+            <div style="margin-bottom:12px;border-bottom:1px solid #e2e8f0;padding-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:12.5px;font-weight:800;color:#0f2b6e;">${escapeHtml(doc.proposalTitle || 'Requirement Gathering & Scoping')} (Continued)</span>
+              <span style="font-size:10.5px;color:#64748b;">Doc Ref: ${escapeHtml(doc.proposalNumber || 'IGC-ibunify-01-2026')}</span>
+            </div>
+          ` : ''}
 
-          return `
-          <div>
-            ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
-            ${isPipelineSec && useStructuredTable && pipelineStages.length > 0 ? `
+          ${pageChunk.isFirstContentPage ? prePipelineSections.map((sec) => `
+            <div>
+              ${sec.title ? `<div class="sec-title">${escapeHtml(sec.title)}</div>` : ''}
+              <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
+            </div>
+          `).join('') : ''}
+
+          ${useStructuredTable ? `
+            <div>
+              ${pageChunk.isFirstContentPage ? `
+                <div class="sec-title">${escapeHtml(pipelineSection?.title || '3. SALES HIERARCHY & PIPELINE STAGES')}</div>
+              ` : `
+                <div style="font-size:11.5px;font-weight:700;color:#1e3a8a;margin-bottom:4px;">Pipeline Stages (Continued)</div>
+              `}
               <table class="pipe-table">
                 <thead>
                   <tr>
-                    <th style="width:28%;">PIPELINE STAGE</th>
-                    <th style="width:32%;">PRIMARY OBJECTIVE</th>
-                    <th style="width:40%;">AUTOMATED SYSTEM ACTION</th>
+                    <th style="width:28%;">${escapeHtml(doc.pipelineStageColHeader || 'PIPELINE STAGE')}</th>
+                    <th style="width:32%;">${escapeHtml(doc.pipelineObjectiveColHeader || 'PRIMARY OBJECTIVE')}</th>
+                    <th style="width:40%;">${escapeHtml(doc.pipelineActionColHeader || 'AUTOMATED SYSTEM ACTION')}</th>
                   </tr>
                 </thead>
-                <tbody>${stageRowsHtml}</tbody>
+                <tbody>${renderStageRows(pageChunk.stages)}</tbody>
               </table>
-            ` : `
-              <div class="sec-text">${escapeHtml(sec.content || '').replaceAll('\n', '<br/>')}</div>
-            `}
-            ${isSignoffSec ? `
-              <div style="display:flex;gap:16px;margin-top:10px;">
-                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
-                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
-                  <div style="height:42px;"></div>
-                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
-                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
-                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
+            </div>
+          ` : ''}
+
+          ${pageChunk.hasSignoff ? `
+            <div style="margin-top:auto;padding-top:10px;">
+              <div class="sec-title">${escapeHtml(signoffSection?.title || '4. SIGN-OFF FOR SCOPING BASELINE')}</div>
+              <p style="font-size:11.5px;color:#475569;margin:4px 0 8px 0;">${escapeHtml(signoffSection?.content || 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.')}</p>
+              <div style="display:flex;gap:16px;">
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:10px 14px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:11.5px;margin-bottom:2px;">${escapeHtml(doc.clientSignatoryHeader || doc.clientSignatory || `ACCEPTED FOR: [${doc.preparedFor || 'CLIENT ENTERPRISE'}]`)}</div>
+                  <div style="font-size:10px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.clientSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:36px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:6px;"></div>
+                  <div style="margin-top:3px;font-size:11px;">Name: ${escapeHtml(doc.clientSignatoryName || '___________________________')}</div>
+                  <div style="margin-top:3px;font-size:11px;">Title: ${escapeHtml(doc.clientSignatoryTitle || '____________________________')}</div>
+                  <div style="margin-top:3px;font-size:10.5px;color:#64748b;">Date: ${escapeHtml(doc.clientSignDate ? doc.clientSignDate : (doc.date ? doc.date : '____________________________'))}</div>
                 </div>
-                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;box-sizing:border-box;">
-                  <div style="font-weight:700;color:#0f2b6e;font-size:12.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
-                  <div style="font-size:10.5px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
-                  <div style="height:42px;"></div>
-                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:8px;"></div>
-                  <div style="margin-top:4px;font-size:11.5px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
-                  <div style="margin-top:4px;font-size:11.5px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
-                  <div style="margin-top:4px;font-size:11px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:10px 14px;box-sizing:border-box;">
+                  <div style="font-weight:700;color:#0f2b6e;font-size:11.5px;margin-bottom:2px;">${escapeHtml(doc.providerSignatoryHeader || doc.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)')}</div>
+                  <div style="font-size:10px;color:#64748b;margin-bottom:4px;">${escapeHtml(doc.providerSignatorySub || 'Authorized Signatory')}</div>
+                  <div style="height:36px;"></div>
+                  <div style="border-bottom:1px dashed #cbd5e1;margin-bottom:6px;"></div>
+                  <div style="margin-top:3px;font-size:11px;">Name: ${escapeHtml(doc.leadSignatoryName || doc.providerSignatoryName || 'Pavan Chandra Duddilla')}</div>
+                  <div style="margin-top:3px;font-size:11px;">Title: ${escapeHtml(doc.leadSignatoryTitle || doc.providerSignatoryTitle || 'Director')}</div>
+                  <div style="margin-top:3px;font-size:10.5px;color:#64748b;">Date: ${escapeHtml(doc.leadSignDate ? doc.leadSignDate : (doc.providerSignDate ? doc.providerSignDate : (doc.date ? doc.date : '____________________________')))}</div>
                 </div>
               </div>
-            ` : ''}
-          </div>
-        `;
-        }).join('')}
+            </div>
+          ` : ''}
         </div>
       </div>
     </div>
+    `).join('')}
   </body></html>`;
 }
 

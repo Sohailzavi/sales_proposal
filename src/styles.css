@@ -199,7 +199,13 @@ button.full { width: 100%; margin-top: 10px; }
   padding: 20px;
   align-items: start;
 }
-.workspace.preview-only { display: block; max-width: 980px; margin: 0 auto; }
+.workspace.invoice-workspace,
+.workspace.discovery-workspace {
+  display: block;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
 .workspace.official-library {
   grid-template-columns: 280px minmax(0, 1fr);
   max-width: 1440px;
@@ -998,14 +1004,14 @@ button.icon-sm { padding: 4px 8px; font-size: 14px; border-radius: 6px; }
 .std-inv-totals-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-top: 22px;
+  margin-top: 10px;
 }
 .std-inv-totals-list {
-  width: 300px;
+  width: 280px;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 .std-inv-totals-row {
   display: flex;
@@ -1040,15 +1046,15 @@ button.icon-sm { padding: 4px 8px; font-size: 14px; border-radius: 6px; }
   font-size: 16.5px;
 }
 .std-inv-footer {
-  margin-top: 36px;
-  padding-top: 20px;
-  border-top: 1px solid #e4e7ec;
+  margin-top: 10px !important;
+  padding-top: 8px !important;
+  border-top: 1px solid #e4e7ec !important;
 }
 .std-inv-notes {
-  font-size: 12.5px;
-  color: #667085;
-  line-height: 1.6;
-  margin: 6px 0 0 0;
+  font-size: 11px !important;
+  color: #667085 !important;
+  line-height: 1.4 !important;
+  margin: 2px 0 0 0 !important;
 }
 
 /* Login Page Styling */
@@ -1583,7 +1589,6 @@ html::-webkit-scrollbar,
 /* ==========================================================================
    DISCOVERY, NDA, MSA & COMMERCIAL PROPOSAL PREVIEW STYLES
    ========================================================================== */
-.workspace.discovery-workspace,
 .workspace.nda-workspace,
 .workspace.msa-workspace,
 .workspace.commercial-proposal-workspace {
@@ -2296,3 +2301,319 @@ html::-webkit-scrollbar,
   height: 100%;
 }
 
+
+/* =========================================================
+   Tiptap & Direct Inline Editing Styling
+   ========================================================= */
+.inline-tiptap-wrapper {
+  transition: background-color 0.15s ease;
+  display: inline-block;
+  width: 100%;
+}
+
+.inline-tiptap-wrapper:hover {
+  outline: 1px dashed rgba(2, 132, 199, 0.45);
+  border-radius: 4px;
+  background-color: rgba(2, 132, 199, 0.02);
+}
+
+.inline-tiptap-content .ProseMirror {
+  outline: none;
+  min-height: 1.2em;
+}
+
+.inline-tiptap-content .ProseMirror:focus {
+  outline: 1.5px solid #0284c7;
+  border-radius: 4px;
+  background-color: rgba(2, 132, 199, 0.04);
+}
+
+.inline-tiptap-toolbar {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  z-index: 1000;
+  display: inline-flex;
+  gap: 4px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.inline-tiptap-toolbar button {
+  background: transparent;
+  color: #f1f5f9;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.inline-tiptap-toolbar button:hover {
+  background: #334155;
+  color: #38bdf8;
+}
+
+.inline-tiptap-toolbar button.is-active {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.inline-number-display:hover {
+  background-color: rgba(2, 132, 199, 0.12);
+  outline: 1px dashed #0284c7;
+}
+
+/* Row action buttons on invoice hover */
+.interactive-inv-row .std-inv-row-delete-btn {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.interactive-inv-row:hover .std-inv-row-delete-btn {
+  opacity: 1;
+}
+
+/* Prevent footer collision on standard invoice paper */
+.standard-invoice-paper {
+  height: 1120px !important;
+  max-height: 1120px !important;
+  min-height: 1120px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.standard-invoice-paper .letterhead-content-wrap {
+  padding-top: 130px !important;
+  padding-bottom: 155px !important; /* Keep safe 155px distance from letterhead footer */
+  height: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+}
+
+/* Page badge on multi-page invoices */
+.inv-page-counter {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  z-index: 10;
+}
+
+/* =========================================================
+   Scoped Styling for Enhanced Tiptap Document Editor
+   ========================================================= */
+.tiptap-workspace-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f1f5f9; /* Light-grey workspace */
+  padding: 24px 16px 48px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Sticky Compact Toolbar */
+.tiptap-sticky-toolbar-wrapper {
+  position: sticky;
+  top: 12px;
+  z-index: 50;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.tiptap-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.tiptap-divider {
+  display: inline-block;
+  width: 1px;
+  height: 22px;
+  background: #e2e8f0;
+  margin: 0 4px;
+}
+
+.tiptap-btn {
+  background: transparent;
+  color: #334155;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.tiptap-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0284c7;
+}
+
+.tiptap-btn.is-active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+.tiptap-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tiptap-table-btn {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.tiptap-table-btn.text-danger {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.tiptap-table-btn:hover:not(:disabled) {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.tiptap-table-btn.text-danger:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.tiptap-save-btn {
+  background: #0284c7;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.tiptap-save-btn:hover {
+  background: #0369a1;
+}
+
+/* Centered White Document Canvas */
+.tiptap-doc-canvas {
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  padding: 48px 56px;
+  box-sizing: border-box;
+  min-height: 1000px;
+  color: #1e293b;
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+/* Document Typography & Spacing */
+.tiptap-editor-content .ProseMirror {
+  outline: none;
+  min-height: 800px;
+}
+
+.tiptap-editor-content .ProseMirror h1,
+.tiptap-editor-content .ProseMirror h2,
+.tiptap-editor-content .ProseMirror h3 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.tiptap-editor-content .ProseMirror h1 { font-size: 26px; }
+.tiptap-editor-content .ProseMirror h2 { font-size: 20px; }
+.tiptap-editor-content .ProseMirror h3 { font-size: 16px; }
+
+.tiptap-editor-content .ProseMirror p {
+  margin: 0 0 14px 0;
+}
+
+.tiptap-editor-content .ProseMirror ul,
+.tiptap-editor-content .ProseMirror ol {
+  padding-left: 24px;
+  margin: 0 0 14px 0;
+}
+
+.tiptap-editor-content .ProseMirror li {
+  margin-bottom: 4px;
+}
+
+/* Table Styling inside Editor with Horizontal Scroll Support */
+.tiptap-editor-content .ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 18px 0;
+  overflow: hidden;
+}
+
+.tiptap-editor-content .tableWrapper {
+  overflow-x: auto;
+  margin: 18px 0;
+}
+
+.tiptap-editor-content .ProseMirror th,
+.tiptap-editor-content .ProseMirror td {
+  min-width: 80px;
+  padding: 10px 14px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  border: 1px solid #cbd5e1;
+}
+
+.tiptap-editor-content .ProseMirror th {
+  font-weight: 600;
+  text-align: left;
+  background-color: #f8fafc; /* Lightly shaded header row */
+  color: #334155;
+  font-size: 13.5px;
+}
+
+.tiptap-editor-content .ProseMirror .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(2, 132, 199, 0.12);
+  pointer-events: none;
+}

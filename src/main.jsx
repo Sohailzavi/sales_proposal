@@ -731,7 +731,7 @@ function App() {
           <>
 
 
-            {!previewMode && (
+            {!previewMode && !isInvoice && !isDiscovery && (
               <SectionEditor
                 proposal={activeProposal}
                 selectedSection={selectedSection}
@@ -744,7 +744,11 @@ function App() {
               />
             )}
 
-            <ProposalPreview proposal={activeProposal} />
+            <ProposalPreview
+              proposal={activeProposal}
+              onUpdateField={updateField}
+              onUpdateProposal={updateActiveProposal}
+            />
           </>
         )}
       </main>

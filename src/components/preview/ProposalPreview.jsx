@@ -2,6 +2,7 @@ import React from 'react';
 import { calculateCommercialTotals, calculateInvoiceTotals, paginateProposal, formatPortalsText } from '../../services/exportService.js';
 import { SAMPLE_LETTERHEAD_BASE64 } from '../../data/letterheadBase64.js';
 import { DEFAULT_COMMERCIAL_SCOPES } from '../../data/defaults.js';
+import { InlineRichText, InlineNumberCell } from '../common/InlineEditors.jsx';
 
 function sanitizeProposalData(data) {
   if (typeof data === 'string') {
@@ -21,10 +22,48 @@ function sanitizeProposalData(data) {
   return data;
 }
 
-export function ProposalPreview({ proposal: rawProposal }) {
+// Helper to strip any raw HTML tags like <p> from single-line fields
+function stripHtml(val = '') {
+  return String(val).replace(/<[^>]*>/g, '').trim();
+}
+
+export function ProposalPreview({ proposal: rawProposal, onUpdateField, onUpdateProposal }) {
   const proposal = sanitizeProposalData(rawProposal) || {};
   const currencySymbol = proposal.currency === 'USD' ? '$' : '₹';
   const isInvoice = proposal.documentType === 'invoice';
+
+  const updateItem = (itemIndex, field, value) => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const currentItems = [...(prev.invoiceItems || [])];
+      if (!currentItems[itemIndex]) return prev;
+      currentItems[itemIndex] = { ...currentItems[itemIndex], [field]: value };
+      return { ...prev, invoiceItems: currentItems };
+    });
+  };
+
+  const addItem = () => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const currentItems = [...(prev.invoiceItems || [])];
+      currentItems.push({
+        id: `item-${Date.now()}`,
+        description: 'New Service / Deliverable',
+        detail: '',
+        qty: 1,
+        rate: 0
+      });
+      return { ...prev, invoiceItems: currentItems };
+    });
+  };
+
+  const deleteItem = (itemIndex) => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const currentItems = (prev.invoiceItems || []).filter((_, idx) => idx !== itemIndex);
+      return { ...prev, invoiceItems: currentItems };
+    });
+  };
 
   if (isInvoice) {
     const style = proposal.invoiceStyle === 'standard' ? 'standard' : 'compact';
@@ -58,128 +97,360 @@ export function ProposalPreview({ proposal: rawProposal }) {
       const companyAddressLines = (proposal.companyAddress || proposal.companyMeta || 'Techno Enclave Madhapur, Hyderabad, Telangana 500081').split('\n');
       const clientAddressLines = (proposal.clientAddress || '22 Harbour Line Road\nBandra East, Mumbai 400051\nIndia').split('\n');
 
+      // Strict safe pagination for standard invoice:
+      // Page 1 has top letterhead, invoice metadata and full client bill-to block -> exactly 3 items.
+      // Subsequent pages: exactly 3 items when on the final page (to leave plenty of space for Totals + Payment details),
+      // or 4 items if there are further pages.
+      const PAGE_1_ITEMS = 3;
+      const invoicePages = [];
+
+      if (items.length <= PAGE_1_ITEMS) {
+        invoicePages.push({ pageNum: 1, items: items, hasTotals: true, startIndex: 0 });
+      } else {
+        invoicePages.push({ pageNum: 1, items: items.slice(0, PAGE_1_ITEMS), hasTotals: false, startIndex: 0 });
+        let remaining = items.slice(PAGE_1_ITEMS);
+        let currPage = 2;
+        let cumulativeIndex = PAGE_1_ITEMS;
+
+        while (remaining.length > 0) {
+          // If 3 or fewer items remain, put them on this page along with the Totals box!
+          // If more than 3 remain, take 3 items so the next page has room for the rest + Totals.
+          const isFinal = remaining.length <= 3;
+          const sliceCount = isFinal ? remaining.length : 3;
+          const pageSlice = remaining.slice(0, sliceCount);
+
+          invoicePages.push({
+            pageNum: currPage,
+            items: pageSlice,
+            hasTotals: isFinal,
+            startIndex: cumulativeIndex
+          });
+
+          cumulativeIndex += pageSlice.length;
+          remaining = remaining.slice(sliceCount);
+          currPage++;
+        }
+      }
+
       return (
         <div className="proposal-pages-container invoice-pages-container">
-          <section className="invoice-paper standard-invoice-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              <header className="std-inv-header">
-                <div>
-                  <h1 className="std-inv-title">{proposal.proposalTitle || 'Invoice'}</h1>
-                  <dl className="std-inv-meta-grid">
-                    <dt>Invoice no.</dt>
-                    <dd>{proposal.proposalNumber || 'INV-2026-0148'}</dd>
-                    <dt>Issued</dt>
-                    <dd>{proposal.date || 'Sep 10, 2026'}</dd>
-                    <dt>Due</dt>
-                    <dd>{proposal.validUntil || 'Oct 10, 2026'}</dd>
-                    <dt>Terms</dt>
-                    <dd>{proposal.paymentTerms || 'Net 30'}</dd>
-                  </dl>
-                </div>
+          {invoicePages.map((page, pageIndex) => {
+            const isFirst = page.pageNum === 1;
+            const isLast = page.hasTotals;
+            const startIndex = page.startIndex ?? 0;
 
-                <div className="std-inv-company-block">
-                  {proposal.companyLogoUrl ? (
-                    <img
-                      src={proposal.companyLogoUrl}
-                      alt={`${proposal.company} logo`}
-                      className="std-inv-logo"
-                    />
+            return (
+              <section key={page.pageNum} className="invoice-paper standard-invoice-paper" style={{ position: 'relative', marginBottom: '32px' }}>
+                <img
+                  src={SAMPLE_LETTERHEAD_BASE64}
+                  className="letterhead-bg-img"
+                  alt="Letterhead Background"
+                />
+                <span className="inv-page-counter">Page {page.pageNum} of {invoicePages.length}</span>
+
+                <div className="letterhead-content-wrap">
+                  {isFirst ? (
+                    <>
+                      <header className="std-inv-header">
+                        <div>
+                          {onUpdateField ? (
+                            <InlineRichText
+                              value={proposal.proposalTitle || 'Invoice'}
+                              onChange={(val) => onUpdateField('proposalTitle', val)}
+                              className="std-inv-title"
+                              singleLine={true}
+                              placeholder="Invoice Title..."
+                            />
+                          ) : (
+                            <h1 className="std-inv-title">{proposal.proposalTitle || 'Invoice'}</h1>
+                          )}
+                          <dl className="std-inv-meta-grid">
+                            <dt>Invoice no.</dt>
+                            <dd>
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.proposalNumber || 'INV-2026-0148'}
+                                  onChange={(val) => onUpdateField('proposalNumber', val)}
+                                  singleLine={true}
+                                />
+                              ) : (
+                                proposal.proposalNumber || 'INV-2026-0148'
+                              )}
+                            </dd>
+                            <dt>Issued</dt>
+                            <dd>
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.date || 'Sep 10, 2026'}
+                                  onChange={(val) => onUpdateField('date', val)}
+                                  singleLine={true}
+                                />
+                              ) : (
+                                proposal.date || 'Sep 10, 2026'
+                              )}
+                            </dd>
+                            <dt>Due</dt>
+                            <dd>
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.validUntil || 'Oct 10, 2026'}
+                                  onChange={(val) => onUpdateField('validUntil', val)}
+                                  singleLine={true}
+                                />
+                              ) : (
+                                proposal.validUntil || 'Oct 10, 2026'
+                              )}
+                            </dd>
+                            <dt>Terms</dt>
+                            <dd>
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.paymentTerms || 'Net 30'}
+                                  onChange={(val) => onUpdateField('paymentTerms', val)}
+                                  singleLine={true}
+                                />
+                              ) : (
+                                proposal.paymentTerms || 'Net 30'
+                              )}
+                            </dd>
+                          </dl>
+                        </div>
+
+                        <div className="std-inv-company-block">
+                          {proposal.companyLogoUrl ? (
+                            <img
+                              src={proposal.companyLogoUrl}
+                              alt={`${proposal.company} logo`}
+                              className="std-inv-logo"
+                            />
+                          ) : (
+                            <div className="std-inv-brand-mark">
+                              {proposal.companyBadge || 'iG'}
+                            </div>
+                          )}
+                          {onUpdateField ? (
+                            <InlineRichText
+                              value={proposal.company || 'iGlobus Corporate Consulting'}
+                              onChange={(val) => onUpdateField('company', val)}
+                              className="std-inv-company-name"
+                              singleLine={true}
+                            />
+                          ) : (
+                            <p className="std-inv-company-name">{proposal.company || 'iGlobus Corporate Consulting'}</p>
+                          )}
+                          <address className="std-inv-address">
+                            {onUpdateField ? (
+                              <InlineRichText
+                                value={proposal.companyAddress || proposal.companyMeta || 'Techno Enclave Madhapur, Hyderabad, Telangana 500081'}
+                                onChange={(val) => onUpdateField('companyAddress', val)}
+                              />
+                            ) : (
+                              companyAddressLines.map((line, i) => (
+                                <p key={i}>{line}</p>
+                              ))
+                            )}
+                            {proposal.companyPhone && <p>Phone: {proposal.companyPhone}</p>}
+                          </address>
+                        </div>
+                      </header>
+
+                      <section className="std-inv-billto-section" aria-labelledby="std-bill-to">
+                        <h2 id="std-bill-to" className="std-inv-section-label">
+                          Bill to
+                        </h2>
+                        {onUpdateField ? (
+                          <InlineRichText
+                            value={proposal.preparedFor || 'Northwind Retail Pvt. Ltd.'}
+                            onChange={(val) => onUpdateField('preparedFor', val)}
+                            className="std-inv-client-name"
+                            singleLine={true}
+                          />
+                        ) : (
+                          <p className="std-inv-client-name">{proposal.preparedFor || 'Northwind Retail Pvt. Ltd.'}</p>
+                        )}
+                        <address className="std-inv-client-address">
+                          {onUpdateField ? (
+                            <InlineRichText
+                              value={proposal.clientAddress || '22 Harbour Line Road\nBandra East, Mumbai 400051\nIndia'}
+                              onChange={(val) => onUpdateField('clientAddress', val)}
+                            />
+                          ) : (
+                            clientAddressLines.map((line, i) => <p key={i}>{line}</p>)
+                          )}
+                        </address>
+                      </section>
+                    </>
                   ) : (
-                    <div className="std-inv-brand-mark">
-                      {proposal.companyBadge || 'iG'}
+                    <div style={{ marginBottom: '24px', borderBottom: '1px solid #e4e7ec', paddingBottom: '12px' }}>
+                      <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: '#101828' }}>
+                        {stripHtml(proposal.proposalTitle || 'Invoice')} (Continued)
+                      </h2>
+                      <span style={{ fontSize: '12px', color: '#64748b' }}>
+                        Invoice No: {stripHtml(proposal.proposalNumber || 'INV-2026-0148')}
+                      </span>
                     </div>
                   )}
-                  <p className="std-inv-company-name">{proposal.company || 'iGlobus Corporate Consulting'}</p>
-                  <address className="std-inv-address">
-                    {companyAddressLines.map((line, i) => (
-                      <p key={i}>{line}</p>
-                    ))}
-                    {proposal.companyPhone && <p>Phone: {proposal.companyPhone}</p>}
-                  </address>
-                </div>
-              </header>
 
-              <section className="std-inv-billto-section" aria-labelledby="std-bill-to">
-                <h2 id="std-bill-to" className="std-inv-section-label">
-                  Bill to
-                </h2>
-                <p className="std-inv-client-name">{proposal.preparedFor || 'Northwind Retail Pvt. Ltd.'}</p>
-                <address className="std-inv-client-address">
-                  {proposal.clientAttention && <p>{proposal.clientAttention}</p>}
-                  {clientAddressLines.map((line, i) => (
-                    <p key={i}>{line}</p>
-                  ))}
-                  {proposal.clientEmail && <p>{proposal.clientEmail}</p>}
-
-                </address>
-              </section>
-
-              <section className="std-inv-items-section">
-                <table className="std-inv-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: '56px', textAlign: 'left' }}>S. No.</th>
-                      <th style={{ textAlign: 'left' }}>Description</th>
-                      <th style={{ textAlign: 'right' }}>Qty</th>
-                      <th style={{ textAlign: 'right' }}>Rate</th>
-                      <th style={{ textAlign: 'right' }}>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((item, index) => {
-                      const qty = Number(item.qty) || 0;
-                      const rate = Number(item.rate) || 0;
-                      const amount = qty * rate;
-                      return (
-                        <tr key={item.id || index}>
-                          <td className="std-inv-sno">{index + 1}</td>
-                          <td>
-                            <p className="std-inv-item-desc">{item.description}</p>
-                            {item.detail && <p className="std-inv-item-detail">{item.detail}</p>}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>{qty}</td>
-                          <td style={{ textAlign: 'right' }}>{formatMoney(rate)}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatMoney(amount)}</td>
+                  <section className="std-inv-items-section" style={{ flex: 1 }}>
+                    <table className="std-inv-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: '56px', textAlign: 'left' }}>S. No.</th>
+                          <th style={{ textAlign: 'left' }}>Description</th>
+                          <th style={{ textAlign: 'right' }}>Qty</th>
+                          <th style={{ textAlign: 'right' }}>Rate</th>
+                          <th style={{ textAlign: 'right' }}>Amount</th>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {page.items.map((item, localIdx) => {
+                          const globalIdx = startIndex + localIdx;
+                          const qty = Number(item.qty) || 0;
+                          const rate = Number(item.rate) || 0;
+                          const amount = qty * rate;
+                          return (
+                            <tr key={item.id || globalIdx} className="interactive-inv-row">
+                              <td className="std-inv-sno">
+                                {globalIdx + 1}
+                                {onUpdateProposal && (
+                                  <button
+                                    type="button"
+                                    className="std-inv-row-delete-btn"
+                                    onClick={() => deleteItem(globalIdx)}
+                                    title="Delete this line item"
+                                    style={{
+                                      marginLeft: '4px',
+                                      border: 'none',
+                                      background: 'transparent',
+                                      cursor: 'pointer',
+                                      color: '#ef4444',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    ✕
+                                  </button>
+                                )}
+                              </td>
+                              <td>
+                                {onUpdateProposal ? (
+                                  <>
+                                    <InlineRichText
+                                      value={item.description}
+                                      onChange={(val) => updateItem(globalIdx, 'description', val)}
+                                      className="std-inv-item-desc"
+                                      placeholder="Enter item description..."
+                                      singleLine={true}
+                                    />
+                                    <InlineRichText
+                                      value={item.detail || ''}
+                                      onChange={(val) => updateItem(globalIdx, 'detail', val)}
+                                      className="std-inv-item-detail"
+                                      placeholder="Add optional detail / specifications..."
+                                    />
+                                  </>
+                                ) : (
+                                  <>
+                                    <p className="std-inv-item-desc">{item.description}</p>
+                                    {item.detail && <p className="std-inv-item-detail">{item.detail}</p>}
+                                  </>
+                                )}
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                {onUpdateProposal ? (
+                                  <InlineNumberCell
+                                    value={qty}
+                                    onChange={(val) => updateItem(globalIdx, 'qty', val)}
+                                    min={0}
+                                  />
+                                ) : (
+                                  qty
+                                )}
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                {onUpdateProposal ? (
+                                  <InlineNumberCell
+                                    value={rate}
+                                    prefix={currencySymbol}
+                                    onChange={(val) => updateItem(globalIdx, 'rate', val)}
+                                    min={0}
+                                  />
+                                ) : (
+                                  formatMoney(rate)
+                                )}
+                              </td>
+                              <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatMoney(amount)}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
 
-                <div className="std-inv-totals-wrap">
-                  <dl className="std-inv-totals-list">
-                    <div className="std-inv-totals-row">
-                      <dt>Subtotal</dt>
-                      <dd>{formatMoney(subtotal)}</dd>
-                    </div>
-                    <div className="std-inv-totals-row">
-                      <dt>CGST ({cgstPct}%)</dt>
-                      <dd>{formatMoney(cgst)}</dd>
-                    </div>
-                    <div className="std-inv-totals-row">
-                      <dt>SGST ({sgstPct}%)</dt>
-                      <dd>{formatMoney(sgst)}</dd>
-                    </div>
-                    <div className="std-inv-totals-row std-inv-total-due">
-                      <dt>Total due</dt>
-                      <dd>{formatMoney(total)}</dd>
-                    </div>
-                  </dl>
+                    {isLast && onUpdateProposal && (
+                      <div style={{ marginTop: '8px', marginBottom: '12px' }}>
+                        <button
+                          type="button"
+                          onClick={addItem}
+                          className="std-inv-add-row-btn"
+                          style={{
+                            padding: '4px 10px',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            color: '#0284c7',
+                            background: '#f0f9ff',
+                            border: '1px dashed #0284c7',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          + Add Line Item
+                        </button>
+                      </div>
+                    )}
+
+                    {isLast && (
+                      <>
+                        <div className="std-inv-totals-wrap">
+                          <dl className="std-inv-totals-list">
+                            <div className="std-inv-totals-row">
+                              <dt>Subtotal</dt>
+                              <dd>{formatMoney(subtotal)}</dd>
+                            </div>
+                            <div className="std-inv-totals-row">
+                              <dt>CGST ({cgstPct}%)</dt>
+                              <dd>{formatMoney(cgst)}</dd>
+                            </div>
+                            <div className="std-inv-totals-row">
+                              <dt>SGST ({sgstPct}%)</dt>
+                              <dd>{formatMoney(sgst)}</dd>
+                            </div>
+                            <div className="std-inv-totals-row std-inv-total-due">
+                              <dt>Total due</dt>
+                              <dd>{formatMoney(total)}</dd>
+                            </div>
+                          </dl>
+                        </div>
+
+                        <footer className="std-inv-footer">
+                          <h2 className="std-inv-section-label">Payment details</h2>
+                          {onUpdateField ? (
+                            <InlineRichText
+                              value={proposal.notes || 'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}
+                              onChange={(val) => onUpdateField('notes', val)}
+                              className="std-inv-notes"
+                            />
+                          ) : (
+                            <p className="std-inv-notes">
+                              {proposal.notes || 'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}
+                            </p>
+                          )}
+                        </footer>
+                      </>
+                    )}
+                  </section>
                 </div>
               </section>
-
-              <footer className="std-inv-footer">
-                <h2 className="std-inv-section-label">Payment details</h2>
-                <p className="std-inv-notes">{proposal.notes || 'Payment by bank transfer to iGlobus Pvt. Ltd., HDFC Bank, A/C 5010 2233 4455, IFSC HDFC0000123. Please reference the invoice number with your payment.'}</p>
-              </footer>
-            </div>
-
-          </section>
+            );
+          })}
         </div>
       );
     }
@@ -295,6 +566,48 @@ export function ProposalPreview({ proposal: rawProposal }) {
 
   const isDiscovery = proposal.documentType === 'discovery';
 
+  const updatePipelineStage = (stageIdx, field, val) => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const currentStages = [...(prev.pipelineStages || [])];
+      if (!currentStages[stageIdx]) return prev;
+      currentStages[stageIdx] = { ...currentStages[stageIdx], [field]: val };
+      return { ...prev, pipelineStages: currentStages };
+    });
+  };
+
+  const addPipelineStage = () => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const currentStages = [...(prev.pipelineStages || [])];
+      currentStages.push({
+        id: `st-${Date.now()}`,
+        stage: `Stage ${currentStages.length + 1}: New Pipeline Stage`,
+        objective: 'Define primary objective here',
+        action: 'Automated CRM action'
+      });
+      return { ...prev, pipelineStages: currentStages };
+    });
+  };
+
+  const deletePipelineStage = (stageIdx) => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const currentStages = (prev.pipelineStages || []).filter((_, idx) => idx !== stageIdx);
+      return { ...prev, pipelineStages: currentStages };
+    });
+  };
+
+  const updateDiscoverySection = (secIdx, field, val) => {
+    if (!onUpdateProposal) return;
+    onUpdateProposal((prev) => {
+      const sections = [...(prev.sections || defaultDiscoverySections)];
+      if (!sections[secIdx]) return prev;
+      sections[secIdx] = { ...sections[secIdx], [field]: val };
+      return { ...prev, sections };
+    });
+  };
+
   if (isDiscovery) {
     const rawPipelineStages = proposal.pipelineStages || [];
     const pipelineStages = rawPipelineStages.filter(st => st && (st.stage?.trim() || st.objective?.trim() || st.action?.trim()));
@@ -329,12 +642,74 @@ export function ProposalPreview({ proposal: rawProposal }) {
     const rawSections = proposal.sections !== undefined ? proposal.sections : defaultDiscoverySections;
     const activeSections = rawSections.filter(s => s && (s.title?.trim() || s.content?.trim()));
 
+    // Separate pre-pipeline sections, the pipeline section, and sign-off section
+    const prePipelineSections = activeSections.filter(s => {
+      const isPipeline = s.title?.toUpperCase().includes('PIPELINE') || s.title?.includes('3.');
+      const isSignoff = s.isSignoff || s.title?.toUpperCase().includes('SIGN-OFF') || s.title?.includes('4.');
+      return !isPipeline && !isSignoff;
+    });
+
+    const pipelineSection = activeSections.find(s => s.title?.toUpperCase().includes('PIPELINE') || s.title?.includes('3.'));
+    const signoffSection = activeSections.find(s => s.isSignoff || s.title?.toUpperCase().includes('SIGN-OFF') || s.title?.includes('4.'));
+
+    // Dynamic pagination calculation for Discovery Document
+    // Page 1 is always the Cover Page
+    // Page 2 has Sections 1 & 2 + first chunk of pipeline stages (max 3 stages if sign-off is on the same page, or max 4 stages if paginated)
+    const STAGES_PER_PAGE_P2 = 3; // Leaves ample room for Sec 1, Sec 2, and either Sign-off or clean transition
+    const STAGES_PER_PAGE_SUBSEQUENT = 6; // Subsequent continuation pages have the full page height available
+
+    const stagePages = [];
+    if (pipelineStages.length <= STAGES_PER_PAGE_P2) {
+      stagePages.push({
+        startIndex: 0,
+        stages: pipelineStages,
+        isFirstContentPage: true,
+        hasSignoff: true
+      });
+    } else {
+      // First content page gets stages 0 to STAGES_PER_PAGE_P2
+      stagePages.push({
+        startIndex: 0,
+        stages: pipelineStages.slice(0, STAGES_PER_PAGE_P2),
+        isFirstContentPage: true,
+        hasSignoff: false
+      });
+
+      let remaining = pipelineStages.slice(STAGES_PER_PAGE_P2);
+      let currStart = STAGES_PER_PAGE_P2;
+      while (remaining.length > 0) {
+        // If remaining stages fit with sign-off (max 4)
+        if (remaining.length <= 4) {
+          stagePages.push({
+            startIndex: currStart,
+            stages: remaining,
+            isFirstContentPage: false,
+            hasSignoff: true
+          });
+          remaining = [];
+        } else {
+          const sliceCount = STAGES_PER_PAGE_SUBSEQUENT;
+          const chunk = remaining.slice(0, sliceCount);
+          remaining = remaining.slice(sliceCount);
+          stagePages.push({
+            startIndex: currStart,
+            stages: chunk,
+            isFirstContentPage: false,
+            hasSignoff: remaining.length === 0
+          });
+          currStart += sliceCount;
+        }
+      }
+    }
+
+    const totalDiscoveryPages = 1 + stagePages.length;
+
     return (
       <div className="proposal-pages-container discovery-pages-container">
         {/* Page 1: Official Cover Page */}
         <div className="preview-page-card">
           <div className="preview-page-card-header">
-            <span>Page 1 of 2 · Cover Page</span>
+            <span>Page 1 of {totalDiscoveryPages} · Cover Page</span>
           </div>
           <section className="discovery-cover-paper">
             <img
@@ -345,38 +720,185 @@ export function ProposalPreview({ proposal: rawProposal }) {
             <div className="letterhead-content-wrap">
               <div className="cover-card-inner">
 
-
                 {/* Title & Overview */}
                 <div className="discovery-cover-main">
-                  <h1 className="discovery-main-title">
-                    {proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
-                  </h1>
-                  <div className="discovery-main-subtitle">
-                    {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
-                  </div>
-                  <p className="discovery-main-description">
-                    {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
-                  </p>
+                  {onUpdateField ? (
+                    <InlineRichText
+                      value={proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
+                      onChange={(val) => onUpdateField('proposalTitle', val)}
+                      className="discovery-main-title"
+                      singleLine={true}
+                    />
+                  ) : (
+                    <h1 className="discovery-main-title">
+                      {proposal.proposalTitle || 'Discovery — Requirement Gathering & Scoping'}
+                    </h1>
+                  )}
+                  {onUpdateField ? (
+                    <InlineRichText
+                      value={proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
+                      onChange={(val) => onUpdateField('subtitle', val)}
+                      className="discovery-main-subtitle"
+                      singleLine={true}
+                    />
+                  ) : (
+                    <div className="discovery-main-subtitle">
+                      {proposal.subtitle || 'ibunify CRM by iGLOBUS Corporate Consulting'}
+                    </div>
+                  )}
+                  {onUpdateField ? (
+                    <InlineRichText
+                      value={proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
+                      onChange={(val) => onUpdateField('description', val)}
+                      className="discovery-main-description"
+                    />
+                  ) : (
+                    <p className="discovery-main-description">
+                      {proposal.description || proposal.descriptionText || 'Official enterprise documentation for platform deployment, legal governance, and operational handover.'}
+                    </p>
+                  )}
                 </div>
 
                 {/* Bottom Two-Column Metadata Box */}
                 <div className="discovery-cover-bottom-meta">
                   <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">PREPARED FOR</div>
-                    <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
-                    <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
-                    <div className="discovery-meta-sub">Document Ref: {proposal.proposalNumber || 'IGC-ibunify-01-2026'}</div>
-                    <div className="discovery-meta-sub">Date: {proposal.date ? proposal.date : '______________________'}</div>
+                    <div className="discovery-meta-heading">
+                      {onUpdateField ? (
+                        <InlineRichText
+                          value={proposal.preparedForLabel || 'PREPARED FOR'}
+                          onChange={(val) => onUpdateField('preparedForLabel', val)}
+                          singleLine={true}
+                        />
+                      ) : (
+                        proposal.preparedForLabel || 'PREPARED FOR'
+                      )}
+                    </div>
+                    {onUpdateField ? (
+                      <InlineRichText
+                        value={proposal.preparedFor || '[Client Company Name]'}
+                        onChange={(val) => onUpdateField('preparedFor', val)}
+                        className="discovery-meta-value-bold"
+                        singleLine={true}
+                      />
+                    ) : (
+                      <div className="discovery-meta-value-bold">{proposal.preparedFor || '[Client Company Name]'}</div>
+                    )}
+                    {onUpdateField ? (
+                      <InlineRichText
+                        value={proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}
+                        onChange={(val) => onUpdateField('clientAttention', val)}
+                        className="discovery-meta-sub"
+                        singleLine={true}
+                      />
+                    ) : (
+                      <div className="discovery-meta-sub">{proposal.clientAttention || 'Attn: Project Sponsor / Sales Leadership'}</div>
+                    )}
+                    <div className="discovery-meta-sub">
+                      {onUpdateField ? (
+                        <InlineRichText
+                          value={proposal.docRefLabel ? `${proposal.docRefLabel}: ${proposal.proposalNumber || 'IGC-ibunify-01-2026'}` : `Document Ref: ${proposal.proposalNumber || 'IGC-ibunify-01-2026'}`}
+                          onChange={(val) => {
+                            const clean = stripHtml(val);
+                            if (clean.includes(':')) {
+                              const parts = clean.split(':');
+                              onUpdateField('docRefLabel', parts[0].trim());
+                              onUpdateField('proposalNumber', parts.slice(1).join(':').trim());
+                            } else {
+                              onUpdateField('proposalNumber', clean);
+                            }
+                          }}
+                          singleLine={true}
+                        />
+                      ) : (
+                        `${proposal.docRefLabel || 'Document Ref'}: ${proposal.proposalNumber || 'IGC-ibunify-01-2026'}`
+                      )}
+                    </div>
+                    <div className="discovery-meta-sub">
+                      {onUpdateField ? (
+                        <InlineRichText
+                          value={proposal.dateLabel ? `${proposal.dateLabel}: ${proposal.date || ''}` : `Date: ${proposal.date || ''}`}
+                          onChange={(val) => {
+                            const clean = stripHtml(val);
+                            if (clean.includes(':')) {
+                              const parts = clean.split(':');
+                              onUpdateField('dateLabel', parts[0].trim());
+                              onUpdateField('date', parts.slice(1).join(':').trim());
+                            } else {
+                              onUpdateField('date', clean);
+                            }
+                          }}
+                          singleLine={true}
+                          placeholder="Date: [Enter Date]"
+                        />
+                      ) : (
+                        `${proposal.dateLabel || 'Date'}: ${proposal.date ? proposal.date : '______________________'}`
+                      )}
+                    </div>
                   </div>
 
-
                   <div className="discovery-meta-col">
-                    <div className="discovery-meta-heading">SERVICE PROVIDER</div>
-                    <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
-                    <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
-                    <div className="discovery-meta-sub">{formatPortalsText(proposal.portals)}</div>
-                    <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
-                    <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
+                    <div className="discovery-meta-heading">
+                      {onUpdateField ? (
+                        <InlineRichText
+                          value={proposal.serviceProviderLabel || 'SERVICE PROVIDER'}
+                          onChange={(val) => onUpdateField('serviceProviderLabel', val)}
+                          singleLine={true}
+                        />
+                      ) : (
+                        proposal.serviceProviderLabel || 'SERVICE PROVIDER'
+                      )}
+                    </div>
+                    {onUpdateField ? (
+                      <InlineRichText
+                        value={proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}
+                        onChange={(val) => onUpdateField('company', val)}
+                        className="discovery-meta-value-bold"
+                        singleLine={true}
+                      />
+                    ) : (
+                      <div className="discovery-meta-value-bold">{proposal.company || 'ibunify (iGLOBUS Corporate Consulting)'}</div>
+                    )}
+                    {onUpdateField ? (
+                      <InlineRichText
+                        value={proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}
+                        onChange={(val) => onUpdateField('companyAddress', val)}
+                        className="discovery-meta-sub"
+                        singleLine={true}
+                      />
+                    ) : (
+                      <div className="discovery-meta-sub">{proposal.companyAddress || 'Office: Madhapur, Opp. Raheja Mindspace, Hyderabad'}</div>
+                    )}
+                    <div className="discovery-meta-sub">
+                      {onUpdateField ? (
+                        <InlineRichText
+                          value={proposal.portals || 'Portals: www.ibunify.com | www.iglobuscc.com'}
+                          onChange={(val) => onUpdateField('portals', val)}
+                          singleLine={true}
+                        />
+                      ) : (
+                        formatPortalsText(proposal.portals)
+                      )}
+                    </div>
+                    {onUpdateField ? (
+                      <InlineRichText
+                        value={proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}
+                        onChange={(val) => onUpdateField('contacts', val)}
+                        className="discovery-meta-sub"
+                        singleLine={true}
+                      />
+                    ) : (
+                      <div className="discovery-meta-sub">{proposal.contacts || 'Product Owner: Pavan Chandra Duddilla'}</div>
+                    )}
+                    {onUpdateField ? (
+                      <InlineRichText
+                        value={proposal.productLead || 'Product Lead: Ramya | Sohail'}
+                        onChange={(val) => onUpdateField('productLead', val)}
+                        className="discovery-meta-sub"
+                        singleLine={true}
+                      />
+                    ) : (
+                      <div className="discovery-meta-sub">{proposal.productLead || 'Product Lead: Ramya | Sohail'}</div>
+                    )}
                   </div>
                 </div>
 
@@ -389,94 +911,383 @@ export function ProposalPreview({ proposal: rawProposal }) {
           </section>
         </div>
 
-        {/* Page 2: Structured Scoping & Sign-Off Page */}
-        <div className="preview-page-card">
-          <div className="preview-page-card-header">
-            <span>Page 2 of 2 · Requirement Gathering & Scoping</span>
-          </div>
-          <section className="discovery-content-paper">
-            <img
-              src={SAMPLE_LETTERHEAD_BASE64}
-              className="letterhead-bg-img"
-              alt="Letterhead Background"
-            />
-            <div className="letterhead-content-wrap">
-              {/* Document Body Sections */}
-              <div className="discovery-p2-body">
-                {activeSections.map((sec, sIdx) => {
-                  const isPipelineSec = sec.title?.toUpperCase().includes('PIPELINE') || sec.title?.includes('3.');
-                  const isSignoffSec = sec.isSignoff || sec.title?.toUpperCase().includes('SIGN-OFF') || sec.title?.includes('4.');
+        {/* Content Pages (Paged dynamically to never collide or spill) */}
+        {stagePages.map((pageChunk, pageIdx) => {
+          const currentPageNum = 2 + pageIdx;
 
-                  return (
-                    <div key={sec.id || sIdx} className="discovery-section-block">
-                      {sec.title && <h2 className="discovery-section-title">{sec.title}</h2>}
-                      {isPipelineSec && useStructuredTable && pipelineStages.length > 0 ? (
+          return (
+            <div key={`discovery-page-${currentPageNum}`} className="preview-page-card">
+              <div className="preview-page-card-header">
+                <span>
+                  Page {currentPageNum} of {totalDiscoveryPages} · {pageChunk.isFirstContentPage ? 'Requirement Gathering & Scoping' : 'Requirement Gathering & Scoping (Continued)'}
+                </span>
+              </div>
+              <section className="discovery-content-paper">
+                <img
+                  src={SAMPLE_LETTERHEAD_BASE64}
+                  className="letterhead-bg-img"
+                  alt="Letterhead Background"
+                />
+                <div className="letterhead-content-wrap">
+                  <div className="discovery-p2-body">
+
+                    {/* Continued Header on subsequent content pages */}
+                    {!pageChunk.isFirstContentPage && (
+                      <div className="discovery-section-block" style={{ marginBottom: '14px', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <h3 style={{ margin: 0, fontSize: '13px', fontWeight: '800', color: '#0f2b6e' }}>
+                            {stripHtml(proposal.proposalTitle || 'Requirement Gathering & Scoping')} (Continued)
+                          </h3>
+                          <span style={{ fontSize: '11px', color: '#64748b' }}>
+                            Doc Ref: {stripHtml(proposal.proposalNumber || 'IGC-ibunify-01-2026')}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Render Initial Sections (1 & 2) only on the first content page */}
+                    {pageChunk.isFirstContentPage && prePipelineSections.map((sec, sIdx) => (
+                      <div key={sec.id || sIdx} className="discovery-section-block">
+                        {onUpdateProposal ? (
+                          <InlineRichText
+                            value={sec.title || ''}
+                            onChange={(val) => updateDiscoverySection(sIdx, 'title', val)}
+                            className="discovery-section-title"
+                            singleLine={true}
+                          />
+                        ) : (
+                          sec.title && <h2 className="discovery-section-title">{sec.title}</h2>
+                        )}
+
+                        <div className="discovery-section-text discovery-bullet-list">
+                          {onUpdateProposal ? (
+                            <InlineRichText
+                              value={sec.content || ''}
+                              onChange={(val) => updateDiscoverySection(sIdx, 'content', val)}
+                            />
+                          ) : (
+                            sec.content && sec.content.split('\n').filter(l => l.trim() !== '').map((line, lIdx) => (
+                              <div key={lIdx} className="discovery-bullet-item">{line}</div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Render Pipeline Stages Table */}
+                    {useStructuredTable && (
+                      <div className="discovery-section-block">
+                        {pageChunk.isFirstContentPage ? (
+                          onUpdateProposal ? (
+                            <InlineRichText
+                              value={pipelineSection?.title || '3. SALES HIERARCHY & PIPELINE STAGES'}
+                              onChange={(val) => {
+                                const idx = rawSections.findIndex(s => s.title?.toUpperCase().includes('PIPELINE') || s.title?.includes('3.'));
+                                if (idx !== -1) updateDiscoverySection(idx, 'title', val);
+                              }}
+                              className="discovery-section-title"
+                              singleLine={true}
+                            />
+                          ) : (
+                            <h2 className="discovery-section-title">
+                              {pipelineSection?.title || '3. SALES HIERARCHY & PIPELINE STAGES'}
+                            </h2>
+                          )
+                        ) : (
+                          <div style={{ fontSize: '11.5px', fontWeight: '700', color: '#1e3a8a', marginBottom: '6px' }}>
+                            Pipeline Stages (Continued)
+                          </div>
+                        )}
+
                         <div className="discovery-pipeline-table-wrap">
                           <table className="discovery-pipeline-table">
                             <thead>
                               <tr>
-                                <th style={{ width: '28%' }}>PIPELINE STAGE</th>
-                                <th style={{ width: '32%' }}>PRIMARY OBJECTIVE</th>
-                                <th style={{ width: '40%' }}>AUTOMATED SYSTEM ACTION</th>
+                                <th style={{ width: '28%' }}>
+                                  {onUpdateField ? (
+                                    <InlineRichText
+                                      value={proposal.pipelineStageColHeader || 'PIPELINE STAGE'}
+                                      onChange={(val) => onUpdateField('pipelineStageColHeader', val)}
+                                      singleLine={true}
+                                    />
+                                  ) : (
+                                    proposal.pipelineStageColHeader || 'PIPELINE STAGE'
+                                  )}
+                                </th>
+                                <th style={{ width: '32%' }}>
+                                  {onUpdateField ? (
+                                    <InlineRichText
+                                      value={proposal.pipelineObjectiveColHeader || 'PRIMARY OBJECTIVE'}
+                                      onChange={(val) => onUpdateField('pipelineObjectiveColHeader', val)}
+                                      singleLine={true}
+                                    />
+                                  ) : (
+                                    proposal.pipelineObjectiveColHeader || 'PRIMARY OBJECTIVE'
+                                  )}
+                                </th>
+                                <th style={{ width: '40%' }}>
+                                  {onUpdateField ? (
+                                    <InlineRichText
+                                      value={proposal.pipelineActionColHeader || 'AUTOMATED SYSTEM ACTION'}
+                                      onChange={(val) => onUpdateField('pipelineActionColHeader', val)}
+                                      singleLine={true}
+                                    />
+                                  ) : (
+                                    proposal.pipelineActionColHeader || 'AUTOMATED SYSTEM ACTION'
+                                  )}
+                                </th>
                               </tr>
                             </thead>
                             <tbody>
-                              {pipelineStages.map((st, idx) => (
-                                <tr key={st.id || idx}>
-                                  <td className="stage-name-cell"><strong>{st.stage}</strong></td>
-                                  <td>{st.objective}</td>
-                                  <td>{st.action}</td>
-                                </tr>
-                              ))}
+                              {pageChunk.stages.map((st, sLocalIdx) => {
+                                const globalIdx = pageChunk.startIndex + sLocalIdx;
+                                return (
+                                  <tr key={st.id || globalIdx} className="interactive-inv-row">
+                                    <td className="stage-name-cell">
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        {onUpdateProposal && (
+                                          <button
+                                            type="button"
+                                            onClick={() => deletePipelineStage(globalIdx)}
+                                            title="Delete stage"
+                                            style={{
+                                              border: 'none',
+                                              background: 'transparent',
+                                              color: '#ef4444',
+                                              cursor: 'pointer',
+                                              fontSize: '11px',
+                                              padding: 0
+                                            }}
+                                          >
+                                            ✕
+                                          </button>
+                                        )}
+                                        {onUpdateProposal ? (
+                                          <InlineRichText
+                                            value={st.stage}
+                                            onChange={(val) => updatePipelineStage(globalIdx, 'stage', val)}
+                                            singleLine={true}
+                                          />
+                                        ) : (
+                                          <strong>{st.stage}</strong>
+                                        )}
+                                      </div>
+                                    </td>
+                                    <td>
+                                      {onUpdateProposal ? (
+                                        <InlineRichText
+                                          value={st.objective}
+                                          onChange={(val) => updatePipelineStage(globalIdx, 'objective', val)}
+                                        />
+                                      ) : (
+                                        st.objective
+                                      )}
+                                    </td>
+                                    <td>
+                                      {onUpdateProposal ? (
+                                        <InlineRichText
+                                          value={st.action}
+                                          onChange={(val) => updatePipelineStage(globalIdx, 'action', val)}
+                                        />
+                                      ) : (
+                                        st.action
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
-                        </div>
-                      ) : isSignoffSec ? (
-                        <>
-                          {sec.content && <p className="discovery-signoff-desc">{sec.content}</p>}
-                          <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '10px' }}>
-                            <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                              <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                                {proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
-                              </div>
-                              <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                                {proposal.clientSignatorySub || 'Authorized Signatory'}
-                              </div>
-                              <div style={{ height: '42px' }}></div>
-                              <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.clientSignatoryName || '___________________________'}</div>
-                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.clientSignatoryTitle || '____________________________'}</div>
-                              <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')}</div>
+
+                          {/* Only show + Add Pipeline Stage on the page containing the last chunk */}
+                          {onUpdateProposal && pageIdx === stagePages.length - 1 && (
+                            <div style={{ marginTop: '8px', marginBottom: '8px' }}>
+                              <button
+                                type="button"
+                                onClick={addPipelineStage}
+                                style={{
+                                  padding: '4px 10px',
+                                  fontSize: '11.5px',
+                                  fontWeight: 600,
+                                  color: '#0284c7',
+                                  background: '#f0f9ff',
+                                  border: '1px dashed #0284c7',
+                                  borderRadius: '4px',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                + Add Pipeline Stage
+                              </button>
                             </div>
-                            <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px 16px', boxSizing: 'border-box' }}>
-                              <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '12px', marginBottom: '2px' }}>
-                                {proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
-                              </div>
-                              <div style={{ fontSize: '10.5px', color: '#64748b', marginBottom: '4px' }}>
-                                {proposal.providerSignatorySub || 'Authorized Signatory'}
-                              </div>
-                              <div style={{ height: '42px' }}></div>
-                              <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '8px' }}></div>
-                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Name: {proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}</div>
-                              <div className="sign-line" style={{ marginTop: '4px', fontSize: '11.5px', color: '#1e293b' }}>Title: {proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}</div>
-                              <div className="sign-date" style={{ marginTop: '4px', fontSize: '11px', color: '#1e293b' }}>Date: {proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))}</div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Sign-Off Block (Rendered cleanly on the final pageChunk) */}
+                    {pageChunk.hasSignoff && (
+                      <div className="discovery-section-block" style={{ marginTop: 'auto', paddingTop: '10px' }}>
+                        {onUpdateProposal ? (
+                          <InlineRichText
+                            value={signoffSection?.title || '4. SIGN-OFF FOR SCOPING BASELINE'}
+                            onChange={(val) => {
+                              const idx = rawSections.findIndex(s => s.isSignoff || s.title?.toUpperCase().includes('SIGN-OFF') || s.title?.includes('4.'));
+                              if (idx !== -1) updateDiscoverySection(idx, 'title', val);
+                            }}
+                            className="discovery-section-title"
+                            singleLine={true}
+                          />
+                        ) : (
+                          <h2 className="discovery-section-title">
+                            {signoffSection?.title || '4. SIGN-OFF FOR SCOPING BASELINE'}
+                          </h2>
+                        )}
+
+                        {onUpdateProposal ? (
+                          <InlineRichText
+                            value={signoffSection?.content || 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.'}
+                            onChange={(val) => {
+                              const idx = rawSections.findIndex(s => s.isSignoff || s.title?.toUpperCase().includes('SIGN-OFF') || s.title?.includes('4.'));
+                              if (idx !== -1) updateDiscoverySection(idx, 'content', val);
+                            }}
+                            className="discovery-signoff-desc"
+                          />
+                        ) : (
+                          <p className="discovery-signoff-desc">
+                            {signoffSection?.content || 'The undersigned agree that the requirements detailed above represent the baseline for project deployment.'}
+                          </p>
+                        )}
+
+                        <div style={{ display: 'flex', gap: '16px', width: '100%', boxSizing: 'border-box', marginTop: '8px' }}>
+                          <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px 14px', boxSizing: 'border-box' }}>
+                            <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '11.5px', marginBottom: '2px' }}>
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`}
+                                  onChange={(val) => onUpdateField('clientSignatoryHeader', val)}
+                                  singleLine={true}
+                                />
+                              ) : (
+                                proposal.clientSignatoryHeader || proposal.clientSignatory || `ACCEPTED FOR: [${proposal.preparedFor || 'CLIENT ENTERPRISE'}]`
+                              )}
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px' }}>
+                              {proposal.clientSignatorySub || 'Authorized Signatory'}
+                            </div>
+                            <div style={{ height: '36px' }}></div>
+                            <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '6px' }}></div>
+                            <div className="sign-line" style={{ marginTop: '3px', fontSize: '11px', color: '#1e293b' }}>
+                              Name:{' '}
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.clientSignatoryName || ''}
+                                  onChange={(val) => onUpdateField('clientSignatoryName', val)}
+                                  singleLine={true}
+                                  style={{ display: 'inline-block' }}
+                                  placeholder="___________________________"
+                                />
+                              ) : (
+                                proposal.clientSignatoryName || '___________________________'
+                              )}
+                            </div>
+                            <div className="sign-line" style={{ marginTop: '3px', fontSize: '11px', color: '#1e293b' }}>
+                              Title:{' '}
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.clientSignatoryTitle || ''}
+                                  onChange={(val) => onUpdateField('clientSignatoryTitle', val)}
+                                  singleLine={true}
+                                  style={{ display: 'inline-block' }}
+                                  placeholder="____________________________"
+                                />
+                              ) : (
+                                proposal.clientSignatoryTitle || '____________________________'
+                              )}
+                            </div>
+                            <div className="sign-date" style={{ marginTop: '3px', fontSize: '10.5px', color: '#1e293b' }}>
+                              Date:{' '}
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.clientSignDate || proposal.date || ''}
+                                  onChange={(val) => onUpdateField('clientSignDate', val)}
+                                  singleLine={true}
+                                  style={{ display: 'inline-block' }}
+                                  placeholder="____________________________"
+                                />
+                              ) : (
+                                proposal.clientSignDate ? proposal.clientSignDate : (proposal.date ? proposal.date : '____________________________')
+                              )}
                             </div>
                           </div>
-                        </>
-                      ) : (
-                        <div className="discovery-section-text discovery-bullet-list">
-                          {sec.content && sec.content.split('\n').filter(l => l.trim() !== '').map((line, lIdx) => (
-                            <div key={lIdx} className="discovery-bullet-item">{line}</div>
-                          ))}
+
+                          <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px 14px', boxSizing: 'border-box' }}>
+                            <div style={{ fontWeight: '700', color: '#0f2b6e', fontSize: '11.5px', marginBottom: '2px' }}>
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'}
+                                  onChange={(val) => onUpdateField('providerSignatoryHeader', val)}
+                                  singleLine={true}
+                                />
+                              ) : (
+                                proposal.providerSignatoryHeader || proposal.leadSignatory || 'ACCEPTED FOR: ibunify (iGLOBUS)'
+                              )}
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px' }}>
+                              {proposal.providerSignatorySub || 'Authorized Signatory'}
+                            </div>
+                            <div style={{ height: '36px' }}></div>
+                            <div style={{ borderBottom: '1px dashed #cbd5e1', marginBottom: '6px' }}></div>
+                            <div className="sign-line" style={{ marginTop: '3px', fontSize: '11px', color: '#1e293b' }}>
+                              Name:{' '}
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'}
+                                  onChange={(val) => onUpdateField('leadSignatoryName', val)}
+                                  singleLine={true}
+                                  style={{ display: 'inline-block' }}
+                                />
+                              ) : (
+                                proposal.leadSignatoryName || proposal.providerSignatoryName || 'Pavan Chandra Duddilla'
+                              )}
+                            </div>
+                            <div className="sign-line" style={{ marginTop: '3px', fontSize: '11px', color: '#1e293b' }}>
+                              Title:{' '}
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'}
+                                  onChange={(val) => onUpdateField('leadSignatoryTitle', val)}
+                                  singleLine={true}
+                                  style={{ display: 'inline-block' }}
+                                />
+                              ) : (
+                                proposal.leadSignatoryTitle || proposal.providerSignatoryTitle || 'Director'
+                              )}
+                            </div>
+                            <div className="sign-date" style={{ marginTop: '3px', fontSize: '10.5px', color: '#1e293b' }}>
+                              Date:{' '}
+                              {onUpdateField ? (
+                                <InlineRichText
+                                  value={proposal.leadSignDate || proposal.providerSignDate || proposal.date || ''}
+                                  onChange={(val) => onUpdateField('leadSignDate', val)}
+                                  singleLine={true}
+                                  style={{ display: 'inline-block' }}
+                                  placeholder="____________________________"
+                                />
+                              ) : (
+                                proposal.leadSignDate ? proposal.leadSignDate : (proposal.providerSignDate ? proposal.providerSignDate : (proposal.date ? proposal.date : '____________________________'))
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                      </div>
+                    )}
+
+                  </div>
+                </div>
+              </section>
             </div>
-          </section>
-        </div>
+          );
+        })}
       </div>
     );
   }
