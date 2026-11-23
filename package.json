@@ -9,8 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tiptap/extension-table": "^3.34.0",
+    "@tiptap/extension-table-cell": "^3.34.0",
+    "@tiptap/extension-table-header": "^3.34.0",
+    "@tiptap/extension-table-row": "^3.34.0",
+    "@tiptap/pm": "^3.34.0",
+    "@tiptap/react": "^3.34.0",
+    "@tiptap/starter-kit": "^3.34.0",
     "@vitejs/plugin-react": "^6.1.1",
     "html2pdf.js": "^0.14.0",
+    "pdfjs-dist": "^3.11.174",
+    "playwright": "^1.65.1",
     "react": "latest",
     "react-dom": "latest",
     "vite": "latest"
